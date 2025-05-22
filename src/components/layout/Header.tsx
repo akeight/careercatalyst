@@ -2,11 +2,15 @@
 
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
+import {AuroraText} from "@/components/magicui/aurora-text";
 
 
 export default function Header() {
     return (
-        <header>
+        <header className="py-6 px-4">
+            <h1 className="text-center font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl">
+                Internship <AuroraText>tracker.</AuroraText>
+            </h1>
             <div className="flex items-end justify-end gap-4">
                 <ThemeToggle />
                 <div className="flex">

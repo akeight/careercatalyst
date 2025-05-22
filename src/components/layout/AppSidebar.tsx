@@ -11,11 +11,11 @@ import {
     SidebarMenuItem,
     SidebarFooter
 } from "@/components/ui/sidebar"
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils'; // optional class merging util
+//import Link from 'next/link';
+//import { usePathname } from 'next/navigation';
+//import { cn } from '@/lib/utils'; // optional class merging util
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
+//import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
 import { faCalendarLines } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
 import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
 import { faLaptopCode } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
@@ -26,9 +26,9 @@ import { faHandshakeAngle } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regul
 import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
 import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Card} from "@/components/ui/card";
 
 const navLinks = [
-    { label: 'Dashboard', href: '/', icon: <FontAwesomeIcon icon={faHouse} size="xl"/> },
     { label: 'Job Search', href: '/search', icon: <FontAwesomeIcon icon={faLaptopCode} size="xl" /> },
     { label: 'Saved Jobs', href: '/saved', icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" /> },
     { label: 'Calendar', href: '/calendar', icon: <FontAwesomeIcon icon={faCalendarLines} size="xl" /> },
@@ -40,15 +40,18 @@ const navLinks = [
 
 const supportLinks = [
     { label: 'Settings', href: '/settings', icon: <FontAwesomeIcon icon={faGear} size="xl" /> },
-    { label: 'Help', href: '/help', icon: <FontAwesomeIcon icon={faCommentsQuestion} size="lg" /> },
+    { label: 'Help', href: '/help', icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" /> },
 ];
 
 export function AppSidebar() {
     return (
         <Sidebar>
             <SidebarContent>
+                <Card>
                 <SidebarGroup>
-                    <SidebarGroupLabel>Internship Tracker</SidebarGroupLabel>
+                    <SidebarGroupLabel>
+                        Dashboard
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {navLinks.map((navLinks) => (
@@ -78,6 +81,7 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+                </Card>
             </SidebarContent>
             <SidebarFooter>
                 <Avatar>

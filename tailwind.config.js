@@ -4,9 +4,8 @@ import animate from 'tailwindcss-animate';
 module.exports = {
     darkMode: "class",
     content: [
-        "./src/app/**/*.{ts,tsx}",
-        "./src/components/**/*.{ts,tsx}",
-        "./src/**/*.{ts,tsx}",
+        "./src/**/*.{js,ts,jsx,tsx}",
+        './node_modules/@shadcn/ui/**/*.{js,ts,jsx,tsx}'
     ],
     theme: {
         extend: {},

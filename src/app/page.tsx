@@ -1,11 +1,46 @@
-//import StatCard from "@/components/dashboard/StatCard";
-//import Calendar from "@/components/dashboard/Calendar";
+import { IconCloud } from "@/components/magicui/icon-cloud";
+
+const slugs = [
+    "typescript",
+    "javascript",
+    "dart",
+    "java",
+    "react",
+    "flutter",
+    "android",
+    "html5",
+    "css3",
+    "nodedotjs",
+    "express",
+    "nextdotjs",
+    "prisma",
+    "amazonaws",
+    "postgresql",
+    "firebase",
+    "nginx",
+    "vercel",
+    "testinglibrary",
+    "jest",
+    "cypress",
+    "docker",
+    "git",
+    "jira",
+    "github",
+    "gitlab",
+    "visualstudiocode",
+    "androidstudio",
+    "sonarqube",
+    "figma",
+];
 // app/page.tsx
 export default function HomePage() {
+    const images = slugs.map(
+        (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`,
+    );
+
     return (
-        <div className="p-10 text-center">
-            <h1 className="text-3xl font-bold">Welcome to the Internship Tracker</h1>
-            <p className="text-muted-foreground">Go to /dashboard to start tracking like a beast</p>
+        <div className="relative flex size-full items-center justify-center overflow-hidden">
+            <IconCloud images={images} />
         </div>
     );
 }

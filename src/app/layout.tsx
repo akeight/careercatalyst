@@ -1,46 +1,44 @@
-import type { Metadata } from "next";
-import "../styles/globals.css"
+import { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
-import NavBar from "@/components/layout/NavBar";
-import Header from "@/components/layout/Header"
-//import Sidebar from "@/components/layout/Sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/layout/AppSidebar"
+import ClientHeader from "@/components/layout/ClientHeader"
 import Footer from "@/components/layout/Footer"
-import React from "react"
-import { config } from '@fortawesome/fontawesome-svg-core'
-import '@fortawesome/fontawesome-svg-core/styles.css'
-import { AppSidebar } from "@/components/layout/AppSidebar";
-import { SidebarTrigger, SidebarProvider } from "@/components/ui/sidebar";
+import React from "react";
+import "@/styles/globals.css"
 
-config.autoAddCss = false
 
 export const metadata: Metadata = {
     title: "Internship Tracker",
     description: "Track your job search like a beast",
-};
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-        <body className="min-h-screen bg-background font-sans antialiased">
+        <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="flex flex-col min-h-screen">
-                <Header />
-                <div className="flex flex-1 overflow-hidden">
-                    <SidebarProvider>
-                        <AppSidebar />
-                        <main>
+            <SidebarProvider>
+                <div className="flex min-h-screen w-full">
+
+                    {/* Sidebar */}
+                    <AppSidebar />
+
+                    {/* Main Content */}
+                    <div className="flex flex-col flex-1 w-full">
+                        <ClientHeader />
+
+                        <main className="flex-1 w-full px-6 py-4">
                             <SidebarTrigger />
                             {children}
                         </main>
-                    </SidebarProvider>
-                    <main className="flex-1 overflow-y-auto p-4 bg-muted/40">
-                        {children}
-                    </main>
+
+                        <Footer />
+                    </div>
                 </div>
-                <Footer />
-            </div>
+            </SidebarProvider>
         </ThemeProvider>
         </body>
         </html>
-    );
+    )
 }

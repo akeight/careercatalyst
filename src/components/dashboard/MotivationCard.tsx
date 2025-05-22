@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faStars } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular";
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 
 export default function MotivationCard() {
     const quotes = [
@@ -13,13 +14,20 @@ export default function MotivationCard() {
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
     return (
-        <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6">
-            <div className="flex items-center justify-center w-full">
-                <FontAwesomeIcon icon={faStars} size="2xl" />
-                <h3 className="text-lg font-semibold mb-2">Daily Motivation</h3>
-                <FontAwesomeIcon icon={faStars} size="2xl" />
-            </div>
-            <p className="flex items-center justify-center w-full text-sm text-muted-foreground">{randomQuote}</p>
-        </div>
+         <Card className="w-[350px]">
+            <CardHeader>
+            </CardHeader>
+             <CardTitle className="text-center items-center">
+                <FontAwesomeIcon icon={faStars} size="xl" />
+                    Daily Motivation
+                <FontAwesomeIcon icon={faStars} size="xl" />
+            </CardTitle>
+            <CardContent className="text-center items-center">
+                <p className="text-md italic text-muted-foreground">{randomQuote}</p>
+            </CardContent>
+             <CardFooter>
+
+             </CardFooter>
+        </Card>
     );
 }

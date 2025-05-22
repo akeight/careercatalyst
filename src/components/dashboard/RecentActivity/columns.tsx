@@ -16,15 +16,16 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 // This type is used to define the shape of our data.
+
 // You can use a Zod schema here if you want.
-export type Payment = {
+export type Tracker = {
     id: string
     amount: number
-    status: "pending" | "processing" | "success" | "failed"
-    email: string
+    status: "wishlist" | "applied" | "interview scheduled" | "interview complete" | "offer pending" | "rejected"
+    company: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Tracker>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -47,24 +48,35 @@ export const columns: ColumnDef<Payment>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-
-{
-    accessorKey: "email",
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => (
+            <div className="capitalize">{row.getValue("status")}</div>
+        ),
+    },
+    {
+        accessorKey: "company",
         header: ({ column }) => {
-    return (
-        <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-    )
-},
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Company
+                    <ArrowUpDown />
+                </Button>
+            )
+        },
+        cell: ({ row }) => <div className="capitalize">{row.getValue("company")}</div>,
+    },
+    {
         accessorKey: "amount",
         header: () => <div className="text-right">Amount</div>,
         cell: ({ row }) => {
             const amount = parseFloat(row.getValue("amount"))
+
+            // Format the amount as a dollar amount
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -75,6 +87,7 @@ export const columns: ColumnDef<Payment>[] = [
     },
     {
         id: "actions",
+        enableHiding: false,
         cell: ({ row }) => {
             const payment = row.original
 
@@ -88,14 +101,15 @@ export const columns: ColumnDef<Payment>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+
                         <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(payment.id)}
                         >
-                            Copy payment ID
+                            Edit
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
+                        <DropdownMenuItem>View company</DropdownMenuItem>
+                        <DropdownMenuItem>View posting</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

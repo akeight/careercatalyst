@@ -4,19 +4,18 @@ import { ThemeProvider } from "next-themes"
 import Header from './Header'
 import Footer from './Footer'
 import React from "react"
-import Sidebar from './Sidebar'
-//import NavBar from './NavBar'
+import {AppSidebar} from "@/components/layout/AppSidebar";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex">
             <ThemeProvider attribute="class">
                 {children}
             </ThemeProvider>
             <Header />
-            <div className="flex flex-1">
-                <Sidebar />
-                <main className="flex-1 p-4 bg-muted">
+            <div className="">
+                <AppSidebar />
+                <main className="">
                     {children}
                 </main>
             </div>
