@@ -15,10 +15,10 @@ export default function Page() {
                 <StatCard title="Rejections" value={2} />
 
                 {/* Full width sections */}
-            <div className="col-span-2 xl:col-span-2">
+            <div className="col-span-2 xl:col-span-2 mx-auto">
                 <RecentActivity />
             </div>
-            <div className="">
+            <div className="mx-auto">
                 <AppCalendar />
             </div>
             <div className="">

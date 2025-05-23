@@ -19,22 +19,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SidebarProvider>
-                <div className="flex min-h-screen w-full">
+                <div className="min-h-screen w-full">
+                    {/* HEADER OUTSIDE FLEX */}
+                    <ClientHeader />
 
-                    {/* Sidebar */}
-                    <AppSidebar />
+                    <div className="flex">
+                        {/* Sidebar */}
+                        <AppSidebar />
 
-                    {/* Main Content */}
-                    <div className="flex flex-col flex-1 w-full">
-                        <ClientHeader />
-
-                        <main className="flex-1 w-full px-6 py-4">
+                        {/* Main */}
+                        <main className="flex-1 px-6 py-4">
                             <SidebarTrigger />
                             {children}
                         </main>
-
-                        <Footer />
                     </div>
+
+                    <Footer />
                 </div>
             </SidebarProvider>
         </ThemeProvider>

@@ -49,17 +49,14 @@ export default async function DemoPage() {
 
     return (
         <Card className="w-full max-w-5xl mx-auto">
-            <CardHeader>
-            </CardHeader>
+
             <CardTitle className="text-center items-center">
                 Applications Tracker
             </CardTitle>
             <CardContent className="overflow-x-auto">
                 <DataTable columns={columns} data={data} />
             </CardContent>
-            <CardFooter>
 
-            </CardFooter>
         </Card>
     )
 }

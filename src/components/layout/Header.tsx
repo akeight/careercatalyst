@@ -8,7 +8,7 @@ import {AuroraText} from "@/components/magicui/aurora-text";
 export default function Header() {
     return (
         <header className="py-6 px-4">
-            <h1 className="text-center font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl">
+            <h1 className="text-center font-bold tracking-tight text-2xl md:text-3xl lg:text-4xl">
                 Internship <AuroraText>tracker.</AuroraText>
             </h1>
             <div className="flex items-end justify-end gap-4">
