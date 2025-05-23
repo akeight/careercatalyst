@@ -15,27 +15,30 @@ import {
 //import { usePathname } from 'next/navigation';
 //import { cn } from '@/lib/utils'; // optional class merging util
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-//import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faCalendarLines } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faLaptopCode } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faFontAwesome } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faFileCircleCheck } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faHandshakeAngle } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
-import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular"
+import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faCalendarStar } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faLaptopCode } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faFontAwesome } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faFileCircleCheck } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faHandshakeAngle } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
+import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Card} from "@/components/ui/card";
 
 const navLinks = [
-    { label: 'Job Search', href: '/search', icon: <FontAwesomeIcon icon={faLaptopCode} size="xl" /> },
-    { label: 'Saved Jobs', href: '/saved', icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" /> },
-    { label: 'Calendar', href: '/calendar', icon: <FontAwesomeIcon icon={faCalendarLines} size="xl" /> },
-    { label: 'Application', href: '/application', icon: <FontAwesomeIcon icon={faMemoPad} size="xl" /> },
-    { label: 'Resume', href: '/resume', icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" /> },
-    { label: 'Interview Prep', href: '/prep', icon: <FontAwesomeIcon icon={faHandshakeAngle} size="xl" /> },
-    { label: 'Job Boards', href: '/boards', icon: <FontAwesomeIcon icon={faBriefcase} size="xl" /> },
+    { label: 'Home Page', href: '/dashboard', icon: <FontAwesomeIcon icon={faHouse} size="xl" /> },
+    { label: 'Applications Tracker', href: '/tracker', icon: <FontAwesomeIcon icon={faMemoPad} size="xl" /> },
+    { label: 'Internship Search', href: '/search', icon: <FontAwesomeIcon icon={faLaptopCode} size="xl" /> },
+    { label: 'Saved Internships', href: '/saved', icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" /> },
+    { label: 'Favorites Wishlist', href: '/boards', icon: <FontAwesomeIcon icon={faHeart} size="xl" /> },
+    { label: 'View Calendar', href: '/calendar', icon: <FontAwesomeIcon icon={faCalendarStar} size="xl" /> },
+    { label: 'Resume Builder', href: '/resume', icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" /> },
+    { label: 'Interview Prep', href: '/prep', icon: <FontAwesomeIcon icon={faBriefcase} size="xl" /> },
+    { label: 'Contacts', href: '/boards', icon: <FontAwesomeIcon icon={faHandshakeAngle} size="xl" />  },
 ];
 
 const supportLinks = [

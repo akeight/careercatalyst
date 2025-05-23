@@ -5,6 +5,8 @@ import {
     CardContent,
     CardTitle,
 } from "@/components/ui/card"
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
 
 
 async function getData(): Promise<Tracker[]> {
@@ -50,7 +52,7 @@ export default async function DemoPage() {
         <Card className="w-full max-w-5xl mx-auto">
 
             <CardTitle className="text-center items-center">
-                Applications Tracker
+                <FontAwesomeIcon icon={faMemoPad} size="lg" /> <span> Recent Activity</span>
             </CardTitle>
             <CardContent className="overflow-x-auto">
                 <DataTable columns={columns} data={data} />

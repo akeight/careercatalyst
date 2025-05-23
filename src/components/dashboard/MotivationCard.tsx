@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faStars } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/regular";
+import { faSparkles } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 
 export default function MotivationCard() {
@@ -18,9 +18,7 @@ export default function MotivationCard() {
             <CardHeader>
             </CardHeader>
              <CardTitle className="text-center items-center">
-                <FontAwesomeIcon icon={faStars} size="xl" />
-                    Daily Motivation
-                <FontAwesomeIcon icon={faStars} size="xl" />
+                <FontAwesomeIcon icon={faSparkles} size="lg" /><span> Daily Motivation</span>
             </CardTitle>
             <CardContent className="text-center items-center">
                 <p className="text-md italic text-muted-foreground">{randomQuote}</p>

@@ -2,6 +2,7 @@ import { IconCloud } from "@/components/magicui/icon-cloud";
 import { Button } from "@/components/ui/button";
 import { BoxReveal } from "@/components/magicui/box-reveal";
 import { AuroraText } from "@/components/magicui/aurora-text";
+import Link from "next/link";
 
 
 const slugs = [
@@ -67,7 +68,9 @@ export default function HomePage() {
                 </BoxReveal>
 
                 <BoxReveal boxColor={"#5046e6"} duration={0.5}>
-                    <Button className="mt-[1.6rem] bg-[#5046e6]">Begin Tracking</Button>
+                    <Link href="/dashboard">
+                        <Button className="mt-[1.6rem] bg-[#5046e6]">Begin Tracking</Button>
+                    </Link>
                 </BoxReveal>
             </div>
 

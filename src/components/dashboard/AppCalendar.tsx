@@ -8,11 +8,10 @@ export function AppCalendar() {
 
     return (
         <Card className="w-full max-w-5xl mx-auto">
-
             <CardTitle className="text-center items-center">
-                Important Deadlines
+                Calendar
             </CardTitle>
-            <CardContent className="overflow-hidden">
+            <CardContent className="flex w-[400px] overflow-hidden justify-evenly" >
                 <Calendar
                     mode="single"
                     selected={date}

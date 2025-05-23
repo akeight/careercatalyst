@@ -1,5 +1,7 @@
+'use client'
+
 import React from "react"
-import { BellRing, Check } from "lucide-react"
+import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,7 +12,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faHourglassStart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
 
 
 const notifications = [
@@ -34,22 +37,10 @@ export function FollowUpReminders({ className, ...props }: CardProps) {
     return (
         <Card className={cn("w-[380px]", className)} {...props}>
             <CardHeader>
-                <CardTitle className="text-center items-center">Notifications</CardTitle>
+                <CardTitle className="text-center items-center"><FontAwesomeIcon icon={faHourglassStart} size="lg"/> Notifications</CardTitle>
                 <CardDescription className="text-center items-center">These are your priority today.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-                <div className=" flex items-center space-x-4 rounded-md border p-4">
-                    <BellRing />
-                    <div className="flex-1 space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                            Push Notifications
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                            Send notifications to device.
-                        </p>
-                    </div>
-                    <Switch />
-                </div>
                 <div>
                     {notifications.map((notification, index) => (
                         <div
