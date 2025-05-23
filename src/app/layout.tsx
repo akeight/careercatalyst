@@ -16,29 +16,28 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-        <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <SidebarProvider>
-                <div className="min-h-screen w-full">
-                    {/* HEADER OUTSIDE FLEX */}
-                    <ClientHeader />
+            <body>
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                 <SidebarProvider>
+                  <div className="min-h-screen w-full">
+                      {/* HEADER OUTSIDE FLEX */}
+                      <ClientHeader />
 
-                    <div className="flex">
-                        {/* Sidebar */}
-                        <AppSidebar />
+                      <div className="flex">
+                          {/* Sidebar */}
+                          <AppSidebar />
 
-                        {/* Main */}
-                        <main className="flex-1 px-6 py-4">
-                            <SidebarTrigger />
-                            {children}
-                        </main>
-                    </div>
-
-                    <Footer />
-                </div>
-            </SidebarProvider>
-        </ThemeProvider>
-        </body>
+                            {/* Main */}
+                          <main className="flex-1 px-6 py-4">
+                              <SidebarTrigger />
+                              {children}
+                          </main>
+                      </div>
+                      <Footer />
+                  </div>
+                 </SidebarProvider>
+                </ThemeProvider>
+            </body>
         </html>
     )
 }

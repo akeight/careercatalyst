@@ -20,7 +20,7 @@ import {
 // You can use a Zod schema here if you want.
 export type Tracker = {
     id: string
-    amount: number
+    date: string
     status: "wishlist" | "applied" | "interview scheduled" | "interview complete" | "offer pending" | "rejected"
     company: string
 }
@@ -71,19 +71,10 @@ export const columns: ColumnDef<Tracker>[] = [
         cell: ({ row }) => <div className="capitalize">{row.getValue("company")}</div>,
     },
     {
-        accessorKey: "amount",
-        header: () => <div className="text-right">Amount</div>,
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
-
-            // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount)
-
-            return <div className="text-right font-medium">{formatted}</div>
-        },
+        accessorKey: "date",
+        header: () => <div className="text-right">Date Applied</div>,
+        cell: ({ row }) => <div className="text-right font-medium">{row.getValue("date")}</div>
+        ,
     },
     {
         id: "actions",

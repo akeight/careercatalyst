@@ -1,7 +1,7 @@
 import StatCard from "@/components/dashboard/StatCard";
 import { AppCalendar } from "@/components/dashboard/AppCalendar";
 import RecentActivity from "@/components/dashboard/RecentActivity/RecentActivity";
-import FollowUpReminders from "@/components/dashboard/FollowUpReminders";
+import { FollowUpReminders } from "@/components/dashboard/FollowUpReminders";
 import MotivationCard from "@/components/dashboard/MotivationCard";
 
 export default function Page() {
@@ -18,14 +18,14 @@ export default function Page() {
             <div className="col-span-2 xl:col-span-2 mx-auto">
                 <RecentActivity />
             </div>
-            <div className="mx-auto">
+            <div className="col-span-2 xl:col-span-2 mx-auto">
                 <AppCalendar />
             </div>
-            <div className="">
-                <FollowUpReminders />
-            </div>
-            <div className="c">
+            <div className="col-span-2 xl:col-span-2 mx-auto">
                 <MotivationCard />
+            </div>
+            <div className="col-span-2 xl:col-span-2 mx-auto">
+                <FollowUpReminders />
             </div>
             </div>
         </div>

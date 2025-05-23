@@ -14,7 +14,7 @@ export default function MotivationCard() {
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
     return (
-         <Card className="w-[350px]">
+         <Card className="w-[425px]">
             <CardHeader>
             </CardHeader>
              <CardTitle className="text-center items-center">

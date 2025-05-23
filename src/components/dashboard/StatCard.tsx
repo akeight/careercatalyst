@@ -1,3 +1,6 @@
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+
+
 type StatCardProps = {
     title: string;
     value: number;
@@ -5,9 +8,19 @@ type StatCardProps = {
 
 export default function StatCard({ title, value }: StatCardProps) {
     return (
-        <div>
-            <h2>{title}</h2>
-            <p>{value}</p>
-        </div>
+        <Card className="w-[200px]">
+            <CardHeader>
+            </CardHeader>
+            <CardTitle className="text-center items-center">
+                {title}
+            </CardTitle>
+            <CardContent className="text-center items-center">
+                <p className="">
+                    {value}
+                </p>
+            </CardContent>
+            <CardFooter>
+            </CardFooter>
+        </Card>
     );
 }

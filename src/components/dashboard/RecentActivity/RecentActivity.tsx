@@ -2,8 +2,7 @@ import { Tracker, columns } from "./columns"
 import { DataTable } from "./data-table"
 import {
     Card,
-    CardContent, CardFooter,
-    CardHeader,
+    CardContent,
     CardTitle,
 } from "@/components/ui/card"
 
@@ -13,31 +12,31 @@ async function getData(): Promise<Tracker[]> {
     return [
         {
             id: "m5gr84i9",
-            amount: 316,
+            date: "N/A",
             status: "wishlist",
             company: "Amazon",
         },
         {
             id: "3u1reuv4",
-            amount: 242,
+            date: "2/2/25",
             status: "interview scheduled",
             company: "Google",
         },
         {
             id: "derv1ws0",
-            amount: 837,
+            date: "8/30/24",
             status: "applied",
             company: "Bloomberg",
         },
         {
             id: "5kma53ae",
-            amount: 874,
+            date: "8/4/24",
             status: "offer pending",
             company: "Uber",
         },
         {
             id: "bhqecj4p",
-            amount: 721,
+            date: "1/21/25",
             status: "rejected",
             company: "CapitalOne",
         },

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BoxReveal } from "@/components/magicui/box-reveal";
 import { AuroraText } from "@/components/magicui/aurora-text";
 
+
 const slugs = [
     "typescript",
     "javascript",
