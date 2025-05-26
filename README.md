@@ -1,6 +1,5 @@
 ![CI](https://github.com/akeight/internship-tracker/actions/workflows/ci.yml/badge.svg)
 
-
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`next@latest react@18 react-dom@18
 `](https://nextjs.org/docs/pages/api-reference/create-next-app).
 TypeScript, ShadCN, Magic UI, Zustand, DND-Kit, Font Awesome, TailwindCSS, Zod, ESLint, Prettier, Vitest

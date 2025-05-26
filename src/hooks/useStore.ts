@@ -7,7 +7,6 @@
 //    updateBears: (newBears) => set({ bears: newBears }),
 //}))
 
-
 // HOW TO USE HOOKS
 //function BearCounter() {
 //    const bears = useStore((state) => state.bears)

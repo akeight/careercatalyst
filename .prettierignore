@@ -27,4 +27,6 @@ coverage/
 # You can add specific files too if needed
 # For example:
 # src/some-generated-file.js
+src/components/magicui
+src/components/ui
 .npmrc

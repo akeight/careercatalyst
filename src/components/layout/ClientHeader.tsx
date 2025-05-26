@@ -1,8 +1,7 @@
-'use client'
+"use client";
 
-import Header from "@/components/layout/Header";
+import Header from "./Header";
 
 export default function ClientHeader() {
-    return <Header />
-
+  return <Header />;
 }

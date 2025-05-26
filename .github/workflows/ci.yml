@@ -14,8 +14,8 @@ jobs:
         uses: actions/setup-node@v4 # Recommended: Use v4
         with:
           node-version: "20"
-          registry-url: 'https://npm.fontawesome.com/' # Use Font Awesome's registry
-          scope: '@fortawesome' # Specify the scope
+          registry-url: "https://npm.fontawesome.com/" # Use Font Awesome's registry
+          scope: "@fortawesome" # Specify the scope
 
       - name: Install Dependencies
         run: npm ci
@@ -34,5 +34,3 @@ jobs:
 
       - name: Run Tests
         run: npx vitest run --coverage
-
-
