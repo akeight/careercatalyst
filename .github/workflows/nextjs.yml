@@ -53,6 +53,9 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          registry-url: "https://npm.fontawesome.com/" # Use Font Awesome's registry
+          scope: "@fortawesome" # Specify the scope
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -72,10 +75,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Authenticate with npm
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" > ~/.npmrc
+        run: echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" > ~/.npmrc
 
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        env:
+          # Provide the token using the standard NODE_AUTH_TOKEN name
+          NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
