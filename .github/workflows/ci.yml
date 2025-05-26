@@ -6,20 +6,22 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
-    env:
-      FONT_AWESOME_TOKEN: ${{ secrets.FONT_AWESOME_TOKEN }}
-
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Recommended: Use v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # Recommended: Use v4
         with:
           node-version: "20"
+          registry-url: 'https://npm.fontawesome.com/' # Use Font Awesome's registry
+          scope: '@fortawesome' # Specify the scope
 
       - name: Install Dependencies
         run: npm ci
+        env:
+          # Provide the token using the standard NODE_AUTH_TOKEN name
+          NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
       - name: Prettier Check
         run: npm prettier --check
@@ -32,6 +34,5 @@ jobs:
 
       - name: Run Tests
         run: npx vitest run --coverage
-
 
 
