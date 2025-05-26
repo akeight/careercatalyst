@@ -24,7 +24,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
       - name: Prettier Check
-        run: npm prettier --check
+        run: npm prettier . --check
 
       - name: Run Linter
         run: npm run lint

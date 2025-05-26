@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+build/
+dist/
+out/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE & Tooling Config
+.idea/
+.husky/
+
+# Test Coverage
+coverage/
+
+# You can add specific files too if needed
+# For example:
+# src/some-generated-file.js
+.npmrc
