@@ -1,14 +1,8 @@
 "use client";
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import { AuroraText } from "@/components/magicui/aurora-text";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ThemeToggle } from "../dashboard/ThemeToggle";
+import { AuroraText } from "../magicui/aurora-text";
 import Link from "next/link";
 
 export default function Header() {
