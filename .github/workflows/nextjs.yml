@@ -73,7 +73,7 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
       - name: Authenticate with npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" > ~/.npmrc
-      
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
         env:
