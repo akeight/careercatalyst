@@ -30,7 +30,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Card} from "@/components/ui/card";
 
 const navLinks = [
-    { label: 'Home Page', href: '/dashboard', icon: <FontAwesomeIcon icon={faHouse} size="xl" /> },
+    { label: 'Home', href: '/dashboard', icon: <FontAwesomeIcon icon={faHouse} size="xl" /> },
     { label: 'Applications Tracker', href: '/tracker', icon: <FontAwesomeIcon icon={faMemoPad} size="xl" /> },
     { label: 'Internship Search', href: '/search', icon: <FontAwesomeIcon icon={faLaptopCode} size="xl" /> },
     { label: 'Saved Internships', href: '/saved', icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" /> },
