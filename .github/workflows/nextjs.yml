@@ -74,11 +74,8 @@ jobs:
       - name: Authenticate with npm
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" > ~/.npmrc
 
-      - name: Install Dependencies
-        run: npm ci
-        env:
-          # Provide the token using the standard NODE_AUTH_TOKEN name
-          NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+      - name: Install dependencies
+        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
