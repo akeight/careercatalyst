@@ -17,20 +17,20 @@ const eslintConfig = [
   {
     files: ["**/*.{js,jsx,ts,tsx}"], // Apply to relevant files
     settings: {
-      'import/resolver': {
+      "import/resolver": {
         typescript: {
           // Optional: you can explicitly point to your tsconfig.json
           // project: './tsconfig.json',
           // Defaults to finding tsconfig.json in the current working directory
           // or parent directories, which is usually fine.
           alwaysTryTypes: true, // Good for TypeScript projects
-        }
+        },
         // The 'node' resolver is usually also configured by 'next/core-web-vitals'
       },
     },
     // You generally don't need to redefine rules like 'import/no-unresolved' here
     // if 'next/core-web-vitals' already sets them appropriately.
-  }
+  },
 ];
 
 export default eslintConfig;
