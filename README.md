@@ -1,4 +1,5 @@
 ![CI](https://github.com/akeight/internship-tracker/actions/workflows/ci.yml/badge.svg)
+[![Deploy Next.js site to Pages](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml/badge.svg)](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml)
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`next@latest react@18 react-dom@18
 `](https://nextjs.org/docs/pages/api-reference/create-next-app).
