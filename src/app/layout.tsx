@@ -6,6 +6,7 @@ import ClientHeader from "../components/layout/ClientHeader";
 import Footer from "../components/layout/Footer";
 import React from "react";
 import "@/styles/globals.css";
+import { TRPCProvider } from "@/lib/trpc/provider";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",
@@ -20,26 +21,28 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <SidebarProvider>
-            <div className="min-h-screen w-full">
-              {/* HEADER OUTSIDE FLEX */}
-              <ClientHeader />
+        <TRPCProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SidebarProvider>
+              <div className="min-h-screen w-full">
+                {/* HEADER OUTSIDE FLEX */}
+                <ClientHeader />
 
-              <div className="flex">
-                {/* Sidebar */}
-                <AppSidebar />
+                <div className="flex">
+                  {/* Sidebar */}
+                  <AppSidebar />
 
-                {/* Main */}
-                <main className="flex-1 px-6 py-4">
-                  <SidebarTrigger />
-                  {children}
-                </main>
+                  {/* Main */}
+                  <main className="flex-1 px-6 py-4">
+                    <SidebarTrigger />
+                    {children}
+                  </main>
+                </div>
+                <Footer />
               </div>
-              <Footer />
-            </div>
-          </SidebarProvider>
-        </ThemeProvider>
+            </SidebarProvider>
+          </ThemeProvider>
+        </TRPCProvider>
       </body>
     </html>
   );
