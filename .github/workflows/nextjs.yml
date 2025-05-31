@@ -83,6 +83,9 @@ jobs:
           # Provide the token using the standard NODE_AUTH_TOKEN name
           NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
+      - name: Generate Prisma client
+        run: npx prisma generate
+
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Upload artifact
