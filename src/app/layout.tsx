@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { SidebarProvider, SidebarTrigger } from "../components/ui/sidebar";
-import { AppSidebar } from "../components/layout/AppSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 import ClientHeader from "../components/layout/ClientHeader";
 import Footer from "../components/layout/Footer";
 import React from "react";

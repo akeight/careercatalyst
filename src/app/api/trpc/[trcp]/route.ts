@@ -1,14 +1,13 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "../../../../server/routers/app";
+import { appRouter } from "@/server/routers/app";
+import { createContext } from "@/server/trpc";
 
 const handler = (req: Request) => {
-  console.log("💥 tRPC route hit:", req.method, req.url);
-
   return fetchRequestHandler({
     endpoint: "/api/trpc",
     req,
     router: appRouter,
-    createContext: () => ({}),
+    createContext, // ✅ the real one that includes `prisma`
   });
 };
 

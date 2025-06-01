@@ -22,11 +22,11 @@ export type Tracker = {
   id: string;
   date: string;
   status:
-    | "wishlist"
+    | "saved"
     | "applied"
     | "interview scheduled"
     | "interview complete"
-    | "offer pending"
+    | "offer"
     | "rejected";
   company: string;
 };

@@ -28,6 +28,7 @@ import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
+import AddInternshipModal from "@/components/applications/AddInternshipModal";
 
 const navLinks = [
   {
@@ -90,6 +91,8 @@ const supportLinks = [
   },
 ];
 
+const userId = "demo@example.com";
+
 export function AppSidebar() {
   return (
     <Sidebar>
@@ -124,6 +127,14 @@ export function AppSidebar() {
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </Card>
+        <Card>
+          <SidebarGroup>
+            <SidebarGroupLabel>Application Hub</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <AddInternshipModal userId={userId} />
             </SidebarGroupContent>
           </SidebarGroup>
         </Card>

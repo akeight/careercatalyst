@@ -10,7 +10,7 @@ async function getData(): Promise<Tracker[]> {
     {
       id: "m5gr84i9",
       date: "N/A",
-      status: "wishlist",
+      status: "saved",
       company: "Amazon",
     },
     {
@@ -28,7 +28,7 @@ async function getData(): Promise<Tracker[]> {
     {
       id: "5kma53ae",
       date: "8/4/24",
-      status: "offer pending",
+      status: "offer",
       company: "Uber",
     },
     {
