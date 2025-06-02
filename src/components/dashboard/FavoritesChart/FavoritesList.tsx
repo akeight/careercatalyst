@@ -2,7 +2,7 @@ import { Tracker, columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { faSquareHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 
 async function getData(): Promise<Tracker[]> {
   // Fetch data from your API here.
@@ -46,8 +46,8 @@ export default async function DemoPage() {
   return (
     <Card className="w-full max-w-5xl mx-auto">
       <CardTitle className="text-center items-center">
-        <FontAwesomeIcon icon={faMemoPad} size="lg" />{" "}
-        <span> Recent Activity</span>
+        <FontAwesomeIcon icon={faSquareHeart} size="lg" />{" "}
+        <span> Favorites List</span>
       </CardTitle>
       <CardContent className="overflow-x-auto">
         <DataTable columns={columns} data={data} />

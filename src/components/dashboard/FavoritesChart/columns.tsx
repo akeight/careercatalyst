@@ -21,13 +21,7 @@ import {
 export type Tracker = {
   id: string;
   date: string;
-  status:
-    | "saved"
-    | "applied"
-    | "interview scheduled"
-    | "interview complete"
-    | "offer"
-    | "rejected";
+  status: "saved" | "applied" | "interview" | "pending" | "offer" | "rejected";
   company: string;
 };
 

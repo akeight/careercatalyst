@@ -1,8 +1,9 @@
 import StatCard from "@/components/dashboard/StatCard";
 import { AppCalendar } from "@/components/dashboard/AppCalendar";
-import RecentActivity from "@/components/dashboard/RecentActivity/RecentActivity";
-import { FollowUpReminders } from "@/components/dashboard/FollowUpReminders";
+import FavoritesList from "@/components/dashboard/FavoritesChart/FavoritesList";
+import { Notifications } from "@/components/dashboard/Notifications";
 import MotivationCard from "@/components/dashboard/MotivationCard";
+import { ChartPieInteractive } from "@/components/dashboard/PieChart";
 //import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 //import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid"
 
@@ -19,17 +20,20 @@ export default function DashboardPage() {
         {/* Full width sections */}
 
         <div className="col-span-2 xl:col-span-2 mx-auto">
-          <FollowUpReminders />
+          <Notifications />
         </div>
         <div className="col-span-2 xl:col-span-2 mx-auto">
-          <RecentActivity />
-        </div>
-        <div className="col-span-2 xl:col-span-2 mx-auto">
-          <AppCalendar />
+          <ChartPieInteractive />
         </div>
         <div className="col-span-2 xl:col-span-2 mx-auto">
           <MotivationCard />
         </div>
+        <div className="col-span-2 xl:col-span-2 mx-auto">
+          <AppCalendar />
+        </div>
+      </div>
+      <div className="col-span-2 xl:col-span-2 mx-auto">
+        <FavoritesList />
       </div>
     </div>
   );
