@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import ApplicationForm from "./ApplicationForm";
+import { ApplicationForm } from "./ApplicationForm";
 import { Plus } from "lucide-react";
 
 export default function AddInternshipModal({ userId }: { userId: string }) {

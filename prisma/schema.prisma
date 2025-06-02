@@ -28,13 +28,20 @@ model Application {
 
   userId         String
   user           User       @relation(fields: [userId], references: [id])
+
+  referredByRecruiter Boolean? @default(false)
+  recruiterName        String?
+  recruiterLinkedIn    String?
+  recruiterEmail       String?
+  recruiterPhone       String?
 }
 
 enum Status {
+  SAVED
   APPLIED
   INTERVIEW
+  PENDING
   OFFER
   REJECTED
-  SAVED
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import KanbanBoardApp from "@/components/layout/KanbanBoard/App";
-import ApplicationForm from "@/components/applications/ApplicationForm";
+import { ApplicationForm } from "@/components/applications/ApplicationForm";
 import ApplicationList from "@/components/applications/ApplicationList";
 
 export default function TrackerPage() {
