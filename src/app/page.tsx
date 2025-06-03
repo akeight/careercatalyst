@@ -1,7 +1,9 @@
-import { IconCloud } from "../components/magicui/icon-cloud";
-import { Button } from "../components/ui/button";
-import { BoxReveal } from "../components/magicui/box-reveal";
-import { AuroraText } from "../components/magicui/aurora-text";
+"use client";
+
+import { IconCloud } from "@/components/magicui/icon-cloud";
+import { Button } from "@/components/ui/button";
+import { BoxReveal } from "@/components/magicui/box-reveal";
+import { AuroraText } from "@/components/magicui/aurora-text";
 import Link from "next/link";
 
 const slugs = [

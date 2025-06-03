@@ -141,7 +141,7 @@ export function ChartPieInteractive() {
               data={applicationData}
               dataKey="amount"
               nameKey="status"
-              innerRadius={70}
+              innerRadius={75}
               strokeWidth={5}
               activeIndex={activeIndex}
               activeShape={({

@@ -16,7 +16,7 @@ async function getData(): Promise<Tracker[]> {
     {
       id: "3u1reuv4",
       date: "2/2/25",
-      status: "interview scheduled",
+      status: "interview",
       company: "Google",
     },
     {

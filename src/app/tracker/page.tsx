@@ -1,17 +1,25 @@
 "use client";
 
 import KanbanBoardApp from "@/components/layout/KanbanBoard/App";
-import { ApplicationForm } from "@/components/applications/ApplicationForm";
-import ApplicationList from "@/components/applications/ApplicationList";
+import { AppSidebar } from "@/components/layout/AppSidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import React from "react";
 
 export default function TrackerPage() {
-  const userId = "demo@example.com";
-
   return (
     <div>
-      <KanbanBoardApp />
-      <ApplicationForm userId={userId} />
-      <ApplicationList userId={userId} />
+      <SidebarProvider>
+        <div className="min-h-screen w-full">
+          <div className="flex">
+            {/* Sidebar */}
+            <AppSidebar />
+            <SidebarTrigger />
+
+            <KanbanBoardApp />
+          </div>
+        </div>
+      </SidebarProvider>
     </div>
   );
 }

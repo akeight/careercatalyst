@@ -1,11 +1,12 @@
-// src/components/ApplicationForm.tsx
+"use client";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { z } from "zod";
-import { trpc } from "@/lib/trpc/client"; // or wherever your trpc utils are defined
+import { trpc } from "@/lib/trpc/client";
 import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 import {
   Form,
@@ -15,7 +16,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -27,55 +27,79 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Status } from "@prisma/client";
+import { Combobox } from "@/components/applications/Combobox";
 
 type AddApplicationValues = z.infer<typeof AddApplicationSchema>;
 
 const defaultValues: Partial<AddApplicationValues> = {
-  company: "",
-  position: "",
-  status: "SAVED",
+  title: "",
+  type: "INTERNSHIP",
   location: "",
+  status: "SAVED",
+  source: "",
   link: "",
   notes: "",
+  favorite: false,
+  company: {
+    id: "", // if using object-based combobox
+    name: "",
+  },
 };
 
-type ApplicationFormProps = {
+export function ApplicationForm({
+  userId,
+  onSuccess,
+}: {
   userId: string;
   onSuccess?: () => void;
-};
-
-export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
+}) {
   const form = useForm<AddApplicationValues>({
     resolver: zodResolver(AddApplicationSchema),
     defaultValues,
   });
 
   const utils = trpc.useUtils();
+
+  const companiesQuery = trpc.company.getAll.useQuery();
+
+  const companies: { label: string; value: string }[] =
+    companiesQuery.data?.map((company) => ({
+      label: company.name,
+      value: company.id,
+    })) || [];
+
   const createApplication = trpc.application.create.useMutation({
     onSuccess: async () => {
-      form.reset(); // clear the form
-      await utils.application.invalidate(); // wait for the cache to refresh
+      form.reset();
+      await utils.application.getAll.invalidate();
+      onSuccess?.();
     },
-    onError: (err) => {
-      console.error("Failed to create application:", err);
-    },
+    onError: (err) => console.error("Failed to create application:", err),
   });
 
-  const onSubmit = (values: AddApplicationValues) => {
-    createApplication.mutate(
-      {
-        ...values,
-        status: values.status.toUpperCase() as Uppercase<typeof values.status>,
-        userId: "dev-user-id-123", // 👈 replace this with your test value
-      },
-      {
-        onSuccess: async () => {
-          form.reset();
-          await utils.application.invalidate();
-          if (onSuccess) onSuccess(); // 👈 close modal from parent
-        },
-      },
-    );
+  const onSubmit = (values: AddApplicationValues): void => {
+    if (!values.company?.id) {
+      console.error("Company ID is missing");
+      return;
+    }
+
+    const input = {
+      ...values,
+      companyId: values.company.id,
+      userId,
+      status: values.status.toUpperCase() as Uppercase<typeof values.status>,
+    };
+
+    type ApplicationInput = Omit<AddApplicationValues, "company"> & {
+      companyId: string;
+    };
+
+    const cleanInput: ApplicationInput = {
+      ...input,
+      companyId: values.company.id, // safely grab the id
+    };
+
+    createApplication.mutate(cleanInput);
   };
 
   return (
@@ -83,12 +107,40 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="INTERNSHIP">Internship</SelectItem>
+                  <SelectItem value="FELLOWSHIP">Fellowship</SelectItem>
+                  <SelectItem value="EARLY_CAREER">Early Career</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="company"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Company</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Google" {...field} />
+                <Combobox
+                  options={companies}
+                  value={field.value?.id || ""}
+                  onChangeAction={field.onChange}
+                  placeholder="Select or type a company"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,12 +149,15 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
 
         <FormField
           control={form.control}
-          name="position"
+          name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Position</FormLabel>
+              <FormLabel>Position Title</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Software Engineer Intern" {...field} />
+                <Input
+                  placeholder="e.g. Software Engineering Intern"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -118,12 +173,15 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a status" />
+                    <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={Status.SAVED}>Saved</SelectItem>
-                  <SelectItem value={Status.APPLIED}>Applied</SelectItem>
+                  {Object.values(Status).map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -139,6 +197,23 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
               <FormLabel>Location</FormLabel>
               <FormControl>
                 <Input placeholder="e.g. Remote, San Francisco" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="source"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Referral, LinkedIn, Handshake..."
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -167,7 +242,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
               <FormLabel>Notes</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Any details you want to remember…"
+                  placeholder="Any details you want to remember..."
                   {...field}
                 />
               </FormControl>
@@ -268,6 +343,26 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             />
           </div>
         )}
+
+        <FormField
+          control={form.control}
+          name="favorite"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
+                  <span>Mark as favorite</span>
+                </label>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-full">
           Add Internship

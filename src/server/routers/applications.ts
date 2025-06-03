@@ -1,28 +1,30 @@
+"use client";
+
 import { z } from "zod";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
-import { publicProcedure, router } from "../trpc";
+import { router } from "../trpc";
+import { protectedProcedure } from "../trpc";
 
 // Zod schema for validation
-const applicationSchema = z.object({
-  position: z.string(),
-  company: z.string(),
+export const applicationSchema = z.object({
+  companyId: z.string(),
+  title: z.string(),
+  type: z.enum(["INTERNSHIP", "FELLOWSHIP", "EARLY_CAREER"]),
   status: z.enum(["APPLIED", "INTERVIEW", "OFFER", "REJECTED", "SAVED"]),
-  link: z.string().optional(),
-  notes: z.string().optional(),
+  location: z.string().optional(),
+  source: z.string().optional(),
   deadline: z.date().optional(),
-  userId: z.string(),
 
   referredByRecruiter: z.boolean().optional(),
   recruiterName: z.string().optional(),
+  recruiterEmail: z.string().email().optional(),
+  recruiterPhone: z.string().optional(),
   recruiterLinkedIn: z
     .string()
-    .url("Must be a valid URL")
-    .refine((val) => val.includes("linkedin.com"), {
+    .optional()
+    .refine((val) => !val || val.includes("linkedin.com"), {
       message: "Must be a LinkedIn profile URL",
-    })
-    .optional(),
-  recruiterEmail: z.string().email("Invalid email").optional(),
-  recruiterPhone: z.string().optional(),
+    }),
 });
 
 // Helper function for LinkedIn cleanup
@@ -35,38 +37,71 @@ const normalizeLinkedIn = (url?: string) => {
 // ✅ tRPC Router
 export const applicationRouter = router({
   // Get all applications by userId
-  getAll: publicProcedure
+  getAll: protectedProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(({ ctx, input }) => {
       return ctx.prisma.application.findMany({
         where: { userId: input.userId },
+        include: {
+          company: true,
+          contact: true,
+        },
         orderBy: { createdAt: "desc" },
       });
     }),
 
   // Create application
-  create: publicProcedure
+  create: protectedProcedure
     .input(applicationSchema)
     .mutation(async ({ ctx, input }) => {
-      const parsedPhone = input.recruiterPhone
-        ? parsePhoneNumberFromString(
-            input.recruiterPhone,
-          )?.formatInternational()
-        : undefined;
+      const userId = ctx.session.user.id;
 
-      const recruiterLinkedIn = normalizeLinkedIn(input.recruiterLinkedIn);
+      let contactId: string | undefined;
 
+      // Optional: Create contact if referred
+      if (input.referredByRecruiter && input.recruiterName) {
+        const parsedPhone = input.recruiterPhone
+          ? parsePhoneNumberFromString(
+              input.recruiterPhone,
+            )?.formatInternational()
+          : undefined;
+
+        const cleanedLinkedIn = input.recruiterLinkedIn
+          ? normalizeLinkedIn(input.recruiterLinkedIn)
+          : undefined;
+
+        const contact = await ctx.prisma.contact.create({
+          data: {
+            name: input.recruiterName,
+            email: input.recruiterEmail,
+            phone: parsedPhone,
+            linkedIn: cleanedLinkedIn,
+            role: "Recruiter",
+            companyId: input.companyId,
+          },
+        });
+
+        contactId = contact.id;
+      }
+
+      // Create the application
       return ctx.prisma.application.create({
         data: {
-          ...input,
-          recruiterPhone: parsedPhone,
-          recruiterLinkedIn,
+          userId,
+          companyId: input.companyId,
+          title: input.title,
+          type: input.type,
+          status: input.status,
+          location: input.location,
+          source: input.source,
+          deadline: input.deadline,
+          contactId, // optional, only added if defined
         },
       });
     }),
 
   // Update application
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -74,28 +109,68 @@ export const applicationRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { recruiterPhone, recruiterLinkedIn, ...rest } = input.data;
+      const {
+        recruiterPhone,
+        recruiterLinkedIn,
+        recruiterName,
+        recruiterEmail,
+        referredByRecruiter,
+        ...rest
+      } = input.data;
 
       const parsedPhone = recruiterPhone
         ? parsePhoneNumberFromString(recruiterPhone)?.formatInternational()
         : undefined;
 
-      const cleanedLinkedIn = normalizeLinkedIn(recruiterLinkedIn);
+      const cleanedLinkedIn = recruiterLinkedIn
+        ? normalizeLinkedIn(recruiterLinkedIn)
+        : undefined;
 
+      // Get the existing application and contact
+      const existing = await ctx.prisma.application.findUnique({
+        where: { id: input.id },
+        include: { contact: true },
+      });
+
+      let contactUpdate = {};
+
+      // ✅ CASE 1: Recruiter *is* still checked
+      if (referredByRecruiter && existing?.contactId) {
+        await ctx.prisma.contact.update({
+          where: { id: existing.contactId },
+          data: {
+            name: recruiterName ?? undefined,
+            email: recruiterEmail ?? undefined,
+            phone: parsedPhone,
+            linkedIn: cleanedLinkedIn,
+          },
+        });
+      }
+
+      // ❌ CASE 2: Recruiter was *unchecked* — remove contact link
+      if (referredByRecruiter === false && existing?.contactId) {
+        // Optionally delete contact if it's safe to do so
+        await ctx.prisma.contact.delete({
+          where: { id: existing.contactId },
+        });
+
+        contactUpdate = {
+          contact: { disconnect: true },
+        };
+      }
+
+      // ✅ Update the application itself
       return ctx.prisma.application.update({
         where: { id: input.id },
         data: {
           ...rest,
-          ...(recruiterPhone !== undefined && { recruiterPhone: parsedPhone }),
-          ...(recruiterLinkedIn !== undefined && {
-            recruiterLinkedIn: cleanedLinkedIn,
-          }),
+          ...contactUpdate,
         },
       });
     }),
 
   // Delete application
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       return ctx.prisma.application.delete({

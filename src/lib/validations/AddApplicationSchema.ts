@@ -1,19 +1,23 @@
 // src/lib/validations/applicationFormSchema.ts
 
 import { z } from "zod";
-import { Status } from "@prisma/client";
 
 export const AddApplicationSchema = z.object({
-  company: z.string().min(1, "Company is required"),
-  position: z.string().min(1, "Position is required"),
-  status: z
-    .nativeEnum(Status)
-    .refine((val) => val === "SAVED" || val === "APPLIED", {
-      message: "Choose saved or applied",
-    }),
+  type: z.enum(["INTERNSHIP", "FELLOWSHIP", "EARLY_CAREER"]),
+  company: z.object({
+    id: z.string().optional(), // new companies won't have this yet
+    name: z.string(),
+  }),
+  title: z.string().min(1, "Position is required"),
+  status: z.enum(["SAVED", "APPLIED"], {
+    message: "Choose saved or applied",
+  }),
+  contactId: z.string().optional(),
   location: z.string().optional(),
   link: z.string().url("Must be a valid URL").optional(),
   notes: z.string().max(1000).optional(),
+  favorite: z.boolean().optional(),
+  source: z.string().optional(),
 
   referredByRecruiter: z.boolean().optional(),
   recruiterName: z.string().optional(),

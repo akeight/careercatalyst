@@ -1,59 +1,72 @@
 // prisma/seed.ts
-import { PrismaClient } from "@/generated/prisma";
-
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Create a user
   const user = await prisma.user.upsert({
-    where: { email: "demo@example.com" },
+    where: { email: "testuser@example.com" },
     update: {},
     create: {
-      email: "demo@example.com",
-      name: "Demo User",
-      applications: {
-        create: [
-          {
-            position: "Frontend Intern",
-            company: "Spotify",
-            status: "APPLIED",
-            deadline: new Date("2025-07-01"),
-          },
-          {
-            position: "Backend Intern",
-            company: "Netflix",
-            status: "INTERVIEW",
-            deadline: new Date("2025-07-10"),
-          },
-          {
-            position: "Software Engineer Intern",
-            company: "Meta",
-            status: "SAVED",
-            deadline: new Date("2025-07-15"),
-          },
-          {
-            position: "Cloud Engineering Intern",
-            company: "Google",
-            status: "APPLIED",
-            deadline: new Date("2025-08-01"),
-          },
-          {
-            position: "Product Design Intern",
-            company: "Pinterest",
-            status: "REJECTED",
-            deadline: new Date("2025-06-20"),
-          },
-        ],
-      },
+      email: "testuser@example.com",
+      name: "Test User",
     },
   });
 
-  console.log("Seeded user with applications:", user);
+  // Create a company
+  const company = await prisma.company.create({
+    data: {
+      name: "OpenAI",
+      website: "https://openai.com",
+      location: "San Francisco, CA",
+      logoUrl: "https://openai.com/logo.png",
+    },
+  });
+
+  // Create a contact (recruiter)
+  const contact = await prisma.contact.create({
+    data: {
+      name: "Jane Recruiter",
+      email: "jane@openai.com",
+      phone: "555-123-4567",
+      linkedIn: "https://linkedin.com/in/jane-recruiter",
+      role: "Recruiter",
+      companyId: company.id,
+    },
+  });
+
+  // Create an application
+  const application = await prisma.application.create({
+    data: {
+      userId: user.id,
+      companyId: company.id,
+      contactId: contact.id,
+      type: "INTERNSHIP",
+      title: "Software Engineering Intern",
+      location: "Remote",
+      status: "APPLIED",
+      source: "LinkedIn",
+      favorite: true,
+    },
+  });
+
+  // Add a note
+  await prisma.note.create({
+    data: {
+      userId: user.id,
+      applicationId: application.id,
+      content: "Followed up with Jane on Tuesday. Waiting to hear back.",
+    },
+  });
+
+  console.log("Seed data created ✅");
 }
 
 main()
-  .then(() => prisma.$disconnect())
-  .catch(async (e) => {
+  .catch((e) => {
     console.error(e);
-    await prisma.$disconnect();
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });
