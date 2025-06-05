@@ -13,7 +13,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import DroppableColumn from "./Droppable";
-import { useTrackerStore } from "../../../store/useTrackerStore";
+import { useTrackerStore } from "@/store/useTrackerStore";
 
 export default function KanbanBoardApp() {
   const { columns, reorderCard, moveCard } = useTrackerStore();

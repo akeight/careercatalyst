@@ -1,56 +1,35 @@
-import { Tracker, columns } from "./columns";
+"use client";
+
+import { columns, Tracker } from "./columns";
 import { DataTable } from "./data-table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { trpc } from "@/lib/trpc/client";
 
-async function getData(): Promise<Tracker[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "m5gr84i9",
-      date: "N/A",
-      status: "saved",
-      company: "Amazon",
-    },
-    {
-      id: "3u1reuv4",
-      date: "2/2/25",
-      status: "interview",
-      company: "Google",
-    },
-    {
-      id: "derv1ws0",
-      date: "8/30/24",
-      status: "applied",
-      company: "Bloomberg",
-    },
-    {
-      id: "5kma53ae",
-      date: "8/4/24",
-      status: "offer",
-      company: "Uber",
-    },
-    {
-      id: "bhqecj4p",
-      date: "1/21/25",
-      status: "rejected",
-      company: "CapitalOne",
-    },
-  ];
-}
+export default function FavoritesList() {
+  const { data: favorites = [], isLoading } =
+    trpc.application.getFavorites.useQuery();
 
-export default async function DemoPage() {
-  const data = await getData();
+  if (isLoading) return <h3>Loading...</h3>;
+  if (!favorites) return <h3>No favorite applications found.</h3>;
+
+  const tableData: Tracker[] = favorites.map((app) => ({
+    id: app.id,
+    status: app.status.toLowerCase(),
+    company: app.company?.name ?? "Unknown",
+    date: app.createdAt, // or whatever formatting you want
+  }));
 
   return (
     <Card className="w-full max-w-5xl mx-auto">
       <CardTitle className="text-center items-center">
         <FontAwesomeIcon icon={faSquareHeart} size="lg" />{" "}
-        <span> Favorites List</span>
+        <span>Favorites List</span>
       </CardTitle>
+
       <CardContent className="overflow-x-auto">
-        <DataTable columns={columns} data={data} />
+        <DataTable columns={columns} data={tableData} />
       </CardContent>
     </Card>
   );

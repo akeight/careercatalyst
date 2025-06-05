@@ -1,3 +1,5 @@
+// src/server/auth.ts
+
 import { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github"; // or any provider
 

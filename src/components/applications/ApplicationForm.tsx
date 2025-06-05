@@ -40,10 +40,7 @@ const defaultValues: Partial<AddApplicationValues> = {
   link: "",
   notes: "",
   favorite: false,
-  company: {
-    id: "", // if using object-based combobox
-    name: "",
-  },
+  companyId: "",
 };
 
 export function ApplicationForm({

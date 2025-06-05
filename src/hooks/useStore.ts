@@ -17,3 +17,15 @@
 //    const increasePopulation = useStore((state) => state.increasePopulation)
 //    return <button onClick={increasePopulation}>one up</button>
 //}
+import { create } from "zustand";
+import { Application } from "@prisma/client"; // or your extended type
+
+type TrackerStore = {
+  favoriteApplications: Application[]; // type accordingly
+  setFavoriteApplications: (apps: Application[]) => void;
+};
+
+export const useTrackerStore = create<TrackerStore>((set) => ({
+  favoriteApplications: [],
+  setFavoriteApplications: (apps) => set({ favoriteApplications: apps }),
+}));
