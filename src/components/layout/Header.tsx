@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "../dashboard/ThemeToggle";
 import { AuroraText } from "../magicui/aurora-text";
 import Link from "next/link";
+import { signIn, signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function Header() {
   return (
@@ -21,6 +23,8 @@ export default function Header() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
+        <Button onClick={() => signIn()}>Log In</Button>
+        <Button onClick={() => signOut()}>Log Out</Button>
       </div>
     </header>
   );

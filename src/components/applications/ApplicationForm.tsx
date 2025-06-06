@@ -7,7 +7,8 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc/client";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 import {
   Form,
   FormField,
@@ -27,7 +28,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Status } from "@prisma/client";
-import { Combobox } from "@/components/applications/Combobox";
+import { TestCombobox } from "@/components/applications/TestCombobox";
 
 type AddApplicationValues = z.infer<typeof AddApplicationSchema>;
 
@@ -55,15 +56,9 @@ export function ApplicationForm({
     defaultValues,
   });
 
+  const [newCompanyName, setNewCompanyName] = useState("");
+
   const utils = trpc.useUtils();
-
-  const companiesQuery = trpc.company.getAll.useQuery();
-
-  const companies: { label: string; value: string }[] =
-    companiesQuery.data?.map((company) => ({
-      label: company.name,
-      value: company.id,
-    })) || [];
 
   const createApplication = trpc.application.create.useMutation({
     onSuccess: async () => {
@@ -74,30 +69,54 @@ export function ApplicationForm({
     onError: (err) => console.error("Failed to create application:", err),
   });
 
-  const onSubmit = (values: AddApplicationValues): void => {
-    if (!values.company?.id) {
-      console.error("Company ID is missing");
+  const createCompany = trpc.company.create.useMutation({
+    onSuccess: (newCompany) => {
+      form.setValue("companyId", newCompany.id);
+      utils.company.invalidate();
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof AddApplicationSchema>) => {
+    if (!values.companyId && newCompanyName) {
+      try {
+        const newCo = await createCompany.mutateAsync({ name: newCompanyName });
+        values.companyId = newCo.id;
+      } catch (err) {
+        console.error("Company creation failed:", err);
+        return;
+      }
+    }
+
+    if (!values.companyId) {
+      console.error("Company ID still missing. Cannot submit.");
       return;
     }
 
-    const input = {
+    createApplication.mutate({
       ...values,
-      companyId: values.company.id,
       userId,
       status: values.status.toUpperCase() as Uppercase<typeof values.status>,
-    };
-
-    type ApplicationInput = Omit<AddApplicationValues, "company"> & {
-      companyId: string;
-    };
-
-    const cleanInput: ApplicationInput = {
-      ...input,
-      companyId: values.company.id, // safely grab the id
-    };
-
-    createApplication.mutate(cleanInput);
+    });
   };
+
+  const companiesQuery = trpc.company.getAll.useQuery();
+
+  const companies =
+    companiesQuery.data?.map((company) => ({
+      label: company.name,
+      value: company.id,
+    })) || [];
+
+  const { data: session, status } = useSession();
+
+  if (status === "loading") return null; // ⏳ wait for session to load
+
+  if (!session) {
+    console.error("User is not authenticated.");
+    return <p>You must be logged in to submit applications.</p>;
+  }
+
+  if (!session?.user) return null;
 
   return (
     <Form {...form}>
@@ -127,16 +146,22 @@ export function ApplicationForm({
 
         <FormField
           control={form.control}
-          name="company"
+          name="companyId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Company</FormLabel>
               <FormControl>
-                <Combobox
+                <TestCombobox
                   options={companies}
-                  value={field.value?.id || ""}
-                  onChangeAction={field.onChange}
-                  placeholder="Select or type a company"
+                  value={field.value || ""}
+                  onChangeAction={(val) => {
+                    form.setValue("companyId", val);
+                    setNewCompanyName(""); // clear manual name
+                  }}
+                  onCreateNew={(name) => {
+                    form.setValue("companyId", ""); // temporary clear
+                    setNewCompanyName(name); // store to create in onSubmit
+                  }}
                 />
               </FormControl>
               <FormMessage />
@@ -286,7 +311,7 @@ export function ApplicationForm({
 
             <FormField
               control={form.control}
-              name="recruiterLinkedIn"
+              name="recruiter.linkedIn"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>LinkedIn</FormLabel>
@@ -303,7 +328,7 @@ export function ApplicationForm({
 
             <FormField
               control={form.control}
-              name="recruiterEmail"
+              name="recruiter.email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -321,7 +346,7 @@ export function ApplicationForm({
 
             <FormField
               control={form.control}
-              name="recruiterPhone"
+              name="recruiter.phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
