@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { ArrowUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,19 +15,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// This type is used to define the shape of our data.
+// Status type colored chips.
+const statusColorMap: Record<Tracker["status"], string> = {
+  saved: "bg-gray-500",
+  applied: "bg-blue-500",
+  interview: "bg-yellow-500",
+  pending: "bg-purple-500",
+  offer: "bg-green-500",
+  rejected: "bg-red-500",
+};
 
 // You can use a Zod schema here if you want.
 export type Tracker = {
   id: string;
   date: string;
-  status:
-    | "wishlist"
-    | "applied"
-    | "interview scheduled"
-    | "interview complete"
-    | "offer pending"
-    | "rejected";
+  status: "saved" | "applied" | "interview" | "pending" | "offer" | "rejected";
   company: string;
 };
 
@@ -57,9 +59,14 @@ export const columns: ColumnDef<Tracker>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    cell: ({ row }) => {
+      const status = row.getValue("status") as Tracker["status"];
+      return (
+        <Badge className={`capitalize text-white ${statusColorMap[status]}`}>
+          {status}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "company",

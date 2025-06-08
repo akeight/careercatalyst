@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ThemeToggle } from "../dashboard/ThemeToggle";
 import { AuroraText } from "../magicui/aurora-text";
 import Link from "next/link";
+import { AuthButtons } from "@/components/AuthBtns";
 
 export default function Header() {
   return (
@@ -21,6 +22,7 @@ export default function Header() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
+        <AuthButtons />
       </div>
     </header>
   );

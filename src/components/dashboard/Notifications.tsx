@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,9 +32,9 @@ const notifications = [
 
 type CardProps = React.ComponentProps<typeof Card>;
 
-export function FollowUpReminders({ className, ...props }: CardProps) {
+export function Notifications({ className, ...props }: CardProps) {
   return (
-    <Card className={cn("w-[380px]", className)} {...props}>
+    <Card className={cn("w-[400px]", className)} {...props}>
       <CardHeader>
         <CardTitle className="text-center items-center">
           <FontAwesomeIcon icon={faHourglassStart} size="lg" /> Notifications
