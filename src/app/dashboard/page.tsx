@@ -7,10 +7,23 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import React from "react";
 import { ChartPieInteractive } from "@/components/dashboard/PieChart";
+import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   return (
     <SidebarProvider>
+      {session?.user ? (
+        <p>Welcome, {session.user.name}!</p>
+      ) : (
+        <p>You are not logged in.</p>
+      )}
       <div className="min-h-screen w-full">
         <div className="flex">
           {/* Sidebar */}

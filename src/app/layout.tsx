@@ -4,7 +4,6 @@ import Footer from "../components/layout/Footer";
 import React from "react";
 import "@/styles/globals.css";
 import { Providers } from "@/components/Providers";
-//import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",

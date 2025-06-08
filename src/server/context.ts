@@ -1,10 +1,10 @@
 // src/server/context.ts
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/server/auth"; // adjust path if needed
-import prisma from "@/lib/prisma";
+
+import { auth } from "@/server/auth";
+import { prisma } from "@/lib/prisma";
 
 export const createTRPCContext = async () => {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   return {
     session,
     prisma,

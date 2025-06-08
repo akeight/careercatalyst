@@ -35,6 +35,10 @@ export function TestCombobox({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
 
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(inputValue.toLowerCase()),
+  );
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -60,7 +64,7 @@ export function TestCombobox({
           <CommandList>
             <CommandEmpty>No match found.</CommandEmpty>
             <CommandGroup>
-              {options.map((company) => (
+              {filteredOptions.map((company) => (
                 <CommandItem
                   key={company.label}
                   value={company.label}
