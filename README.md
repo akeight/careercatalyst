@@ -1,37 +1,71 @@
 ![CI](https://github.com/akeight/internship-tracker/actions/workflows/ci.yml/badge.svg)
 [![Deploy Next.js site to Pages](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml/badge.svg)](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml)
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`next@latest react@18 react-dom@18
-`](https://nextjs.org/docs/pages/api-reference/create-next-app).
-TypeScript, ShadCN, Magic UI, Zustand, DND-Kit, Font Awesome, TailwindCSS, Zod, ESLint, Prettier, Vitest
+# Internship Tracker
 
-## Getting Started
+⚡ **Internship Tracker** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter contact management.
 
-First, run the development server:
+## ✨ Features
 
-```bash
+- **Add, edit, and delete applications** — track status, recruiter contacts, and notes  
+- **Kanban-style board** — visually manage applications through different stages  
+- **Favorite applications** — mark top opportunities for easy reference  
+- **Dynamic filtering** — search and filter by company, status, and favorite  
+- **Company + recruiter database** — automatically create or select from existing  
+- **User authentication** — secure, personalized data with Auth.js  
+- **Responsive design** — works seamlessly on desktop and mobile  
+
+## 🛠 Current Tech Stack
+
+- **Next.js** + **TypeScript**
+- **Prisma ORM** + **PostgreSQL** database powerhouse
+- **tRPC** API layer
+- **ShadCN/UI** Tailwind CSS components
+- **React Hook Form + Zod** for validation
+- **Auth.js** + **GitHub OAuth** for authentication
+
+## 📸 Screenshots  
+
+(coming soon)
+
+## 🚧 Current Status
+
+This project is **actively in development**. Key features are implemented, and enhancements are ongoing — including ui and components, additional pages, analytics, automated reminders, and AI-based suggestions.
+
+## 📂 Getting Started
+
+Clone the repo:
+
+\`\`\`bash
+git clone https://github.com/akeight/internship-tracker.git
+cd internship-tracker
+\`\`\`
+
+Install dependencies:
+
+\`\`\`bash
+npm install
+\`\`\`
+
+Run the dev server:
+
+\`\`\`bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💡 Future Plans
 
-## Learn More
+- Edit analytics dashboard
+- Add components to edit and delete applications for full CRUD processes  
+- AI-powered suggestions (e.g., resume tips, matching internships)  
+- Calendar view for application deadlines and push notifications 
 
-To learn more about Next.js, take a look at the following resources:
+## 👀 Live Demo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+(Stay tuned)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🤝 Contributions
 
-## Deploy on Vercel
+I welcome feedback, suggestions, and collaborators as I continue building this out!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+---
