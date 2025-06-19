@@ -7,13 +7,13 @@
 
 ## ✨ Features
 
-- **Add, edit, and delete applications** — track status, recruiter contacts, and notes  
-- **Kanban-style board** — visually manage applications through different stages  
-- **Favorite applications** — mark top opportunities for easy reference  
-- **Dynamic filtering** — search and filter by company, status, and favorite  
-- **Company + recruiter database** — automatically create or select from existing  
-- **User authentication** — secure, personalized data with Auth.js  
-- **Responsive design** — works seamlessly on desktop and mobile  
+- **Add, edit, and delete applications** — track status, recruiter contacts, and notes
+- **Kanban-style board** — visually manage applications through different stages
+- **Favorite applications** — mark top opportunities for easy reference
+- **Dynamic filtering** — search and filter by company, status, and favorite
+- **Company + recruiter database** — automatically create or select from existing
+- **User authentication** — secure, personalized data with Auth.js
+- **Responsive design** — works seamlessly on desktop and mobile
 
 ## 🛠 Current Tech Stack
 
@@ -24,7 +24,7 @@
 - **React Hook Form + Zod** for validation
 - **Auth.js** + **GitHub OAuth** for authentication
 
-## 📸 Screenshots  
+## 📸 Screenshots
 
 (coming soon)
 
@@ -56,13 +56,15 @@ npm run dev
 ## 💡 Future Plans
 
 - Edit analytics dashboard
-- Add components to edit and delete applications for full CRUD processes  
-- AI-powered suggestions (e.g., resume tips, matching internships)  
-- Calendar view for application deadlines and push notifications 
+- Add components to edit and delete applications for full CRUD processes
+- AI-powered suggestions (e.g., resume tips, matching internships)
+- Calendar view for application deadlines and push notifications
 
 ## 👀 Live Demo
 
-(Stay tuned)
+Check for updates later!
+
+<img src="public/InternshipTracker-1.gif" title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 ## 🤝 Contributions
 
