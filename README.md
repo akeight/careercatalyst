@@ -36,22 +36,22 @@ This project is **actively in development**. Key features are implemented, and e
 
 Clone the repo:
 
-\`\`\`bash
+```bash
 git clone https://github.com/akeight/internship-tracker.git
 cd internship-tracker
-\`\`\`
+```
 
 Install dependencies:
 
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 Run the dev server:
 
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
 ## 💡 Future Plans
 
