@@ -64,6 +64,7 @@ npm run dev
 
 Check for updates later!
 
+<img src="public/internship-tracker.gif" title='Video Walkthrough' width='' alt='Video Walkthrough' />
 <img src="public/InternshipTracker-1.gif" title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 ## 🤝 Contributions
