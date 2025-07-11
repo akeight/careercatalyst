@@ -91,16 +91,20 @@ export default function KanbanBoardApp() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-        {Object.values(columns).map((col) => (
-          <SortableContext
-            key={col.id}
-            items={col.items.map((id) => `${col.id}:${id}`)}
-            strategy={verticalListSortingStrategy}
-          >
-            <DroppableColumn columnId={col.id} />
-          </SortableContext>
-        ))}
+      <div className="w-full bg-background py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-5 justify-items-center gap-6">
+            {Object.values(columns).map((col) => (
+              <SortableContext
+                key={col.id}
+                items={col.items.map((id) => `${col.id}:${id}`)}
+                strategy={verticalListSortingStrategy}
+              >
+                <DroppableColumn columnId={col.id} />
+              </SortableContext>
+            ))}
+          </div>
+        </div>
       </div>
     </DndContext>
   );

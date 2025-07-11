@@ -17,19 +17,19 @@ import {
 
 // Status type colored chips.
 const statusColorMap: Record<Tracker["status"], string> = {
-  saved: "bg-gray-500",
-  applied: "bg-blue-500",
-  interview: "bg-yellow-500",
-  pending: "bg-purple-500",
-  offer: "bg-green-500",
-  rejected: "bg-red-500",
+  SAVED: "bg-gray-500",
+  APPLIED: "bg-blue-500",
+  INTERVIEW: "bg-yellow-500",
+  PENDING: "bg-purple-500",
+  OFFER: "bg-green-500",
+  REJECTED: "bg-red-500",
 };
 
 // You can use a Zod schema here if you want.
 export type Tracker = {
   id: string;
   date: string;
-  status: "saved" | "applied" | "interview" | "pending" | "offer" | "rejected";
+  status: "SAVED" | "APPLIED" | "INTERVIEW" | "PENDING" | "OFFER" | "REJECTED";
   company: string;
 };
 

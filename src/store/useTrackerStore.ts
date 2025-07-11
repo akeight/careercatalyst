@@ -5,16 +5,25 @@ export type Application = {
   id: string;
   title: string;
   location?: string | null;
-  status: string;
+  status: Status;
   deadline?: string | Date | null;
   company?: { name: string } | null;
   contact?: {
     name: string;
-    email?: string;
-    phone?: string;
-    linkedIn?: string;
+    email?: string | null;
+    phone?: string | null;
+    linkedIn?: string | null;
+    role: string | null;
   } | null;
 };
+
+export type Status =
+  | "SAVED"
+  | "APPLIED"
+  | "INTERVIEW"
+  | "PENDING"
+  | "OFFER"
+  | "REJECTED";
 
 export type ColumnType = {
   id: string;
@@ -22,7 +31,7 @@ export type ColumnType = {
   items: string[]; // array of application IDs
 };
 
-type TrackerStore = {
+export type TrackerStore = {
   applications: Application[];
   setApplications: (apps: Application[]) => void;
 

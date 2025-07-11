@@ -24,7 +24,7 @@ export default async function DashboardPage() {
       ) : (
         <p>You are not logged in.</p>
       )}
-      <div className="min-h-screen w-full">
+      <div className="min-h-screen w-auto">
         <div className="flex">
           {/* Sidebar */}
           <AppSidebar />

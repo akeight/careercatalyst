@@ -10,13 +10,16 @@ export default function TrackerPage() {
   return (
     <div>
       <SidebarProvider>
-        <div className="min-h-screen w-full">
-          <div className="flex flex-col">
-            {/* Sidebar */}
-            <AppSidebar />
-            <SidebarTrigger />
-
-            <KanbanBoardApp />
+        <div className="min-h-screen max-w-full">
+          <div className="min-h-screen max-w-full">
+            <div className="flex">
+              {/* Sidebar */}
+              <AppSidebar />
+              <SidebarTrigger />
+              <div className="space-y-4 max-w-full mx-auto p-8">
+                <KanbanBoardApp />
+              </div>
+            </div>
           </div>
         </div>
       </SidebarProvider>

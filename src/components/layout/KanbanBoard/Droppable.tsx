@@ -21,11 +21,14 @@ export default function DroppableColumn({ columnId }: DroppableProps) {
     .filter((app): app is Application => Boolean(app));
 
   return (
-    <Card ref={setNodeRef} className="bg-muted p-4 shadow">
-      <CardTitle className="font-bold capitalize mb-4">
+    <Card
+      ref={setNodeRef}
+      className="bg-muted p-2.5 shadow w-49 flex-col items-center"
+    >
+      <CardTitle className="font-bold capitalize mb-0.25 text-shadow-sm">
         {column.title}
       </CardTitle>
-      <CardContent className="space-y-1">
+      <CardContent className="space-y-2 max-w-sm text-sm">
         {fullItems.map((app) => (
           <DraggableCard key={app.id} id={app.id} columnId={column.id}>
             <ApplicationCard app={app} />
