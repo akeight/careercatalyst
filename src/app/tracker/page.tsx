@@ -16,7 +16,7 @@ export default function TrackerPage() {
               {/* Sidebar */}
               <AppSidebar />
               <SidebarTrigger />
-              <div className="space-y-4 max-w-full mx-auto p-8">
+              <div className="space-y-4 max-w-full mx-auto p-1">
                 <KanbanBoardApp />
               </div>
             </div>
