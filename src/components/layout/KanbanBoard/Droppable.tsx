@@ -1,17 +1,24 @@
 import { useDroppable } from "@dnd-kit/core";
+import { useTrackerStore } from "@/store/useTrackerStore";
 import DraggableCard from "./Draggable";
-import { Card, CardTitle, CardContent } from "../../ui/card";
+import { Card, CardTitle, CardContent } from "@/components/ui/card";
+import ApplicationCard from "@/components/layout/KanbanBoard/ApplicationCard";
+import type { Application } from "@/store/useTrackerStore";
 
 type DroppableProps = {
-  column: {
-    id: string;
-    title: string;
-    items: string[];
-  };
+  columnId: string;
 };
 
-export default function DroppableColumn({ column }: DroppableProps) {
-  const { setNodeRef } = useDroppable({ id: column.id });
+export default function DroppableColumn({ columnId }: DroppableProps) {
+  const column = useTrackerStore((state) => state.columns[columnId]);
+  const apps = useTrackerStore((state) => state.applications);
+  const { setNodeRef } = useDroppable({ id: columnId });
+
+  if (!column) return null;
+
+  const fullItems: Application[] = column.items
+    .map((id) => apps.find((app) => app.id === id))
+    .filter((app): app is Application => Boolean(app));
 
   return (
     <Card ref={setNodeRef} className="bg-muted p-4 shadow">
@@ -19,8 +26,10 @@ export default function DroppableColumn({ column }: DroppableProps) {
         {column.title}
       </CardTitle>
       <CardContent className="space-y-1">
-        {column.items.map((item) => (
-          <DraggableCard key={item} id={item} columnId={column.id} />
+        {fullItems.map((app) => (
+          <DraggableCard key={app.id} id={app.id} columnId={column.id}>
+            <ApplicationCard app={app} />
+          </DraggableCard>
         ))}
       </CardContent>
     </Card>

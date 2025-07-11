@@ -1,43 +1,51 @@
 import { create } from "zustand";
 
-type ColumnType = {
+// ------------ TYPES ------------
+export type Application = {
   id: string;
   title: string;
-  items: string[];
+  location?: string | null;
+  status: string;
+  deadline?: string | Date | null;
+  company?: { name: string } | null;
+  contact?: {
+    name: string;
+    email?: string;
+    phone?: string;
+    linkedIn?: string;
+  } | null;
+};
+
+export type ColumnType = {
+  id: string;
+  title: string;
+  items: string[]; // array of application IDs
 };
 
 type TrackerStore = {
+  applications: Application[];
+  setApplications: (apps: Application[]) => void;
+
   columns: Record<string, ColumnType>;
-  moveCard: (
-    card: string,
-    fromColumn: string,
-    toColumn: string,
-    position: number,
-  ) => void;
+  setColumns: (columns: Record<string, ColumnType>) => void;
+
+  moveCard: (card: string, from: string, to: string, position: number) => void;
+
   reorderCard: (columnId: string, oldIndex: number, newIndex: number) => void;
 };
 
+// ------------ STORE ------------
 export const useTrackerStore = create<TrackerStore>((set) => ({
-  columns: {
-    saved: {
-      id: "saved",
-      title: "Have Not Applied",
-      items: ["Capital One", "Uber"],
-    },
-    applied: { id: "applied", title: "Applied", items: ["Google", "Mongo DB"] },
-    interviewing: {
-      id: "interviewing",
-      title: "Interview Scheduled",
-      items: ["Bloomberg"],
-    },
-    interviewed: { id: "interviewed", title: "Interviewed", items: ["Amazon"] },
-    offers: { id: "offers", title: "Offer Pending", items: [] },
-    rejected: { id: "rejected", title: "Rejected", items: [] },
-  },
+  applications: [],
+  setApplications: (apps) => set({ applications: apps }),
+
+  columns: {}, // initially empty, set from fetched apps
+  setColumns: (columns) => set({ columns }),
+
   moveCard: (card, from, to, position) =>
     set((state) => {
       const fromItems = [...state.columns[from].items].filter(
-        (i) => i !== card,
+        (id) => id !== card,
       );
       const toItems = [...state.columns[to].items];
       toItems.splice(position, 0, card);
@@ -50,11 +58,13 @@ export const useTrackerStore = create<TrackerStore>((set) => ({
         },
       };
     }),
+
   reorderCard: (columnId, oldIndex, newIndex) =>
     set((state) => {
       const newItems = [...state.columns[columnId].items];
       const [moved] = newItems.splice(oldIndex, 1);
       newItems.splice(newIndex, 0, moved);
+
       return {
         columns: {
           ...state.columns,

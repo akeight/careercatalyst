@@ -11,7 +11,7 @@ export default function TrackerPage() {
     <div>
       <SidebarProvider>
         <div className="min-h-screen w-full">
-          <div className="flex">
+          <div className="flex flex-col">
             {/* Sidebar */}
             <AppSidebar />
             <SidebarTrigger />

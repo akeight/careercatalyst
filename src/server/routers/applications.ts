@@ -8,6 +8,10 @@ export const applicationRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.application.findMany({
       where: { userId: ctx.session.user.id },
+      include: {
+        company: true,
+        contact: true,
+      },
     });
   }),
 

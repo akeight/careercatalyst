@@ -1,16 +1,21 @@
 // components/ApplicationList.tsx
 "use client";
 
-//import { useEffect } from "react";
-import { Trash2, Heart, HeartOff } from "lucide-react";
-import { ExternalLink } from "lucide-react";
-
 import { trpc } from "@/lib/trpc/client";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
-export default function ApplicationList({ userId }: { userId: string }) {
+export default function ApplicationList() {
   const utils = trpc.useUtils();
 
-  const apps = trpc.application.getAll.useQuery({ userId });
+  const apps = trpc.application.getAll.useQuery();
 
   const deleteApp = trpc.application.delete.useMutation({
     onSuccess: () => {
@@ -22,74 +27,64 @@ export default function ApplicationList({ userId }: { userId: string }) {
   if (apps.error) return <p>Error: {apps.error.message}</p>;
 
   return (
-    <ul className="space-y-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {apps.data?.map((app) => (
-        <li
-          key={app.id}
-          className="border rounded p-2 flex justify-between items-start gap-4"
-        >
-          <div className="flex-1 space-y-1">
-            <p className="text-lg font-semibold">
-              {app.title} at {app.company?.name ?? "Unknown Company"}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Status: {app.status} | Type: {app.type}
-            </p>
+        <Card key={app.id}>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              {app.title}{" "}
+              <span className="text-muted-foreground text-sm font-normal">
+                @ {app.company?.name ?? "Unknown Company"}
+              </span>
+            </CardTitle>
+            <Badge variant="outline" className="capitalize mt-2">
+              {app.status.toLowerCase()}
+            </Badge>
+          </CardHeader>
 
+          <CardContent className="space-y-1 text-sm">
             {app.location && (
-              <p className="text-sm text-muted-foreground">
-                Location: {app.location}
+              <p>
+                <strong>Location:</strong> {app.location}
               </p>
             )}
-
             {app.deadline && (
-              <p className="text-sm text-muted-foreground">
-                Deadline: {new Date(app.deadline).toLocaleDateString()}
+              <p>
+                <strong>Deadline:</strong>{" "}
+                {format(new Date(app.deadline), "MMM dd, yyyy")}
               </p>
             )}
-
             {app.contact && (
-              <div className="mt-2 text-sm text-muted-foreground space-y-1">
-                <p>Recruiter: {app.contact.name}</p>
+              <div className="mt-2 space-y-1">
+                <p>
+                  <strong>Recruiter:</strong> {app.contact.name}
+                </p>
                 {app.contact.email && <p>Email: {app.contact.email}</p>}
                 {app.contact.phone && <p>Phone: {app.contact.phone}</p>}
                 {app.contact.linkedIn && (
-                  <p className="flex items-center gap-1">
-                    <ExternalLink size={14} />
-                    <a
-                      href={app.contact.linkedIn}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline"
-                    >
-                      LinkedIn
-                    </a>
-                  </p>
+                  <a
+                    href={app.contact.linkedIn}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    LinkedIn
+                  </a>
                 )}
               </div>
             )}
-          </div>
+          </CardContent>
 
-          <div className="flex flex-col items-end gap-2">
-            {/* Favorite toggle (optional) */}
-            <button disabled>
-              {app.favorite ? (
-                <Heart className="text-pink-500 fill-pink-500" />
-              ) : (
-                <HeartOff className="text-muted-foreground" />
-              )}
-            </button>
-
-            {/* Delete button */}
+          <CardFooter>
             <button
               onClick={() => deleteApp.mutate({ id: app.id })}
-              className="text-red-600 hover:text-red-800"
+              className="text-red-600 hover:underline text-sm"
             >
-              <Trash2 size={18} />
+              Delete
             </button>
-          </div>
-        </li>
+          </CardFooter>
+        </Card>
       ))}
-    </ul>
+    </div>
   );
 }

@@ -1,14 +1,17 @@
-"use client";
-
 import { useDraggable } from "@dnd-kit/core";
-import { Card, CardTitle, CardContent } from "../../ui/card";
+import React from "react";
 
 type DraggableProps = {
   id: string;
   columnId: string;
+  children: React.ReactNode;
 };
 
-export default function DraggableCard({ id, columnId }: DraggableProps) {
+export default function DraggableCard({
+  id,
+  columnId,
+  children,
+}: DraggableProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `${columnId}:${id}`,
   });
@@ -21,18 +24,14 @@ export default function DraggableCard({ id, columnId }: DraggableProps) {
   };
 
   return (
-    <Card
+    <div
       ref={setNodeRef}
       style={style}
       {...listeners}
       {...attributes}
       className="cursor-grab select-none"
     >
-      <CardTitle className="text-sm items-center mx-6">{id}</CardTitle>
-      <CardContent className="text-xs text-muted-foreground">
-        {/* card meta data */}
-        Software Engineer Intern
-      </CardContent>
-    </Card>
+      {children}
+    </div>
   );
 }

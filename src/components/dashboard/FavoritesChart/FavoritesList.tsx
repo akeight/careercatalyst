@@ -16,7 +16,7 @@ export default function FavoritesList() {
 
   const tableData: Tracker[] = favorites.map((app) => ({
     id: app.id,
-    status: app.status.toLowerCase(),
+    status: app.status as Tracker["status"],
     company: app.company?.name ?? "Unknown",
     date: app.createdAt, // or whatever formatting you want
   }));
