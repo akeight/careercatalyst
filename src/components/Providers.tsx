@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";

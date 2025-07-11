@@ -1,3 +1,7 @@
+export const dynamic = "force-dynamic";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import getServerSession from "next-auth";
 import { GalleryVerticalEnd } from "lucide-react";
 import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import {
   Sidebar,
@@ -29,10 +30,11 @@ import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
 import AddInternshipModal from "@/components/applications/AddInternshipModal";
+import React from "react";
 
 const navLinks = [
   {
-    label: "Home",
+    label: "Dashboard",
     href: "/dashboard",
     icon: <FontAwesomeIcon icon={faHouse} size="xl" />,
   },
@@ -99,7 +101,7 @@ export function AppSidebar() {
       <SidebarContent>
         <Card>
           <SidebarGroup>
-            <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+            <SidebarGroupLabel>Home</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navLinks.map((navLinks) => (
