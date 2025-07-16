@@ -1,8 +1,5 @@
-export const dynamic = "force-dynamic";
-
 import StatCard from "@/components/dashboard/StatCard";
 import { AppCalendar } from "@/components/dashboard/AppCalendar";
-import FavoritesList from "@/components/dashboard/FavoritesChart/FavoritesList";
 import { Notifications } from "@/components/dashboard/Notifications";
 import MotivationCard from "@/components/dashboard/MotivationCard";
 import { AppSidebar } from "@/components/layout/AppSidebar";
@@ -48,9 +45,6 @@ export default async function DashboardPage() {
               <div className="col-span-2 xl:col-span-2 mx-auto">
                 <AppCalendar />
               </div>
-            </div>
-            <div className="col-span-2 xl:col-span-2 mx-auto">
-              <FavoritesList />
             </div>
           </div>
         </div>

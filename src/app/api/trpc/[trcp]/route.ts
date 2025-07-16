@@ -1,5 +1,4 @@
 // /app/api/trpc/[trpc]/route.ts
-export const dynamic = "force-dynamic";
 
 import { appRouter } from "@/server/routers/app";
 import { createTRPCContext } from "@/server/context";

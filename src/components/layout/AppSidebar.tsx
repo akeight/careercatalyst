@@ -18,11 +18,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faCalendarStar } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+//import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faLaptopCode } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faFontAwesome } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faFileCircleCheck } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+//import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+//import { faFileCircleCheck } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faHandshakeAngle } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
 import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
@@ -54,8 +54,8 @@ const navLinks = [
     icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" />,
   },
   {
-    label: "Favorites Wishlist",
-    href: "/boards",
+    label: "Favorites",
+    href: "/favorites",
     icon: <FontAwesomeIcon icon={faHeart} size="xl" />,
   },
   {
@@ -63,14 +63,14 @@ const navLinks = [
     href: "/calendar",
     icon: <FontAwesomeIcon icon={faCalendarStar} size="xl" />,
   },
+  // {
+  //   label: "Resume Builder",
+  //   href: "/resume",
+  //   icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" />,
+  // },
   {
-    label: "Resume Builder",
-    href: "/resume",
-    icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" />,
-  },
-  {
-    label: "Interview Prep",
-    href: "/prep",
+    label: "NSpire AI Career Coach",
+    href: "/https://web.nspire.ai/talent",
     icon: <FontAwesomeIcon icon={faBriefcase} size="xl" />,
   },
   {
@@ -80,18 +80,18 @@ const navLinks = [
   },
 ];
 
-const supportLinks = [
-  {
-    label: "Settings",
-    href: "/settings",
-    icon: <FontAwesomeIcon icon={faGear} size="xl" />,
-  },
-  {
-    label: "Help",
-    href: "/help",
-    icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" />,
-  },
-];
+//const supportLinks = [
+//{
+//  label: "Settings",
+//  href: "/settings",
+//  icon: <FontAwesomeIcon icon={faGear} size="xl" />,
+//,
+//{
+//  label: "Help",
+//  href: "/help",
+//  icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" />,
+// },
+//];
 
 const userId = "demo@example.com";
 
@@ -116,20 +116,20 @@ export function AppSidebar() {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {supportLinks.map((supportLinks) => (
-                  <SidebarMenuItem key={supportLinks.label}>
-                    <SidebarMenuButton asChild>
-                      <a href={supportLinks.href}>
-                        {supportLinks.icon}
-                        <span>{supportLinks.label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
+            {/*<SidebarGroupContent>*/}
+            {/*  <SidebarMenu>*/}
+            {/*    {supportLinks.map((supportLinks) => (*/}
+            {/*      <SidebarMenuItem key={supportLinks.label}>*/}
+            {/*        <SidebarMenuButton asChild>*/}
+            {/*          <a href={supportLinks.href}>*/}
+            {/*            {supportLinks.icon}*/}
+            {/*            <span>{supportLinks.label}</span>*/}
+            {/*          </a>*/}
+            {/*        </SidebarMenuButton>*/}
+            {/*      </SidebarMenuItem>*/}
+            {/*    ))}*/}
+            {/*  </SidebarMenu>*/}
+            {/*</SidebarGroupContent>*/}
           </SidebarGroup>
         </Card>
         <Card>

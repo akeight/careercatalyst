@@ -25,7 +25,25 @@
 
 ## 📸 Screenshots
 
-(coming soon)
+- [x] **Home Page**
+
+<img src="public/HomePage.png" width='400px' alt='Home Page' />
+
+- [x] **Tracker Page**
+
+<img src="public/TrackerPage.png" width='400px' alt='Tracker Board Page' />
+
+- [x] **Favorites Page**
+
+<img src="public/FavoritesList.png" width='400px' alt='Favorites Page' />
+
+- [x] **Search Internships Page**
+
+<img src="public/Search.png" width='400px' alt='Search Internship Page' />
+
+- [x] **Add Internship Modal**
+
+<img src="public/AddInternship.png" width='400px' alt='Add Internship Modal' />
 
 ## 🚧 Current Status
 
@@ -63,8 +81,9 @@ npm run dev
 
 Check for updates later!
 
-<img src="public/internship-tracker.gif" title='Video Walkthrough' width='' alt='Video Walkthrough' />
-<img src="public/InternshipTracker-1.gif" title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src="public/internship-tracker.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
+
+<img src="public/InternshipTracker-1.gif" title='Video Walkthrough' width='490' alt='Video Walkthrough' />
 
 ## 🤝 Contributions
 

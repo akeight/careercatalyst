@@ -19,9 +19,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <Providers>
-          <div className="min-h-screen w-full">
+          <div className="size-dvh w-full">
             <ClientHeader />
-            <main className="flex-1 px-6 py-4">{children}</main>
+            <main className="flex-1 min-h-2/3 px-6 py-4">{children}</main>
             <Footer />
           </div>
         </Providers>

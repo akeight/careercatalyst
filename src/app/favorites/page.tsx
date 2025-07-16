@@ -1,12 +1,9 @@
-"use client";
-
-import KanbanBoardApp from "@/components/layout/KanbanBoard/App";
+import FavoritesList from "@/components/dashboard/FavoritesChart/FavoritesList";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 
-export default function TrackerPage() {
+export default async function FavoritesPage() {
   return (
     <div>
       <SidebarProvider>
@@ -16,8 +13,8 @@ export default function TrackerPage() {
               {/* Sidebar */}
               <AppSidebar />
               <SidebarTrigger />
-              <div className="size-svw mx-auto pt-8">
-                <KanbanBoardApp />
+              <div className="size-svw mx-auto pt-10">
+                <FavoritesList />
               </div>
             </div>
           </div>
