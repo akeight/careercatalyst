@@ -1,5 +1,4 @@
 ![CI](https://github.com/akeight/internship-tracker/actions/workflows/ci.yml/badge.svg)
-[![Deploy Next.js site to Pages](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml/badge.svg)](https://github.com/akeight/internship-tracker/actions/workflows/nextjs.yml)
 
 # Internship Tracker
 
