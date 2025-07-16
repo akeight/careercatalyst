@@ -18,12 +18,12 @@ export default async function DashboardPage() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen">
+      <div className="min-h-screen max-w-full">
         <div className="flex">
           {/* Sidebar */}
           <AppSidebar />
           <SidebarTrigger />
-          <div className="space-y-8 max-w-5xl p-5">
+          <div className="flex items-center justify-center max-w-5xl p-5">
             <div className="justify-center grid gap-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-4 col-span-2 xl:col-span-2">
               {/* Stat Cards */}
               <StatCard title="Applications" value={12} />

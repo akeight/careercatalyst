@@ -69,29 +69,29 @@ const navLinks = [
   //   icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" />,
   // },
   {
-    label: "NSpire AI Career Coach",
-    href: "/https://web.nspire.ai/talent",
-    icon: <FontAwesomeIcon icon={faBriefcase} size="xl" />,
-  },
-  {
     label: "Contacts",
     href: "/boards",
     icon: <FontAwesomeIcon icon={faHandshakeAngle} size="xl" />,
   },
 ];
 
-//const supportLinks = [
-//{
-//  label: "Settings",
-//  href: "/settings",
-//  icon: <FontAwesomeIcon icon={faGear} size="xl" />,
-//,
-//{
-//  label: "Help",
-//  href: "/help",
-//  icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" />,
-// },
-//];
+const supportLinks = [
+  {
+    label: "NSpire AI Career Coach",
+    url: "https://web.nspire.ai/",
+    icon: <FontAwesomeIcon icon={faBriefcase} size="xl" />,
+  },
+  //{
+  //  label: "Settings",
+  //  href: "/settings",
+  //  icon: <FontAwesomeIcon icon={faGear} size="xl" />,
+  //,
+  //{
+  //  label: "Help",
+  //  href: "/help",
+  //  icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" />,
+  // },
+];
 
 const userId = "demo@example.com";
 
@@ -116,20 +116,24 @@ export function AppSidebar() {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-            {/*<SidebarGroupContent>*/}
-            {/*  <SidebarMenu>*/}
-            {/*    {supportLinks.map((supportLinks) => (*/}
-            {/*      <SidebarMenuItem key={supportLinks.label}>*/}
-            {/*        <SidebarMenuButton asChild>*/}
-            {/*          <a href={supportLinks.href}>*/}
-            {/*            {supportLinks.icon}*/}
-            {/*            <span>{supportLinks.label}</span>*/}
-            {/*          </a>*/}
-            {/*        </SidebarMenuButton>*/}
-            {/*      </SidebarMenuItem>*/}
-            {/*    ))}*/}
-            {/*  </SidebarMenu>*/}
-            {/*</SidebarGroupContent>*/}
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {supportLinks.map((supportLinks) => (
+                  <SidebarMenuItem key={supportLinks.label}>
+                    <SidebarMenuButton asChild>
+                      <a
+                        href={supportLinks.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {supportLinks.icon}
+                        <span>{supportLinks.label}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
         </Card>
         <Card>
