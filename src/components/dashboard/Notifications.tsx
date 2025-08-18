@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHourglassStart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { faHourglassStart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 
 const notifications = [
   {

@@ -12,24 +12,22 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "../ui/sidebar";
-//import Link from 'next/link';
-//import { usePathname } from 'next/navigation';
-//import { cn } from '@/lib/utils'; // optional class merging util
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faCalendarStar } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-//import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faLaptopCode } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faFontAwesome } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-//import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-//import { faFileCircleCheck } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faHandshakeAngle } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faMemoPad } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faBriefcase } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
-import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faCalendar } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+//import { faGear } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faLaptop } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faBookmark } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+//import { faCommentsQuestion } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faFile } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faUser } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faCompass } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faSuitcase } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
-import AddInternshipModal from "@/components/applications/AddInternshipModal";
+import AddApplicationModal from "@/components/applications/AddApplicationModal";
 import React from "react";
 
 const navLinks = [
@@ -41,17 +39,17 @@ const navLinks = [
   {
     label: "Applications Tracker",
     href: "/tracker",
-    icon: <FontAwesomeIcon icon={faMemoPad} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCompass} size="xl" />,
   },
   {
     label: "Internship Search",
     href: "/search",
-    icon: <FontAwesomeIcon icon={faLaptopCode} size="xl" />,
+    icon: <FontAwesomeIcon icon={faLaptop} size="xl" />,
   },
   {
     label: "Saved Internships",
     href: "/saved",
-    icon: <FontAwesomeIcon icon={faFontAwesome} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBookmark} size="xl" />,
   },
   {
     label: "Favorites",
@@ -61,7 +59,7 @@ const navLinks = [
   {
     label: "View Calendar",
     href: "/calendar",
-    icon: <FontAwesomeIcon icon={faCalendarStar} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCalendar} size="xl" />,
   },
   // {
   //   label: "Resume Builder",
@@ -71,7 +69,7 @@ const navLinks = [
   {
     label: "Contacts",
     href: "/boards",
-    icon: <FontAwesomeIcon icon={faHandshakeAngle} size="xl" />,
+    icon: <FontAwesomeIcon icon={faUser} size="xl" />,
   },
 ];
 
@@ -79,7 +77,17 @@ const supportLinks = [
   {
     label: "NSpire AI Career Coach",
     url: "https://web.nspire.ai/",
-    icon: <FontAwesomeIcon icon={faBriefcase} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBolt} size="xl" />,
+  },
+  {
+    label: "Prampt Interview Practice",
+    url: "https://www.pramp.com/#/",
+    icon: <FontAwesomeIcon icon={faSuitcase} size="lg" />,
+  },
+  {
+    label: "Resume Template",
+    url: "https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs",
+    icon: <FontAwesomeIcon icon={faFile} size="xl" />,
   },
   //{
   //  label: "Settings",
@@ -140,7 +148,7 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel>Application Hub</SidebarGroupLabel>
             <SidebarGroupContent>
-              <AddInternshipModal userId={userId} />
+              <AddApplicationModal userId={userId} />
             </SidebarGroupContent>
           </SidebarGroup>
         </Card>

@@ -44,7 +44,7 @@ const defaultValues: Partial<AddApplicationValues> = {
   companyId: "",
 };
 
-export function ApplicationForm({
+export function AddApplicationForm({
   userId,
   onSuccess,
 }: {

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSparkles } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { faSparkles } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import {
   Card,
   CardContent,

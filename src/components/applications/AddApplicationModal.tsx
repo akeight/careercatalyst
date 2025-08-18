@@ -9,17 +9,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ApplicationForm } from "./ApplicationForm";
-import { Plus } from "lucide-react";
+import { AddApplicationForm } from "./AddApplicationForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 
-export default function AddInternshipModal({ userId }: { userId: string }) {
+export default function AddApplicationModal({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted">
-          <Plus size={16} />
+          <FontAwesomeIcon icon={faPlus} size="xl" />
           Add Internship
         </button>
       </DialogTrigger>
@@ -27,7 +28,7 @@ export default function AddInternshipModal({ userId }: { userId: string }) {
         <DialogHeader>
           <DialogTitle>Add New Internship</DialogTitle>
         </DialogHeader>
-        <ApplicationForm userId={userId} onSuccess={() => setOpen(false)} />
+        <AddApplicationForm userId={userId} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );

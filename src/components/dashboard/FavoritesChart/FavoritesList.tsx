@@ -4,7 +4,7 @@ import { columns, Tracker } from "./columns";
 import { DataTable } from "./data-table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquareHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/duotone/solid";
+import { faSquareHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { trpc } from "@/lib/trpc/client";
 
 export default function FavoritesList() {

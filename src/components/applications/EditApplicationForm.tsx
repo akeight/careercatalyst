@@ -22,7 +22,7 @@ import { z } from "zod";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
 
-export function EditInternshipModal({
+export function EditApplicationForm({
   open,
   onClose,
   applicationId,
