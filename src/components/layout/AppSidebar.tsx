@@ -28,38 +28,39 @@ import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Card } from "../ui/card";
 import AddApplicationModal from "@/components/applications/AddApplicationModal";
+import EditApplicationModal from "@/components/applications/EditApplicationModal";
 import React from "react";
 
 const navLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: <FontAwesomeIcon icon={faHouse} size="xl" />,
+    icon: <FontAwesomeIcon icon={faHouse} size="lg" />,
   },
   {
     label: "Applications Tracker",
     href: "/tracker",
-    icon: <FontAwesomeIcon icon={faCompass} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCompass} size="lg" />,
   },
   {
     label: "Internship Search",
     href: "/search",
-    icon: <FontAwesomeIcon icon={faLaptop} size="xl" />,
+    icon: <FontAwesomeIcon icon={faLaptop} size="lg" />,
   },
   {
     label: "Saved Internships",
     href: "/saved",
-    icon: <FontAwesomeIcon icon={faBookmark} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBookmark} size="lg" />,
   },
   {
     label: "Favorites",
     href: "/favorites",
-    icon: <FontAwesomeIcon icon={faHeart} size="xl" />,
+    icon: <FontAwesomeIcon icon={faHeart} size="lg" />,
   },
   {
     label: "View Calendar",
     href: "/calendar",
-    icon: <FontAwesomeIcon icon={faCalendar} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCalendar} size="lg" />,
   },
   // {
   //   label: "Resume Builder",
@@ -69,7 +70,7 @@ const navLinks = [
   {
     label: "Contacts",
     href: "/boards",
-    icon: <FontAwesomeIcon icon={faUser} size="xl" />,
+    icon: <FontAwesomeIcon icon={faUser} size="lg" />,
   },
 ];
 
@@ -77,7 +78,7 @@ const supportLinks = [
   {
     label: "NSpire AI Career Coach",
     url: "https://web.nspire.ai/",
-    icon: <FontAwesomeIcon icon={faBolt} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBolt} size="lg" />,
   },
   {
     label: "Prampt Interview Practice",
@@ -87,17 +88,17 @@ const supportLinks = [
   {
     label: "Resume Template",
     url: "https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs",
-    icon: <FontAwesomeIcon icon={faFile} size="xl" />,
+    icon: <FontAwesomeIcon icon={faFile} size="lg" />,
   },
   //{
   //  label: "Settings",
   //  href: "/settings",
-  //  icon: <FontAwesomeIcon icon={faGear} size="xl" />,
+  //  icon: <FontAwesomeIcon icon={faGear} size="lg" />,
   //,
   //{
   //  label: "Help",
   //  href: "/help",
-  //  icon: <FontAwesomeIcon icon={faCommentsQuestion} size="xl" />,
+  //  icon: <FontAwesomeIcon icon={faCommentsQuestion} size="lg" />,
   // },
 ];
 
@@ -149,6 +150,7 @@ export function AppSidebar() {
             <SidebarGroupLabel>Application Hub</SidebarGroupLabel>
             <SidebarGroupContent>
               <AddApplicationModal userId={userId} />
+              <EditApplicationModal userId={userId} />
             </SidebarGroupContent>
           </SidebarGroup>
         </Card>

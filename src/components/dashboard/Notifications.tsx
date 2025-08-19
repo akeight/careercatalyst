@@ -12,8 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHourglassStart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 
 const notifications = [
   {
@@ -37,7 +35,7 @@ export function Notifications({ className, ...props }: CardProps) {
     <Card className={cn("w-[400px]", className)} {...props}>
       <CardHeader>
         <CardTitle className="text-center items-center">
-          <FontAwesomeIcon icon={faHourglassStart} size="lg" /> Notifications
+          Notifications
         </CardTitle>
         <CardDescription className="text-center items-center">
           These are your priority today.

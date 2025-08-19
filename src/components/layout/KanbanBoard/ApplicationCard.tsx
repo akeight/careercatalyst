@@ -3,6 +3,10 @@ import { Badge, badgeVariants } from "@/components/ui/badge";
 import React from "react";
 import type { Application } from "@/store/useTrackerStore";
 import { VariantProps } from "class-variance-authority";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencil } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faTrash } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { trpc } from "@/lib/trpc/client";
 //import {Tracker} from "@/components/dashboard/FavoritesChart/columns";
 
 type ApplicationCardProps = {
@@ -25,6 +29,24 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
   // 2) Pick the variant that corresponds to this app’s status
   const variant = statusVariantMap[app.status];
 
+  const utils = trpc.useUtils();
+
+  const deleteMutation = trpc.application.delete.useMutation({
+    onSuccess: () => {
+      utils.application.getAll.invalidate();
+    },
+  });
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    deleteMutation.mutate({ id: app.id });
+  };
+
+  const handleEdit = () => {
+    console.log("edit");
+  };
+
   return (
     <Card className="w-45 h-35 mb-1 my-2">
       <CardHeader>
@@ -33,12 +55,24 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
           {app.status}
         </Badge>
       </CardHeader>
-      <CardContent className="text-[13px]">
+      <CardContent className="text-[12px] flex justify-between">
         {app.company?.name && (
           <p>
             <strong>{app.company.name}</strong>
           </p>
         )}
+        <div className="flex gap-2">
+          <button onClick={handleEdit}>
+            <FontAwesomeIcon icon={faPencil} size="lg" />
+          </button>
+          <button
+            onClick={handleDelete}
+            draggable={false}
+            onDragStart={(e) => e.preventDefault()}
+          >
+            <FontAwesomeIcon icon={faTrash} size="lg" />
+          </button>
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSparkles } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import {
   Card,
   CardContent,
@@ -23,7 +21,6 @@ export default function MotivationCard() {
     <Card className="w-[425px]">
       <CardHeader></CardHeader>
       <CardTitle className="text-center items-center">
-        <FontAwesomeIcon icon={faSparkles} size="lg" />
         <span> Daily Motivation</span>
       </CardTitle>
       <CardContent className="text-center items-center">

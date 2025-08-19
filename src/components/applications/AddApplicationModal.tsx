@@ -20,7 +20,7 @@ export default function AddApplicationModal({ userId }: { userId: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted">
-          <FontAwesomeIcon icon={faPlus} size="xl" />
+          <FontAwesomeIcon icon={faPlus} size="lg" />
           Add Internship
         </button>
       </DialogTrigger>

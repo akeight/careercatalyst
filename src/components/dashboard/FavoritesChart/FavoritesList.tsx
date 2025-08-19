@@ -3,8 +3,6 @@
 import { columns, Tracker } from "./columns";
 import { DataTable } from "./data-table";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquareHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { trpc } from "@/lib/trpc/client";
 
 export default function FavoritesList() {
@@ -24,10 +22,8 @@ export default function FavoritesList() {
   return (
     <Card className="w-full max-w-5xl mx-auto">
       <CardTitle className="text-center items-center">
-        <FontAwesomeIcon icon={faSquareHeart} size="lg" />{" "}
         <span>Favorites List</span>
       </CardTitle>
-
       <CardContent className="overflow-x-auto">
         <DataTable columns={columns} data={tableData} />
       </CardContent>
