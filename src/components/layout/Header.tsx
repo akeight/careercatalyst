@@ -11,7 +11,7 @@ export default function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="flex justify-between items-center py-6 px-10 min-h-1/7 border-b-1 border-gray-200">
+    <header className="flex justify-between items-center py-6 border-b-1 border-border/20">
       <div className="flex-1">
         {/* You can add items here if you want them on the far left */}
       </div>
@@ -22,18 +22,18 @@ export default function Header() {
           </h1>
         </Link>
       </div>
-      <div className="flex flex-1 flex-col items-end gap-4 px-5">
-        <ThemeToggle />
+      <div className="flex flex-1 flex-row items-center gap-4">
         {session && (
           <div className="flex items-center gap-3">
-            <span>Hello, {session.user?.name}</span>
+            <span className="font-serif">Hello, {session.user?.name}</span>
             <Avatar>
               <AvatarImage src={session.user?.image ?? ""} />
               <AvatarFallback>{session.user?.name?.charAt(0)}</AvatarFallback>
             </Avatar>
           </div>
         )}
-        <div className="flex items-end gap-x-5 mr-5">
+        <ThemeToggle />
+        <div className="flex items-center font-sans">
           <AuthButtons />
         </div>
       </div>

@@ -20,7 +20,7 @@ export default function MotivationCard() {
   return (
     <Card className="w-[425px]">
       <CardHeader></CardHeader>
-      <CardTitle className="text-center items-center">
+      <CardTitle className="text-center items-center font-serif text-2xl">
         <span> Daily Motivation</span>
       </CardTitle>
       <CardContent className="text-center items-center">

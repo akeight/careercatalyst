@@ -4,10 +4,7 @@ export const dynamic = "force-dynamic";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
@@ -26,9 +23,7 @@ import { faSuitcase } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Card } from "../ui/card";
 import AddApplicationModal from "@/components/applications/AddApplicationModal";
-import EditApplicationModal from "@/components/applications/EditApplicationModal";
 import React from "react";
 
 const navLinks = [
@@ -106,60 +101,90 @@ const userId = "demo@example.com";
 
 export function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarContent>
-        <Card>
-          <SidebarGroup>
-            <SidebarGroupLabel>Home</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {navLinks.map((navLinks) => (
-                  <SidebarMenuItem key={navLinks.label}>
-                    <SidebarMenuButton asChild>
-                      <a href={navLinks.href}>
-                        {navLinks.icon}
-                        <span>{navLinks.label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {supportLinks.map((supportLinks) => (
-                  <SidebarMenuItem key={supportLinks.label}>
-                    <SidebarMenuButton asChild>
-                      <a
-                        href={supportLinks.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {supportLinks.icon}
-                        <span>{supportLinks.label}</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </Card>
-        <Card>
-          <SidebarGroup>
-            <SidebarGroupLabel>Application Hub</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <AddApplicationModal userId={userId} />
-              <EditApplicationModal userId={userId} />
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </Card>
+    <Sidebar className="bg-sidebar border-r border-border/20">
+      <SidebarContent className="p-4 space-y-6">
+        {/* Logo Section */}
+        <div className="flex justify-between px-3 py-2">
+          <h2 className="text-lg font-semibold text-sidebar-foreground">
+            Internship Tracker
+          </h2>
+        </div>
+
+        {/* Navigation Section */}
+        <div className="space-y-2">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+            Navigation
+          </SidebarGroupLabel>
+          <div className="space-y-1 list-none">
+            {navLinks.map((navLinks) => (
+              <SidebarMenuItem key={navLinks.label} className="list-none">
+                <SidebarMenuButton
+                  asChild
+                  className="w-full justify-start gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                >
+                  <a href={navLinks.href}>
+                    {navLinks.icon}
+                    <span className="text-sm font-medium">
+                      {navLinks.label}
+                    </span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </div>
+        </div>
+
+        {/* Tools Section */}
+        <div className="space-y-2">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+            Tools
+          </SidebarGroupLabel>
+          <div className="space-y-1 list-none">
+            {supportLinks.map((supportLinks) => (
+              <SidebarMenuItem key={supportLinks.label} className="list-none">
+                <SidebarMenuButton
+                  asChild
+                  className="w-full justify-start gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                >
+                  <a
+                    href={supportLinks.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {supportLinks.icon}
+                    <span className="text-sm font-medium">
+                      {supportLinks.label}
+                    </span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions Section */}
+        <div className="space-y-2">
+          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+            Quick Actions
+          </SidebarGroupLabel>
+          <div className="px-3">
+            <AddApplicationModal userId={userId} />
+          </div>
+        </div>
       </SidebarContent>
-      <SidebarFooter>
-        <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+
+      {/* Footer with User Profile */}
+      <SidebarFooter className="p-4 border-t border-border/20">
+        <div className="flex items-center gap-3 px-3">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback className="text-xs">CN</AvatarFallback>
+          </Avatar>
+          <div className="text-sm">
+            <p className="font-medium text-sidebar-foreground">Demo User</p>
+            <p className="text-xs text-muted-foreground">demo@example.com</p>
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
+import { EditApplicationSchema } from "@/lib/validations/EditApplicationSchema";
 import { z } from "zod";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
@@ -31,10 +31,10 @@ export function EditApplicationForm({
   open: boolean;
   onClose: () => void;
   applicationId: string;
-  defaultValues: z.infer<typeof AddApplicationSchema>;
+  defaultValues: z.infer<typeof EditApplicationSchema>;
 }) {
-  const form = useForm<z.infer<typeof AddApplicationSchema>>({
-    resolver: zodResolver(AddApplicationSchema),
+  const form = useForm<z.infer<typeof EditApplicationSchema>>({
+    resolver: zodResolver(EditApplicationSchema),
     defaultValues,
   });
 
@@ -48,7 +48,7 @@ export function EditApplicationForm({
     onError: () => toast.error("Failed to update."),
   });
 
-  const onSubmit = (data: z.infer<typeof AddApplicationSchema>) => {
+  const onSubmit = (data: z.infer<typeof EditApplicationSchema>) => {
     if (!applicationId) return;
     updateApp.mutate({ id: applicationId, data });
   };

@@ -8,9 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
-import { AppSidebar } from "@/components/layout/AppSidebar";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import React from "react";
 
 const internshipResources = [
@@ -72,55 +69,47 @@ const internshipResources = [
 
 export default function InternshipSearchPage() {
   return (
-    <SidebarProvider>
+    <div className="min-h-screen max-w-full">
       <div className="min-h-screen max-w-full">
-        <div className="min-h-screen max-w-full">
-          <div className="flex">
-            {/* Sidebar */}
-            <AppSidebar />
-            <SidebarTrigger />
-            <div className="size-svw mx-auto pt-8">
-              <div className="container mx-auto px-4 py-8">
-                <div className="text-center mb-12">
-                  <h1 className="text-4xl font-bold tracking-tight">
-                    Find Your Next Internship
-                  </h1>
-                  <p className="mt-2 text-lg text-muted-foreground">
-                    Explore these top resources to discover your next
-                    opportunity.
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {internshipResources.map((resource) => (
-                    <Card key={resource.name} className="flex flex-col">
-                      <CardHeader>
-                        <CardTitle>{resource.name}</CardTitle>
-                        <CardDescription>
-                          {resource.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="flex-grow" />
-                      <CardFooter>
-                        <a
-                          href={resource.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full"
-                        >
-                          <Button variant="outline" className="w-full">
-                            Visit Site
-                            <ArrowUpRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </a>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
+        <div className="flex">
+          <div className="size-svw mx-auto pt-8">
+            <div className="container mx-auto px-4 py-8">
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-bold tracking-tight">
+                  Find Your Next Internship
+                </h1>
+                <p className="mt-2 text-lg text-muted-foreground">
+                  Explore these top resources to discover your next opportunity.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {internshipResources.map((resource) => (
+                  <Card key={resource.name} className="flex flex-col">
+                    <CardHeader>
+                      <CardTitle>{resource.name}</CardTitle>
+                      <CardDescription>{resource.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow" />
+                    <CardFooter>
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full"
+                      >
+                        <Button variant="outline" className="w-full">
+                          Visit Site
+                          <ArrowUpRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </a>
+                    </CardFooter>
+                  </Card>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }

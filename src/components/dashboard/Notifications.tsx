@@ -34,7 +34,7 @@ export function Notifications({ className, ...props }: CardProps) {
   return (
     <Card className={cn("w-[400px]", className)} {...props}>
       <CardHeader>
-        <CardTitle className="text-center items-center">
+        <CardTitle className="text-center items-center font-serif text-2xl">
           Notifications
         </CardTitle>
         <CardDescription className="text-center items-center">

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-export default function AppCalendar() {
+export default function Calendar20() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(2025, 5, 12),
   );

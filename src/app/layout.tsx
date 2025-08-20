@@ -4,6 +4,8 @@ import Footer from "../components/layout/Footer";
 import React from "react";
 import "@/styles/globals.css";
 import { Providers } from "@/components/Providers";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",
@@ -19,11 +21,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <Providers>
-          <div className="size-dvh w-full">
-            <ClientHeader />
-            <main className="flex-1 min-h-2/3 px-6 py-4">{children}</main>
-            <Footer />
-          </div>
+          <SidebarProvider>
+            <div className="flex">
+              <AppSidebar />
+              <SidebarTrigger className="m-3" />
+            </div>
+
+            <div className=" w-full">
+              <ClientHeader />
+              <main className="flex center px-5 py-10">{children}</main>
+              <Footer />
+            </div>
+          </SidebarProvider>
         </Providers>
       </body>
     </html>

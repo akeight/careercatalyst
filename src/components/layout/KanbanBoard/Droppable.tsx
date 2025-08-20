@@ -23,9 +23,9 @@ export default function DroppableColumn({ columnId }: DroppableProps) {
   return (
     <Card
       ref={setNodeRef}
-      className="bg-muted p-2.5 shadow w-49 flex-col items-center"
+      className="bg-muted p-2.5 shadow-2xs w-55 flex-col items-center"
     >
-      <CardTitle className="font-bold capitalize mb-0.25 text-shadow-sm">
+      <CardTitle className="font-bold capitalize mb-0.25 font-serif text-lg p-1 w-55 border-b text-center border-border/20">
         {column.title}
       </CardTitle>
       <CardContent className="space-y-2 max-w-sm text-sm">
