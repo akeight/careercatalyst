@@ -43,28 +43,30 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
   };
 
   return (
-    <Card className="w-49 h-35 mb-0.5 my-1.5 shadow-2xs">
-      <CardHeader>
-        <CardTitle className="font-smaller">{app.title}</CardTitle>
-        <Badge variant={variant} className="text-[11px] px-1.75 py-0.75">
-          {app.status}
-        </Badge>
-      </CardHeader>
-      <CardContent className="text-[12px] flex justify-between font-sans">
-        {app.company?.name && (
-          <p>
-            <strong>{app.company.name}</strong>
-          </p>
-        )}
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card  *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+      <Card className="w-49 h-35 mb-0.5 my-1.5 shadow-2xs">
+        <CardHeader>
+          <CardTitle className="font-smaller">{app.title}</CardTitle>
+          <Badge variant={variant} className="text-[11px] px-1.75 py-0.75">
+            {app.status}
+          </Badge>
+        </CardHeader>
+        <CardContent className="text-[12px] flex justify-between font-sans">
+          {app.company?.name && (
+            <p>
+              <strong>{app.company.name}</strong>
+            </p>
+          )}
 
-        <button
-          onClick={handleDelete}
-          draggable={false}
-          onDragStart={(e) => e.preventDefault()}
-        >
-          <FontAwesomeIcon icon={faTrash} size="lg" />
-        </button>
-      </CardContent>
-    </Card>
+          <button
+            onClick={handleDelete}
+            draggable={false}
+            onDragStart={(e) => e.preventDefault()}
+          >
+            <FontAwesomeIcon icon={faTrash} size="lg" />
+          </button>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

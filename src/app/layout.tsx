@@ -6,6 +6,7 @@ import "@/styles/globals.css";
 import { Providers } from "@/components/Providers";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",
@@ -29,7 +30,17 @@ export default function RootLayout({
 
             <div className=" w-full">
               <ClientHeader />
-              <main className="flex center px-5 py-10">{children}</main>
+              <main className="flex center justify-center items-start px-5 py-10">
+                {children}
+                <Toaster
+                  position="top-center"
+                  richColors
+                  closeButton
+                  expand
+                  theme="system"
+                  duration={3500}
+                />
+              </main>
               <Footer />
             </div>
           </SidebarProvider>

@@ -29,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Status } from "@prisma/client";
 import { TestCombobox } from "@/components/applications/TestCombobox";
+import { toast } from "sonner";
 
 type AddApplicationValues = z.infer<typeof AddApplicationSchema>;
 
@@ -65,8 +66,9 @@ export function AddApplicationForm({
       form.reset();
       await utils.application.getAll.invalidate();
       onSuccess?.();
+      toast.success("Internship added successfully!");
     },
-    onError: (err) => console.error("Failed to create application:", err),
+    onError: () => toast.error("Failed to add internship:"),
   });
 
   const createCompany = trpc.company.create.useMutation({
@@ -82,13 +84,14 @@ export function AddApplicationForm({
         const newCo = await createCompany.mutateAsync({ name: newCompanyName });
         values.companyId = newCo.id;
       } catch (err) {
-        console.error("Company creation failed:", err);
+        console.error("Company failed to be added:", err);
+        toast.error("Company failed to be added.");
         return;
       }
     }
 
     if (!values.companyId) {
-      console.error("Company ID still missing. Cannot submit.");
+      toast.error("Company missing. Please add a company.");
       return;
     }
 
@@ -387,7 +390,7 @@ export function AddApplicationForm({
         />
 
         <Button type="submit" className="w-full">
-          Add Internship
+          {createApplication.isPending ? "Adding..." : "Add Internship"}
         </Button>
       </form>
     </Form>

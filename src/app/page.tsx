@@ -38,14 +38,14 @@ const slugs = [
   "sonarqube",
   "figma",
 ];
-// app/page.tsx
+
 export default function HomePage() {
   const images = slugs.map(
     (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`,
   );
 
   return (
-    <div className="flex items-center align-middle w-full justify-evenly flex-wrap mx-6 pt-8">
+    <div className="flex items-start w-full justify-center flex-wrap mx-6 pt-8">
       <div className="size-full max-w-lg items-center justify-center overflow-hidden pt-8">
         <BoxReveal boxColor={"#5046e6"} duration={0.5}>
           <p className="text-[2.5rem] font-semibold">
