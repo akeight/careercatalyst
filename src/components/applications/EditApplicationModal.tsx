@@ -12,8 +12,15 @@ import {
 import { EditApplicationForm } from "./EditApplicationForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { EditApplicationSchema } from "@/lib/validations/EditApplicationSchema";
 
-export default function EditApplicationModal({ userId }: { userId: string }) {
+export default function EditApplicationModal({
+  applicationId,
+  defaultValues,
+}: {
+  applicationId: string;
+  defaultValues: z.infer<typeof EditApplicationSchema>;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,7 +35,12 @@ export default function EditApplicationModal({ userId }: { userId: string }) {
         <DialogHeader>
           <DialogTitle>Edit Internship</DialogTitle>
         </DialogHeader>
-        <EditApplicationForm userId={userId} onClose={() => setOpen(false)} />
+        <EditApplicationForm
+          open={open}
+          onClose={() => setOpen(false)}
+          applicationId={applicationId}
+          defaultValues={defaultValues}
+        />
       </DialogContent>
     </Dialog>
   );
