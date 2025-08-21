@@ -72,8 +72,10 @@ export default function InternshipSearchPage() {
     <div className="min-h-screen max-w-full">
       <div className="min-h-screen max-w-full">
         <div className="flex">
+          {/* Sidebar */}
+
           <div className="size-svw mx-auto pt-8">
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-full px-4 py-8">
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold tracking-tight">
                   Find Your Next Internship
@@ -82,7 +84,7 @@ export default function InternshipSearchPage() {
                   Explore these top resources to discover your next opportunity.
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
                 {internshipResources.map((resource) => (
                   <Card key={resource.name} className="flex flex-col">
                     <CardHeader>

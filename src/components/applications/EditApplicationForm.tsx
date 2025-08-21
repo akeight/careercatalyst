@@ -39,6 +39,7 @@ export function EditApplicationForm({
   });
 
   const utils = trpc.useUtils();
+
   const updateApp = trpc.application.update.useMutation({
     onSuccess: () => {
       utils.application.getAll.invalidate();
@@ -50,7 +51,15 @@ export function EditApplicationForm({
 
   const onSubmit = (data: z.infer<typeof EditApplicationSchema>) => {
     if (!applicationId) return;
-    updateApp.mutate({ id: applicationId, data });
+    updateApp.mutate({
+      id: applicationId,
+      data: {
+        title: data.title,
+        location: data.location,
+        link: data.link,
+        notes: data.notes,
+      },
+    });
   };
 
   return (
