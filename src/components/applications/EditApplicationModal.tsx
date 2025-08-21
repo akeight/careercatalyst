@@ -13,6 +13,7 @@ import { EditApplicationForm } from "./EditApplicationForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { EditApplicationSchema } from "@/lib/validations/EditApplicationSchema";
+import { z } from "zod";
 
 export default function EditApplicationModal({
   applicationId,
