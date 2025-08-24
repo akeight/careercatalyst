@@ -1,4 +1,4 @@
-import { StatCard } from "@/components/dashboard/StatCard";
+import { StatCardInfo } from "@/components/dashboard/StatCards/StatCardInfo";
 import AppCalendar from "@/components/dashboard/AppCalendar";
 import { Notifications } from "@/components/dashboard/Notifications";
 import MotivationCard from "@/components/dashboard/MotivationCard";
@@ -22,10 +22,10 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-center max-w-5xl">
             <div className="justify-center grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
               {/* Stat Cards */}
-              <StatCard title="Applications" value={12} />
-              <StatCard title="Interviews" value={3} />
-              <StatCard title="Offers" value={1} />
-              <StatCard title="Rejections" value={2} />
+              <StatCardInfo title="Applications" value={12} />
+              <StatCardInfo title="Interviews" value={3} />
+              <StatCardInfo title="Offers" value={1} />
+              <StatCardInfo title="Rejections" value={2} />
 
               {/* Full width sections */}
 
