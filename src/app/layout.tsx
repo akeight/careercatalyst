@@ -28,9 +28,9 @@ export default function RootLayout({
               <SidebarTrigger className="m-3" />
             </div>
 
-            <div className=" w-full">
+            <div className=" min-h-dvh w-full overflow-x-hidden">
               <ClientHeader />
-              <main className="flex center justify-center items-start px-5 py-10">
+              <main className="mx-auto max-w-screen-2xl w-full px-4 sm:px-6 lg:px-8 py-8 min-w-0">
                 {children}
                 <Toaster
                   position="top-center"

@@ -1,8 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,22 +13,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { statusToVariant, type AppStatus } from "@/lib/colors";
 
-// Status type colored chips.
-const statusColorMap: Record<Tracker["status"], string> = {
-  SAVED: "bg-gray-500",
-  APPLIED: "bg-blue-500",
-  INTERVIEW: "bg-yellow-500",
-  PENDING: "bg-purple-500",
-  OFFER: "bg-green-500",
-  REJECTED: "bg-red-500",
-};
-
-// You can use a Zod schema here if you want.
+// Keep table data aligned with your app status type
 export type Tracker = {
   id: string;
   date: string;
-  status: "SAVED" | "APPLIED" | "INTERVIEW" | "PENDING" | "OFFER" | "REJECTED";
+  status: AppStatus; // <-- align types
   company: string;
 };
 
@@ -42,14 +32,14 @@ export const columns: ColumnDef<Tracker>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        onCheckedChange={(v) => row.toggleSelected(!!v)}
         aria-label="Select row"
       />
     ),
@@ -60,9 +50,10 @@ export const columns: ColumnDef<Tracker>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as Tracker["status"];
+      const status = row.getValue("status") as AppStatus;
+      const variant = statusToVariant[status];
       return (
-        <Badge className={`capitalize text-white ${statusColorMap[status]}`}>
+        <Badge variant={variant} className="capitalize">
           {status}
         </Badge>
       );
@@ -70,17 +61,15 @@ export const columns: ColumnDef<Tracker>[] = [
   },
   {
     accessorKey: "company",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Company
-          <ArrowUpDown />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Company
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("company")}</div>
     ),
@@ -99,26 +88,29 @@ export const columns: ColumnDef<Tracker>[] = [
       const payment = row.original;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem>View company</DropdownMenuItem>
-            <DropdownMenuItem>View posting</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Copy ID
+              </DropdownMenuItem>
+              <DropdownMenuItem>View company</DropdownMenuItem>
+              <DropdownMenuItem>View posting</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* Example: you can even show a tiny status badge in the actions cell */}
+          {/* <Badge variant={variant} className="ml-2">{payment.status}</Badge> */}
+        </>
       );
     },
   },

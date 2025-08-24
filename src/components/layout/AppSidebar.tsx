@@ -101,8 +101,8 @@ const userId = "demo@example.com";
 
 export function AppSidebar() {
   return (
-    <Sidebar className="bg-sidebar border-r border-border/20">
-      <SidebarContent className="p-4 space-y-6">
+    <Sidebar className="bg-sidebar border-r border-border/20 ">
+      <SidebarContent className="p-4 space-y-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t ">
         {/* Logo Section */}
         <div className="flex justify-between px-3 py-2">
           <h2 className="text-lg font-semibold text-sidebar-foreground">
@@ -111,7 +111,7 @@ export function AppSidebar() {
         </div>
 
         {/* Navigation Section */}
-        <div className="space-y-2">
+        <div className="space-y-2 ">
           <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
             Navigation
           </SidebarGroupLabel>
