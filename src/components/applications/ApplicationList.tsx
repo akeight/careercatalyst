@@ -1,6 +1,7 @@
 // components/ApplicationList.tsx
 "use client";
 
+import { useState } from "react";
 import { trpc } from "@/lib/trpc/client";
 import {
   Card,
@@ -9,18 +10,35 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { format } from "date-fns";
 
 export default function ApplicationList() {
   const utils = trpc.useUtils();
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   const apps = trpc.application.getAll.useQuery();
 
   const deleteApp = trpc.application.delete.useMutation({
     onSuccess: () => {
       utils.application.getAll.invalidate();
+      utils.application.getFavorites.invalidate();
+      utils.application.getStats.invalidate();
+      utils.application.getUpcomingDeadlines.invalidate();
+      toast.success("Application deleted.");
+      setPendingId(null);
     },
+    onError: () => toast.error("Failed to delete application."),
   });
 
   if (apps.isLoading) return <p>Loading...</p>;
@@ -77,7 +95,7 @@ export default function ApplicationList() {
 
           <CardFooter>
             <button
-              onClick={() => deleteApp.mutate({ id: app.id })}
+              onClick={() => setPendingId(app.id)}
               className="text-red-600 hover:underline text-sm"
             >
               Delete
@@ -85,6 +103,37 @@ export default function ApplicationList() {
           </CardFooter>
         </Card>
       ))}
+
+      <Dialog
+        open={pendingId !== null}
+        onOpenChange={(open) => !open && setPendingId(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete application?</DialogTitle>
+            <DialogDescription>
+              This will permanently delete this application. This action cannot
+              be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setPendingId(null)}
+              disabled={deleteApp.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => pendingId && deleteApp.mutate({ id: pendingId })}
+              disabled={deleteApp.isPending}
+            >
+              {deleteApp.isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
