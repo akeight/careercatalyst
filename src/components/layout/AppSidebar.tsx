@@ -22,9 +22,14 @@ import { faCompass } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faSuitcase } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faArrowRightFromBracket } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import AddApplicationModal from "@/components/applications/AddApplicationModal";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { useTheme } from "next-themes";
 import React from "react";
 
 const navLinks = [
@@ -102,6 +107,11 @@ const userId = "demo@example.com";
 
 export function AppSidebar() {
   const { data: session } = useSession();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const themeTooltip =
+    mounted && resolvedTheme === "dark" ? "Light mode" : "Dark mode";
   const user = session?.user;
   const displayName = user?.name ?? "Guest";
   const displayEmail = user?.email ?? "";
@@ -188,20 +198,46 @@ export function AppSidebar() {
 
       {/* Footer with User Profile */}
       <SidebarFooter className="p-4 mb-10 border-t border-border/20">
-        <div className="flex items-center gap-3 px-3">
-          <Avatar className="h-8 w-8">
-            {user?.image && <AvatarImage src={user.image} alt={displayName} />}
-            <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 text-sm">
-            <p className="truncate font-medium text-sidebar-foreground">
-              {displayName}
-            </p>
-            {displayEmail && (
-              <p className="truncate text-xs text-muted-foreground">
-                {displayEmail}
+        <div className="flex flex-col items-center justify-between gap-3 px-3">
+          <div className="flex shrink-0  gap-1.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ThemeToggle />
+              </TooltipTrigger>
+              <TooltipContent>{themeTooltip}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => signOut()}
+                  aria-label="Sign out"
+                >
+                  <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                  <span className="sr-only">Sign out</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Sign out</TooltipContent>
+            </Tooltip>
+          </div>
+          <div className="flex min-w-0 items-center gap-3">
+            <Avatar className="h-8 w-8">
+              {user?.image && (
+                <AvatarImage src={user.image} alt={displayName} />
+              )}
+              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 text-sm">
+              <p className="truncate font-medium text-sidebar-foreground">
+                {displayName}
               </p>
-            )}
+              {displayEmail && (
+                <p className="truncate text-xs text-muted-foreground">
+                  {displayEmail}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </SidebarFooter>
