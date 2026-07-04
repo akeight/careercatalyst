@@ -15,7 +15,7 @@ type StatCardProps = {
 export function StatCard({ title, value, status }: StatCardProps) {
   return (
     <Card
-      className="@container/card w-full min-w-[9rem]"
+      className="@container/card w-full h-full"
       style={
         status
           ? { borderLeft: `6px solid ${cssColorForStatus(status)}` }

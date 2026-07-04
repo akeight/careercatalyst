@@ -107,112 +107,108 @@ export function ChartPieInteractive() {
   );
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card data-chart={id} className="flex w-[400px]">
-        <ChartStyle id={id} config={chartConfig} />
-        <CardHeader className="flex-row items-start space-y-0 pb-0">
-          <div className="grid gap-1">
-            <CardTitle className="font-serif text-2xl text-center mb-2">
-              Status Overview
-            </CardTitle>
-          </div>
-          <Select value={activeStatus} onValueChange={setActiveStatus}>
-            <SelectTrigger
-              className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
-              aria-label="Select a value"
-            >
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent align="end" className="rounded-xl">
-              {currentStatus.map((key) => {
-                const config = chartConfig[key as keyof typeof chartConfig];
-
-                if (!config) {
-                  return null;
-                }
-
-                return (
-                  <SelectItem
-                    key={key}
-                    value={key}
-                    className="rounded-lg [&_span]:flex"
-                  >
-                    <div className="flex items-center gap-2 text-xs">
-                      <span
-                        className="flex h-3 w-3 shrink-0 rounded-xs"
-                        style={{
-                          backgroundColor: `var(--color-${key})`,
-                        }}
-                      />
-                      {config?.label}
-                    </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-        </CardHeader>
-        <CardContent className="flex flex-1 justify-center pb-0">
-          <ChartContainer
-            id={id}
-            config={chartConfig}
-            className="mx-auto aspect-square w-full max-w-[300px]"
+    <Card data-chart={id} className="flex w-full h-full">
+      <ChartStyle id={id} config={chartConfig} />
+      <CardHeader className="flex-row items-start space-y-0 pb-0">
+        <div className="grid gap-1">
+          <CardTitle className="font-serif text-2xl text-center mb-2">
+            Status Overview
+          </CardTitle>
+        </div>
+        <Select value={activeStatus} onValueChange={setActiveStatus}>
+          <SelectTrigger
+            className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
+            aria-label="Select a value"
           >
-            <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Pie
-                data={applicationData}
-                dataKey="amount"
-                nameKey="status"
-                innerRadius={75}
-                strokeWidth={5}
-                activeIndex={activeIndex}
-                activeShape={({
-                  outerRadius = 0,
-                  ...props
-                }: PieSectorDataItem) => (
-                  <g>
-                    <Sector {...props} outerRadius={outerRadius + 8} />
-                    <Sector
-                      {...props}
-                      outerRadius={outerRadius + 20}
-                      innerRadius={outerRadius + 10}
+            <SelectValue placeholder="Select status" />
+          </SelectTrigger>
+          <SelectContent align="end" className="rounded-xl">
+            {currentStatus.map((key) => {
+              const config = chartConfig[key as keyof typeof chartConfig];
+
+              if (!config) {
+                return null;
+              }
+
+              return (
+                <SelectItem
+                  key={key}
+                  value={key}
+                  className="rounded-lg [&_span]:flex"
+                >
+                  <div className="flex items-center gap-2 text-xs">
+                    <span
+                      className="flex h-3 w-3 shrink-0 rounded-xs"
+                      style={{
+                        backgroundColor: `var(--color-${key})`,
+                      }}
                     />
-                  </g>
-                )}
-              >
-                <Label
-                  content={({ viewBox }) => {
-                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                      return (
-                        <text
+                    {config?.label}
+                  </div>
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+      </CardHeader>
+      <CardContent className="flex flex-1 justify-center pb-0">
+        <ChartContainer
+          id={id}
+          config={chartConfig}
+          className="mx-auto aspect-square w-full max-w-[300px]"
+        >
+          <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Pie
+              data={applicationData}
+              dataKey="amount"
+              nameKey="status"
+              innerRadius={75}
+              strokeWidth={5}
+              activeIndex={activeIndex}
+              activeShape={({
+                outerRadius = 0,
+                ...props
+              }: PieSectorDataItem) => (
+                <g>
+                  <Sector {...props} outerRadius={outerRadius + 8} />
+                  <Sector
+                    {...props}
+                    outerRadius={outerRadius + 20}
+                    innerRadius={outerRadius + 10}
+                  />
+                </g>
+              )}
+            >
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
+                          className="fill-foreground text-3xl font-bold"
                         >
-                          <tspan
-                            x={viewBox.cx}
-                            y={viewBox.cy}
-                            className="fill-foreground text-3xl font-bold"
-                          >
-                            {applicationData[
-                              activeIndex
-                            ].amount.toLocaleString()}
-                          </tspan>
-                        </text>
-                      );
-                    }
-                  }}
-                />
-              </Pie>
-            </PieChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </div>
+                          {applicationData[activeIndex].amount.toLocaleString()}
+                        </tspan>
+                      </text>
+                    );
+                  }
+                }}
+              />
+            </Pie>
+          </PieChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

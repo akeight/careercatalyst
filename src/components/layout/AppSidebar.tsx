@@ -24,6 +24,7 @@ import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import AddApplicationModal from "@/components/applications/AddApplicationModal";
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const navLinks = [
@@ -100,6 +101,18 @@ const supportLinks = [
 const userId = "demo@example.com";
 
 export function AppSidebar() {
+  const { data: session } = useSession();
+  const user = session?.user;
+  const displayName = user?.name ?? "Guest";
+  const displayEmail = user?.email ?? "";
+  const initials =
+    (user?.name ?? user?.email ?? "?")
+      .split(" ")
+      .map((part) => part.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "?";
+
   return (
     <Sidebar className="bg-sidebar border-r border-border/20 ">
       <SidebarContent className="p-4 space-y-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t ">
@@ -174,15 +187,21 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer with User Profile */}
-      <SidebarFooter className="p-4 border-t border-border/20">
+      <SidebarFooter className="p-4 mb-10 border-t border-border/20">
         <div className="flex items-center gap-3 px-3">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="text-xs">CN</AvatarFallback>
+            {user?.image && <AvatarImage src={user.image} alt={displayName} />}
+            <AvatarFallback className="text-xs">{initials}</AvatarFallback>
           </Avatar>
-          <div className="text-sm">
-            <p className="font-medium text-sidebar-foreground">Demo User</p>
-            <p className="text-xs text-muted-foreground">demo@example.com</p>
+          <div className="min-w-0 text-sm">
+            <p className="truncate font-medium text-sidebar-foreground">
+              {displayName}
+            </p>
+            {displayEmail && (
+              <p className="truncate text-xs text-muted-foreground">
+                {displayEmail}
+              </p>
+            )}
           </div>
         </div>
       </SidebarFooter>

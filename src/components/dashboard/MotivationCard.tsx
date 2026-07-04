@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function MotivationCard() {
   const quotes = [
@@ -18,17 +12,12 @@ export default function MotivationCard() {
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="w-[400px]">
-        <CardHeader></CardHeader>
-        <CardTitle className="text-center items-center font-serif text-2xl">
-          <span> Daily Motivation</span>
-        </CardTitle>
-        <CardContent className="text-center items-center">
-          <p className="text-md italic text-muted-foreground">{randomQuote}</p>
-        </CardContent>
-        <CardFooter></CardFooter>
-      </Card>
-    </div>
+    <Card className="w-full h-full flex flex-row items-center justify-center gap-3 py-5">
+      <span className="font-serif text-xl shrink-0">Daily Motivation</span>
+      <span className="hidden h-6 w-px bg-border sm:block" />
+      <CardContent className="p-0">
+        <p className="text-md italic text-muted-foreground">{randomQuote}</p>
+      </CardContent>
+    </Card>
   );
 }
