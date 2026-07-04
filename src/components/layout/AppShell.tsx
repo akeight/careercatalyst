@@ -20,9 +20,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     status === "authenticated" && !publicRoutes.has(pathname);
 
   const pageContent = (
-    <div className="min-h-dvh w-full overflow-x-hidden">
+    <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
       <ClientHeader />
-      <main className="mx-auto max-w-screen-2xl w-full px-4 sm:px-6 lg:px-8 py-8 min-w-0">
+      <main className="mx-auto max-w-screen-2xl w-full flex-1 px-4 sm:px-6 lg:px-8 py-8 min-w-0">
         {children}
         <Toaster
           position="top-center"
@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <div className="flex min-h-dvh w-full">
         <AppSidebar />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex flex-1 flex-col">
           <SidebarTrigger className="m-3" />
           {pageContent}
         </div>
