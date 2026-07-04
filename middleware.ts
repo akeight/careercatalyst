@@ -14,5 +14,11 @@ export async function middleware(req: NextRequest) {
 }
 // middleware.ts (continued)
 export const config = {
-  matcher: ["/dashboard/:path*", "/account/:path*", "/tracker/:path*"], // Add protected routes here
+  matcher: [
+    "/dashboard/:path*",
+    "/account/:path*",
+    "/tracker/:path*",
+    "/calendar/:path*",
+    "/favorites/:path*",
+  ], // Add protected routes here
 };
