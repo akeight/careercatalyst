@@ -19,17 +19,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { trpc } from "@/lib/trpc/client";
 
 //export const description = "An interactive pie chart"
-
-const applicationData = [
-  { status: "saved", amount: 186, fill: "var(--color-saved)" },
-  { status: "applied", amount: 305, fill: "var(--color-applied)" },
-  { status: "interview", amount: 237, fill: "var(--color-interview)" },
-  { status: "pending", amount: 173, fill: "var(--color-pending)" },
-  { status: "offer", amount: 209, fill: "var(--color-offer)" },
-  { status: "rejected", amount: 209, fill: "var(--color-rejected)" },
-];
 
 const chartConfig = {
   amount: {
@@ -63,17 +55,55 @@ const chartConfig = {
 
 export function ChartPieInteractive() {
   const id = "pie-interactive";
-  const [activeStatus, setActiveStatus] = React.useState(
-    applicationData[0].status,
+
+  const { data } = trpc.application.getStats.useQuery();
+  const counts = data?.counts;
+
+  const applicationData = React.useMemo(
+    () => [
+      {
+        status: "saved",
+        amount: counts?.SAVED ?? 0,
+        fill: "var(--color-saved)",
+      },
+      {
+        status: "applied",
+        amount: counts?.APPLIED ?? 0,
+        fill: "var(--color-applied)",
+      },
+      {
+        status: "interview",
+        amount: counts?.INTERVIEW ?? 0,
+        fill: "var(--color-interview)",
+      },
+      {
+        status: "pending",
+        amount: counts?.PENDING ?? 0,
+        fill: "var(--color-pending)",
+      },
+      {
+        status: "offer",
+        amount: counts?.OFFER ?? 0,
+        fill: "var(--color-offer)",
+      },
+      {
+        status: "rejected",
+        amount: counts?.REJECTED ?? 0,
+        fill: "var(--color-rejected)",
+      },
+    ],
+    [counts],
   );
+
+  const [activeStatus, setActiveStatus] = React.useState("saved");
 
   const activeIndex = React.useMemo(
     () => applicationData.findIndex((item) => item.status === activeStatus),
-    [activeStatus],
+    [activeStatus, applicationData],
   );
   const currentStatus = React.useMemo(
     () => applicationData.map((item) => item.status),
-    [],
+    [applicationData],
   );
 
   return (

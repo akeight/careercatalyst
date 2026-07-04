@@ -1,15 +1,30 @@
-import type { Application } from "@/store/useTrackerStore";
+"use client";
 
+import { trpc } from "@/lib/trpc/client";
 import { StatCard } from "./StatCard";
 
-type StatCardProps = {
-  title: string;
-  value: number;
-  app?: Pick<Application, "status"> | null;
-};
+export function StatCardInfo() {
+  const { data } = trpc.application.getStats.useQuery();
+  const counts = data?.counts;
 
-export function StatCardInfo({ title, value, app }: StatCardProps) {
-  // const utils = trpc.useUtils();
-
-  return <StatCard title={title} value={value} app={app} />;
+  return (
+    <>
+      <StatCard
+        title="Applications"
+        value={data?.total ?? 0}
+        status="APPLIED"
+      />
+      <StatCard
+        title="Interviews"
+        value={counts?.INTERVIEW ?? 0}
+        status="INTERVIEW"
+      />
+      <StatCard title="Offers" value={counts?.OFFER ?? 0} status="OFFER" />
+      <StatCard
+        title="Rejections"
+        value={counts?.REJECTED ?? 0}
+        status="REJECTED"
+      />
+    </>
+  );
 }
