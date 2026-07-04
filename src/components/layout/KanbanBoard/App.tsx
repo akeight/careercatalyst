@@ -14,6 +14,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { toast } from "sonner";
+
 import DroppableColumn from "./Droppable";
 import { trpc } from "@/lib/trpc/client";
 import {
@@ -21,18 +23,18 @@ import {
   Application,
   ColumnType,
 } from "@/store/useTrackerStore";
+import { KANBAN_STATUSES, columnIdToStatus, statusLabel } from "@/lib/status";
 
 // Helper to group fetched apps into columns by status
 const generateColumnsFromApps = (
   applications: Application[],
 ): Record<string, ColumnType> => {
-  const statuses = ["SAVED", "APPLIED", "INTERVIEW", "OFFER", "REJECTED"];
-  return statuses.reduce(
+  return KANBAN_STATUSES.reduce(
     (cols, status) => {
       const id = status.toLowerCase();
       cols[id] = {
         id,
-        title: status[0] + status.slice(1).toLowerCase(),
+        title: statusLabel(status),
         items: applications.filter((a) => a.status === status).map((a) => a.id),
       };
       return cols;
@@ -43,6 +45,7 @@ const generateColumnsFromApps = (
 
 export default function KanbanBoardApp() {
   const { data: apps, isLoading } = trpc.application.getAll.useQuery();
+  const utils = trpc.useUtils();
 
   //  Zustand setters & state
   const setApplications = useTrackerStore((s) => s.setApplications);
@@ -50,6 +53,20 @@ export default function KanbanBoardApp() {
   const columns = useTrackerStore((s) => s.columns);
   const moveCard = useTrackerStore((s) => s.moveCard);
   const reorderCard = useTrackerStore((s) => s.reorderCard);
+  const updateApplicationStatus = useTrackerStore(
+    (s) => s.updateApplicationStatus,
+  );
+
+  const updateStatus = trpc.application.updateStatus.useMutation({
+    onSuccess: () => {
+      utils.application.getAll.invalidate();
+      utils.application.getStats.invalidate();
+    },
+    onError: () => {
+      toast.error("Couldn't save the status change. Reverting.");
+      utils.application.getAll.invalidate();
+    },
+  });
 
   // When apps arrive, seed Zustand and build columns
   useEffect(() => {
@@ -78,7 +95,16 @@ export default function KanbanBoardApp() {
     } else {
       const toItems = columns[toCol].items;
       const pos = toItems.indexOf(overId);
+
+      // Optimistically move the card locally and update its status label…
       moveCard(itemId, fromCol, toCol, pos === -1 ? toItems.length : pos);
+
+      const newStatus = columnIdToStatus(toCol);
+      if (newStatus) {
+        updateApplicationStatus(itemId, newStatus);
+        // …then persist to the database.
+        updateStatus.mutate({ id: itemId, status: newStatus });
+      }
     }
   };
 
@@ -93,7 +119,7 @@ export default function KanbanBoardApp() {
     >
       <div className="w-full bg-background py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-5 justify-items-center gap-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 justify-items-center gap-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t">
             {Object.values(columns).map((col) => (
               <SortableContext
                 key={col.id}
