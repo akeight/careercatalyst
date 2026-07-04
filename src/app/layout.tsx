@@ -6,7 +6,7 @@ import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",
-  description: "Track your job search like a beast",
+  description: "Track your job search like a pro",
 };
 
 export default function RootLayout({
