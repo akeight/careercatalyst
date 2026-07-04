@@ -114,7 +114,7 @@ model Application {
   deadline  DateTime?
   favorite  Boolean         @default(false)
 
-  contact   Contact? @relation(fields: [contactId], references: [id])
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
   contactId String?
 
   notes Note[]
@@ -128,7 +128,7 @@ model Note {
   content       String
   user          User        @relation(fields: [userId], references: [id])
   userId        String
-  application   Application @relation(fields: [applicationId], references: [id])
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt

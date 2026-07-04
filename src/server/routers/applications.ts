@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Status } from "@prisma/client";
 import { router, protectedProcedure } from "../trpc";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { normalizeLinkedIn } from "@/lib/utils/normalizeLinkedIn";
@@ -26,6 +27,47 @@ export const applicationRouter = router({
         company: true,
         contact: true,
       },
+    });
+  }),
+
+  // 📊 Aggregated counts by status (for dashboard stat cards + pie chart)
+  getStats: protectedProcedure.query(async ({ ctx }) => {
+    const grouped = await ctx.prisma.application.groupBy({
+      by: ["status"],
+      where: { userId: ctx.session.user.id },
+      _count: { _all: true },
+    });
+
+    const counts: Record<Status, number> = {
+      SAVED: 0,
+      APPLIED: 0,
+      INTERVIEW: 0,
+      PENDING: 0,
+      OFFER: 0,
+      REJECTED: 0,
+    };
+
+    for (const g of grouped) {
+      counts[g.status] = g._count._all;
+    }
+
+    const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
+
+    return { counts, total };
+  }),
+
+  // 📅 Upcoming deadlines (today and later), soonest first
+  getUpcomingDeadlines: protectedProcedure.query(({ ctx }) => {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    return ctx.prisma.application.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        deadline: { gte: startOfToday },
+      },
+      orderBy: { deadline: "asc" },
+      include: { company: true },
     });
   }),
 
@@ -100,42 +142,48 @@ export const applicationRouter = router({
 
       let contactUpdate = {};
 
-      const existing = await ctx.prisma.application.findUnique({
-        where: { id },
+      const existing = await ctx.prisma.application.findFirst({
+        where: { id, userId: ctx.session.user.id },
         include: { contact: true },
       });
 
-      // ❌ If recruiter unchecked, delete & unlink
-      if (referredByRecruiter === false && existing?.contactId) {
+      if (!existing) {
+        throw new Error("Application not found");
+      }
+
+      // ❌ CASE 1: Recruiter unchecked → delete & unlink existing contact
+      if (referredByRecruiter === false && existing.contactId) {
         await ctx.prisma.contact.delete({ where: { id: existing.contactId } });
         contactUpdate = { contact: { disconnect: true } };
       }
 
-      // ✏️ If recruiter is still checked and contact exists, update it
-      if (referredByRecruiter && recruiter && existing?.contactId) {
+      // ✏️ CASE 2: Recruiter checked and a contact already exists → update it
+      if (referredByRecruiter && recruiter && existing.contactId) {
         await ctx.prisma.contact.update({
           where: { id: existing.contactId },
           data: {
             name: recruiter.name ?? undefined,
             email: recruiter.email ?? undefined,
             phone: recruiter.phone ?? undefined,
-            linkedIn: recruiter.linkedIn ?? undefined,
+            linkedIn: normalizeLinkedIn(recruiter.linkedIn) ?? undefined,
           },
         });
-        // CASE 3: Recruiter checked, but no contact exists yet → create new
-        if (referredByRecruiter && recruiter && !existing?.contactId) {
-          const newContact = await ctx.prisma.contact.create({
-            data: {
-              name: recruiter.name,
-              email: recruiter.email,
-              phone: recruiter.phone,
-              linkedIn: recruiter.linkedIn,
-              companyId: existing!.companyId,
-            },
-          });
+      }
 
-          contactUpdate = { contact: { connect: { id: newContact.id } } };
-        }
+      // ➕ CASE 3: Recruiter checked but no contact yet → create one
+      if (referredByRecruiter && recruiter && !existing.contactId) {
+        const newContact = await ctx.prisma.contact.create({
+          data: {
+            name: recruiter.name,
+            email: recruiter.email,
+            phone: recruiter.phone,
+            linkedIn: normalizeLinkedIn(recruiter.linkedIn),
+            role: recruiter.role ?? "Recruiter",
+            companyId: rest.companyId ?? existing.companyId,
+          },
+        });
+
+        contactUpdate = { contact: { connect: { id: newContact.id } } };
       }
 
       return ctx.prisma.application.update({
@@ -154,10 +202,38 @@ export const applicationRouter = router({
       });
     }),
 
+  // 🔄 Update only status (used by the Kanban drag-and-drop board)
+  updateStatus: protectedProcedure
+    .input(z.object({ id: z.string(), status: z.nativeEnum(Status) }))
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.prisma.application.findFirst({
+        where: { id: input.id, userId: ctx.session.user.id },
+        select: { id: true },
+      });
+
+      if (!existing) {
+        throw new Error("Application not found");
+      }
+
+      return ctx.prisma.application.update({
+        where: { id: input.id },
+        data: { status: input.status },
+      });
+    }),
+
   // ❌ Delete Application
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.prisma.application.findFirst({
+        where: { id: input.id, userId: ctx.session.user.id },
+        select: { id: true },
+      });
+
+      if (!existing) {
+        throw new Error("Application not found");
+      }
+
       return ctx.prisma.application.delete({
         where: { id: input.id },
       });
