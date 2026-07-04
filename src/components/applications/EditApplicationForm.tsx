@@ -1,97 +1,423 @@
-// components/EditInternshipModal.tsx
+"use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
+import { z } from "zod";
+import { trpc } from "@/lib/trpc/client";
+import { toast } from "sonner";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+
 import {
   Form,
   FormField,
   FormItem,
   FormLabel,
   FormControl,
+  FormMessage,
 } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { EditApplicationSchema } from "@/lib/validations/EditApplicationSchema";
-import { z } from "zod";
-import { trpc } from "@/lib/trpc/client";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { TestCombobox } from "@/components/applications/TestCombobox";
+import { cn } from "@/lib/utils/utils";
+import { Status } from "@prisma/client";
+
+export type EditApplicationValues = Partial<
+  z.infer<typeof AddApplicationSchema>
+>;
 
 export function EditApplicationForm({
-  open,
-  onClose,
   applicationId,
   defaultValues,
+  onClose,
 }: {
-  open: boolean;
-  onClose: () => void;
   applicationId: string;
-  defaultValues: z.infer<typeof EditApplicationSchema>;
+  defaultValues: EditApplicationValues;
+  onClose: () => void;
 }) {
-  const form = useForm<z.infer<typeof EditApplicationSchema>>({
-    resolver: zodResolver(EditApplicationSchema),
-    defaultValues,
+  const form = useForm<z.infer<typeof AddApplicationSchema>>({
+    resolver: zodResolver(AddApplicationSchema),
+    defaultValues: {
+      type: "INTERNSHIP",
+      title: "",
+      status: "SAVED",
+      location: "",
+      source: "",
+      link: "",
+      favorite: false,
+      companyId: "",
+      ...defaultValues,
+    },
   });
 
+  const [newCompanyName, setNewCompanyName] = useState("");
   const utils = trpc.useUtils();
+
+  const companiesQuery = trpc.company.getAll.useQuery();
+  const companies =
+    companiesQuery.data?.map((company) => ({
+      label: company.name,
+      value: company.id,
+    })) || [];
+
+  const createCompany = trpc.company.create.useMutation({
+    onSuccess: (newCompany) => {
+      form.setValue("companyId", newCompany.id);
+      utils.company.invalidate();
+    },
+  });
 
   const updateApp = trpc.application.update.useMutation({
     onSuccess: () => {
       utils.application.getAll.invalidate();
+      utils.application.getFavorites.invalidate();
+      utils.application.getStats.invalidate();
+      utils.application.getUpcomingDeadlines.invalidate();
       toast.success("Application updated!");
       onClose();
     },
-    onError: () => toast.error("Failed to update."),
+    onError: () => toast.error("Failed to update application."),
   });
 
-  const onSubmit = (data: z.infer<typeof EditApplicationSchema>) => {
+  const onSubmit = async (values: z.infer<typeof AddApplicationSchema>) => {
     if (!applicationId) return;
+
+    let companyId = values.companyId;
+    if (!companyId && newCompanyName) {
+      try {
+        const newCo = await createCompany.mutateAsync({ name: newCompanyName });
+        companyId = newCo.id;
+      } catch {
+        toast.error("Company failed to be added.");
+        return;
+      }
+    }
+
     updateApp.mutate({
       id: applicationId,
       data: {
-        title: data.title,
-        location: data.location,
-        link: data.link,
-        notes: data.notes,
+        type: values.type,
+        title: values.title,
+        status: values.status,
+        location: values.location,
+        source: values.source,
+        deadline: values.deadline,
+        favorite: values.favorite,
+        companyId,
+        referredByRecruiter: values.referredByRecruiter,
+        recruiter: values.referredByRecruiter ? values.recruiter : undefined,
       },
     });
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Edit Internship</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 py-4"
-          >
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-2">
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="INTERNSHIP">Internship</SelectItem>
+                  <SelectItem value="FELLOWSHIP">Fellowship</SelectItem>
+                  <SelectItem value="EARLY_CAREER">Early Career</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="companyId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Company</FormLabel>
+              <FormControl>
+                <TestCombobox
+                  options={companies}
+                  value={field.value || ""}
+                  onChangeAction={(val) => {
+                    form.setValue("companyId", val);
+                    setNewCompanyName("");
+                  }}
+                  onCreateNew={(name) => {
+                    form.setValue("companyId", "");
+                    setNewCompanyName(name);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Position Title</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="e.g. Software Engineering Intern"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(Status).map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="e.g. Remote, San Francisco"
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="source"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Referral, LinkedIn, Handshake..."
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="deadline"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Application Deadline</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground",
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? (
+                        format(new Date(field.value), "PPP")
+                      ) : (
+                        <span>Pick a deadline</span>
+                      )}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ? new Date(field.value) : undefined}
+                    onSelect={field.onChange}
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="referredByRecruiter"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={field.value ?? false}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
+                  <span>Referred by recruiter?</span>
+                </label>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch("referredByRecruiter") && (
+          <div className="space-y-4">
             <FormField
               control={form.control}
-              name="title"
+              name="recruiter.name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Position Title</FormLabel>
+                  <FormLabel>Recruiter Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Software Engineering Intern"
+                      placeholder="e.g. Jane Doe"
                       {...field}
+                      value={field.value ?? ""}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full"></Button>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+
+            <FormField
+              control={form.control}
+              name="recruiter.linkedIn"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>LinkedIn</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://linkedin.com/in/..."
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="recruiter.email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="jane@example.com"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="recruiter.phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      international
+                      defaultCountry="US"
+                      placeholder="Enter phone number"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        )}
+
+        <FormField
+          control={form.control}
+          name="favorite"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={field.value ?? false}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
+                  <span>Mark as favorite</span>
+                </label>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit" className="w-full" disabled={updateApp.isPending}>
+          {updateApp.isPending ? "Saving..." : "Save Changes"}
+        </Button>
+      </form>
+    </Form>
   );
 }
