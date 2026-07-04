@@ -28,56 +28,54 @@ export function Notifications({ className, ...props }: CardProps) {
   const upcoming = (data ?? []).slice(0, 5);
 
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className={cn("w-[400px]", className)} {...props}>
-        <CardHeader>
-          <CardTitle className="text-center items-center font-serif text-2xl">
-            Upcoming Deadlines
-          </CardTitle>
-          <CardDescription className="text-center items-center">
-            Stay ahead of your application deadlines.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          {isLoading && (
-            <p className="text-sm text-muted-foreground text-center">
-              Loading...
-            </p>
-          )}
+    <Card className={cn("w-full h-full", className)} {...props}>
+      <CardHeader>
+        <CardTitle className="font-serif text-2xl">
+          Upcoming Deadlines
+        </CardTitle>
+        <CardDescription>
+          Stay ahead of your application deadlines.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {isLoading && (
+          <p className="text-sm text-muted-foreground text-center">
+            Loading...
+          </p>
+        )}
 
-          {!isLoading && upcoming.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center">
-              No upcoming deadlines. You&apos;re all caught up!
-            </p>
-          )}
+        {!isLoading && upcoming.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center">
+            No upcoming deadlines. You&apos;re all caught up!
+          </p>
+        )}
 
-          <div>
-            {upcoming.map((app) => {
-              const deadline = app.deadline ? new Date(app.deadline) : null;
-              if (!deadline) return null;
+        <div>
+          {upcoming.map((app) => {
+            const deadline = app.deadline ? new Date(app.deadline) : null;
+            if (!deadline) return null;
 
-              return (
-                <div
-                  key={app.id}
-                  className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-                >
-                  <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      {app.title}
-                      {app.company?.name ? ` @ ${app.company.name}` : ""}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {deadlineLabel(deadline)} &middot;{" "}
-                      {format(deadline, "MMM dd, yyyy")}
-                    </p>
-                  </div>
+            return (
+              <div
+                key={app.id}
+                className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+              >
+                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium leading-none">
+                    {app.title}
+                    {app.company?.name ? ` @ ${app.company.name}` : ""}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {deadlineLabel(deadline)} &middot;{" "}
+                    {format(deadline, "MMM dd, yyyy")}
+                  </p>
                 </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
