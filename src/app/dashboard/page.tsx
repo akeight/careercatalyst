@@ -21,11 +21,8 @@ export default async function DashboardPage() {
         <div className="flex justify-center w-full">
           <div className="flex items-center justify-center max-w-5xl">
             <div className="justify-center grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
-              {/* Stat Cards */}
-              <StatCardInfo title="Applications" value={12} />
-              <StatCardInfo title="Interviews" value={3} />
-              <StatCardInfo title="Offers" value={1} />
-              <StatCardInfo title="Rejections" value={2} />
+              {/* Stat Cards (real data) */}
+              <StatCardInfo />
 
               {/* Full width sections */}
 

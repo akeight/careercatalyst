@@ -1,72 +1,82 @@
 "use client";
 
 import React from "react";
-import { Check } from "lucide-react";
+import { differenceInCalendarDays, format } from "date-fns";
 import { cn } from "@/lib/utils/utils";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const notifications = [
-  {
-    title: "Follow up with Google recruiter.",
-    description: "1 hour ago",
-  },
-  {
-    title: "Follow up on Uber application.",
-    description: "1 hour ago",
-  },
-  {
-    title: "Meta application deadline soon!",
-    description: "2 hours ago",
-  },
-];
+import { trpc } from "@/lib/trpc/client";
 
 type CardProps = React.ComponentProps<typeof Card>;
 
+function deadlineLabel(deadline: Date): string {
+  const days = differenceInCalendarDays(deadline, new Date());
+  if (days < 0) return "Past due";
+  if (days === 0) return "Due today";
+  if (days === 1) return "Due tomorrow";
+  return `Due in ${days} days`;
+}
+
 export function Notifications({ className, ...props }: CardProps) {
+  const { data, isLoading } = trpc.application.getUpcomingDeadlines.useQuery();
+
+  const upcoming = (data ?? []).slice(0, 5);
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className={cn("w-[400px]", className)} {...props}>
         <CardHeader>
           <CardTitle className="text-center items-center font-serif text-2xl">
-            Notifications
+            Upcoming Deadlines
           </CardTitle>
           <CardDescription className="text-center items-center">
-            These are your priority today.
+            Stay ahead of your application deadlines.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
+          {isLoading && (
+            <p className="text-sm text-muted-foreground text-center">
+              Loading...
+            </p>
+          )}
+
+          {!isLoading && upcoming.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center">
+              No upcoming deadlines. You&apos;re all caught up!
+            </p>
+          )}
+
           <div>
-            {notifications.map((notification, index) => (
-              <div
-                key={index}
-                className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-              >
-                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {notification.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {notification.description}
-                  </p>
+            {upcoming.map((app) => {
+              const deadline = app.deadline ? new Date(app.deadline) : null;
+              if (!deadline) return null;
+
+              return (
+                <div
+                  key={app.id}
+                  className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+                >
+                  <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {app.title}
+                      {app.company?.name ? ` @ ${app.company.name}` : ""}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {deadlineLabel(deadline)} &middot;{" "}
+                      {format(deadline, "MMM dd, yyyy")}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
-        <CardFooter>
-          <Button className="w-full">
-            <Check /> Mark all as read
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );
