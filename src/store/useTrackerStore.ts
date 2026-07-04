@@ -1,13 +1,20 @@
 import { create } from "zustand";
 
 // ------------ TYPES ------------
+export type ApplicationType = "INTERNSHIP" | "FELLOWSHIP" | "EARLY_CAREER";
+
 export type Application = {
   id: string;
+  type?: ApplicationType;
   title: string;
   location?: string | null;
   status: Status;
+  source?: string | null;
   deadline?: string | Date | null;
-  company?: { name: string } | null;
+  favorite?: boolean;
+  companyId?: string;
+  company?: { id?: string; name: string } | null;
+  contactId?: string | null;
   contact?: {
     name: string;
     email?: string | null;
@@ -41,6 +48,8 @@ export type TrackerStore = {
   moveCard: (card: string, from: string, to: string, position: number) => void;
 
   reorderCard: (columnId: string, oldIndex: number, newIndex: number) => void;
+
+  updateApplicationStatus: (id: string, status: Status) => void;
 };
 
 // ------------ STORE ------------
@@ -81,4 +90,11 @@ export const useTrackerStore = create<TrackerStore>((set) => ({
         },
       };
     }),
+
+  updateApplicationStatus: (id, status) =>
+    set((state) => ({
+      applications: state.applications.map((app) =>
+        app.id === id ? { ...app, status } : app,
+      ),
+    })),
 }));
