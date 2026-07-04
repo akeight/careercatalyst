@@ -1,4 +1,3 @@
-// components/applications/AddInternshipModal.tsx
 "use client";
 
 import { useState } from "react";
@@ -9,38 +8,42 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EditApplicationForm } from "./EditApplicationForm";
+import {
+  EditApplicationForm,
+  type EditApplicationValues,
+} from "./EditApplicationForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencil } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
-import { EditApplicationSchema } from "@/lib/validations/EditApplicationSchema";
-import { z } from "zod";
 
 export default function EditApplicationModal({
   applicationId,
   defaultValues,
+  trigger,
 }: {
   applicationId: string;
-  defaultValues: z.infer<typeof EditApplicationSchema>;
+  defaultValues: EditApplicationValues;
+  trigger?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted">
-          <FontAwesomeIcon icon={faPencil} size="lg" />
-          Edit Internship
-        </button>
+        {trigger ?? (
+          <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-muted">
+            <FontAwesomeIcon icon={faPencil} size="lg" />
+            Edit Internship
+          </button>
+        )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Edit Internship</DialogTitle>
+          <DialogTitle>Edit Application</DialogTitle>
         </DialogHeader>
         <EditApplicationForm
-          open={open}
-          onClose={() => setOpen(false)}
           applicationId={applicationId}
           defaultValues={defaultValues}
+          onClose={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>
