@@ -10,6 +10,7 @@ export type Application = {
   location?: string | null;
   status: Status;
   source?: string | null;
+  jobUrl?: string | null;
   deadline?: string | Date | null;
   favorite?: boolean;
   companyId?: string;

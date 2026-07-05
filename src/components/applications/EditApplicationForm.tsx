@@ -60,7 +60,7 @@ export function EditApplicationForm({
       status: "SAVED",
       location: "",
       source: "",
-      link: "",
+      jobUrl: "",
       favorite: false,
       companyId: "",
       ...defaultValues,
@@ -118,6 +118,7 @@ export function EditApplicationForm({
         status: values.status,
         location: values.location,
         source: values.source,
+        jobUrl: values.jobUrl,
         deadline: values.deadline,
         favorite: values.favorite,
         companyId,
@@ -247,6 +248,24 @@ export function EditApplicationForm({
               <FormControl>
                 <Input
                   placeholder="Referral, LinkedIn, Handshake..."
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="jobUrl"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Job Link</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="https://..."
                   {...field}
                   value={field.value ?? ""}
                 />
