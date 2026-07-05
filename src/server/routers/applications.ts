@@ -1,18 +1,58 @@
 import { z } from "zod";
 import { Status } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { normalizeLinkedIn } from "@/lib/utils/normalizeLinkedIn";
+import type { Context } from "@/server/context";
+
+const applicationInclude = {
+  company: true,
+  contact: {
+    include: {
+      company: true,
+    },
+  },
+};
+
+async function getOwnedContactId({
+  contactId,
+  userId,
+  prisma,
+  linkedContactId,
+}: {
+  contactId?: string | null;
+  userId: string;
+  prisma: Context["prisma"];
+  linkedContactId?: string | null;
+}) {
+  if (!contactId) return undefined;
+
+  const ownedContact = await prisma.contact.findFirst({
+    where: { id: contactId, userId },
+    select: { id: true },
+  });
+
+  if (ownedContact) return ownedContact.id;
+
+  // Allow re-saving a contact already linked to this application.
+  if (linkedContactId === contactId) {
+    const linkedContact = await prisma.contact.findFirst({
+      where: { id: contactId },
+      select: { id: true },
+    });
+    if (linkedContact) return linkedContact.id;
+  }
+
+  throw new TRPCError({ code: "NOT_FOUND", message: "Contact not found" });
+}
 
 export const applicationRouter = router({
   // 🔍 Get all applications for user
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.application.findMany({
       where: { userId: ctx.session.user.id },
-      include: {
-        company: true,
-        contact: true,
-      },
+      include: applicationInclude,
     });
   }),
 
@@ -23,10 +63,7 @@ export const applicationRouter = router({
         userId: ctx.session.user.id,
         favorite: true,
       },
-      include: {
-        company: true,
-        contact: true,
-      },
+      include: applicationInclude,
     });
   }),
 
@@ -37,10 +74,7 @@ export const applicationRouter = router({
         userId: ctx.session.user.id,
         status: "SAVED",
       },
-      include: {
-        company: true,
-        contact: true,
-      },
+      include: applicationInclude,
     });
   }),
 
@@ -81,10 +115,7 @@ export const applicationRouter = router({
         deadline: { gte: startOfToday },
       },
       orderBy: { deadline: "asc" },
-      include: {
-        company: true,
-        contact: true,
-      },
+      include: applicationInclude,
     });
   }),
 
@@ -108,8 +139,14 @@ export const applicationRouter = router({
         companyId = createdCompany.id;
       }
 
-      // Create recruiter contact if present
-      if (input.recruiter) {
+      contactId = await getOwnedContactId({
+        contactId: input.contactId,
+        userId,
+        prisma: ctx.prisma,
+      });
+
+      // Create a contact inline if a new helpful contact was entered.
+      if (!contactId && input.recruiter) {
         const contactData = {
           name: input.recruiter.name,
           email: input.recruiter.email,
@@ -159,7 +196,8 @@ export const applicationRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { id, data } = input;
 
-      const { referredByRecruiter, recruiter, deadline, ...rest } = data;
+      const { referredByRecruiter, recruiter, contactId, deadline, ...rest } =
+        data;
 
       const formattedDeadline =
         typeof deadline === "string"
@@ -177,31 +215,31 @@ export const applicationRouter = router({
         throw new Error("Application not found");
       }
 
-      // ❌ CASE 1: Recruiter unchecked → delete & unlink existing contact
-      if (referredByRecruiter === false && existing.contactId) {
-        await ctx.prisma.contact.delete({ where: { id: existing.contactId } });
+      if (contactId !== undefined) {
+        const ownedContactId = contactId
+          ? await getOwnedContactId({
+              contactId,
+              userId: ctx.session.user.id,
+              prisma: ctx.prisma,
+              linkedContactId: existing.contactId,
+            })
+          : undefined;
+
+        if (ownedContactId && existing.contactId !== ownedContactId) {
+          contactUpdate = { contact: { connect: { id: ownedContactId } } };
+        } else if (!ownedContactId && existing.contactId) {
+          contactUpdate = { contact: { disconnect: true } };
+        }
+      } else if (referredByRecruiter === false && existing.contactId) {
         contactUpdate = { contact: { disconnect: true } };
       }
 
-      // ✏️ CASE 2: Recruiter checked and a contact already exists → update it
-      if (referredByRecruiter && recruiter && existing.contactId) {
-        const contactData = {
-          name: recruiter.name ?? undefined,
-          email: recruiter.email ?? undefined,
-          phone: recruiter.phone ?? undefined,
-          linkedIn: normalizeLinkedIn(recruiter.linkedIn) ?? undefined,
-          type: "RECRUITER" as const,
-          userId: ctx.session.user.id,
-        };
-
-        await ctx.prisma.contact.update({
-          where: { id: existing.contactId },
-          data: contactData,
-        });
-      }
-
-      // ➕ CASE 3: Recruiter checked but no contact yet → create one
-      if (referredByRecruiter && recruiter && !existing.contactId) {
+      if (
+        !contactId &&
+        referredByRecruiter &&
+        recruiter &&
+        !existing.contactId
+      ) {
         const contactData = {
           name: recruiter.name,
           email: recruiter.email,
@@ -220,21 +258,26 @@ export const applicationRouter = router({
         contactUpdate = { contact: { connect: { id: newContact.id } } };
       }
 
-      const applicationData = {
-        title: rest.title,
-        status: rest.status,
-        type: rest.type,
-        location: rest.location,
-        source: rest.source,
-        jobUrl: rest.jobUrl,
-        favorite: rest.favorite,
-        companyId: rest.companyId,
-        deadline: formattedDeadline,
+      const applicationData: Record<string, unknown> = {
         ...contactUpdate,
       };
 
+      if (rest.title !== undefined) applicationData.title = rest.title;
+      if (rest.status !== undefined) applicationData.status = rest.status;
+      if (rest.type !== undefined) applicationData.type = rest.type;
+      if (rest.location !== undefined) applicationData.location = rest.location;
+      if (rest.source !== undefined) applicationData.source = rest.source;
+      if (rest.favorite !== undefined) applicationData.favorite = rest.favorite;
+      if (rest.companyId !== undefined)
+        applicationData.companyId = rest.companyId;
+      if (rest.jobUrl !== undefined) {
+        applicationData.jobUrl = rest.jobUrl || null;
+      }
+      if (deadline !== undefined) {
+        applicationData.deadline = formattedDeadline ?? null;
+      }
       if (rest.notes !== undefined) {
-        Object.assign(applicationData, { notes: rest.notes || null });
+        applicationData.notes = rest.notes || null;
       }
 
       return ctx.prisma.application.update({

@@ -23,7 +23,7 @@ export const AddApplicationSchema = z.object({
   companyId: z.string().optional(), // selected from dropdown
   newCompany: CreateCompanySchema.optional(), // typed manually
 
+  contactId: z.string().optional(),
   referredByRecruiter: z.boolean().optional(),
   recruiter: RecruiterSchema.optional(),
-  recruiterName: z.string().optional(),
 });
