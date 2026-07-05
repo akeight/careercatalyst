@@ -7,10 +7,28 @@ import { useSession } from "next-auth/react";
 import ClientHeader from "@/components/layout/ClientHeader";
 import Footer from "@/components/layout/Footer";
 import { AppSidebar } from "@/components/layout/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
 const publicRoutes = new Set(["/", "/login", "/onboarding"]);
+
+// Auto-collapses the sidebar when a wide route (the Kanban board) is active and
+// the viewport gets close to overflowing, reclaiming horizontal space. Lives
+// inside the SidebarProvider so useSidebar always has a context.
+function SidebarAutoCollapse({ active }: { active: boolean }) {
+  const { setOpen, isMobile } = useSidebar();
+
+  React.useEffect(() => {
+    if (!active || isMobile) return;
+    const COLLAPSE_BELOW = 1600;
+    const applyCollapse = () => setOpen(window.innerWidth >= COLLAPSE_BELOW);
+    applyCollapse();
+    window.addEventListener("resize", applyCollapse);
+    return () => window.removeEventListener("resize", applyCollapse);
+  }, [active, isMobile, setOpen]);
+
+  return null;
+}
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,17 +37,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const showAuthenticatedChrome =
     status === "authenticated" && !publicRoutes.has(pathname);
   const isLoginRoute = pathname === "/login";
+  // The Kanban board still auto-collapses the sidebar, but it shares the same
+  // centered content container as the other pages (favorites, contacts, saved).
+  const isTrackerRoute = pathname === "/tracker";
+
+  const mainClassName = isLoginRoute
+    ? "w-full flex-1 min-w-0"
+    : "mx-auto max-w-screen-2xl w-full flex-1 px-4 sm:px-6 lg:px-8 py-8 min-w-0";
 
   const pageContent = (
     <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
       <ClientHeader authed={showAuthenticatedChrome} />
-      <main
-        className={
-          isLoginRoute
-            ? "w-full flex-1 min-w-0"
-            : "mx-auto max-w-screen-2xl w-full flex-1 px-4 sm:px-6 lg:px-8 py-8 min-w-0"
-        }
-      >
+      <main className={mainClassName}>
         {children}
         <Toaster
           position="top-center"
@@ -57,6 +76,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         } as React.CSSProperties
       }
     >
+      <SidebarAutoCollapse active={isTrackerRoute} />
       <div className="flex min-h-dvh w-full">
         <AppSidebar />
         <div className="min-w-0 flex flex-1 flex-col">{pageContent}</div>

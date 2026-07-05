@@ -1,5 +1,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import React from "react";
+import { cn } from "@/lib/utils/utils";
 
 type DraggableProps = {
   id: string;
@@ -12,15 +13,15 @@ export default function DraggableCard({
   columnId,
   children,
 }: DraggableProps) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `${columnId}:${id}`,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: `${columnId}:${id}`,
+    });
 
   const style = {
     transform: transform
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
-    zIndex: transform ? 50 : 0,
   };
 
   return (
@@ -29,7 +30,10 @@ export default function DraggableCard({
       style={style}
       {...listeners}
       {...attributes}
-      className="cursor-grab select-none"
+      className={cn(
+        "cursor-grab touch-none select-none rounded-lg outline-none transition-opacity active:cursor-grabbing focus-visible:ring-2 focus-visible:ring-primary/50",
+        isDragging && "opacity-40",
+      )}
     >
       {children}
     </div>
