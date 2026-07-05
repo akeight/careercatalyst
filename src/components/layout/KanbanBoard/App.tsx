@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   DndContext,
   closestCenter,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
@@ -17,19 +19,24 @@ import {
 import { toast } from "sonner";
 
 import DroppableColumn from "./Droppable";
+import ApplicationCard from "./ApplicationCard";
 import { trpc } from "@/lib/trpc/client";
 import {
   useTrackerStore,
   Application,
   ColumnType,
 } from "@/store/useTrackerStore";
-import { KANBAN_STATUSES, columnIdToStatus, statusLabel } from "@/lib/status";
+import {
+  KANBAN_COLUMN_STATUSES,
+  columnIdToStatus,
+  statusLabel,
+} from "@/lib/status";
 
 // Helper to group fetched apps into columns by status
 const generateColumnsFromApps = (
   applications: Application[],
 ): Record<string, ColumnType> => {
-  return KANBAN_STATUSES.reduce(
+  return KANBAN_COLUMN_STATUSES.reduce(
     (cols, status) => {
       const id = status.toLowerCase();
       cols[id] = {
@@ -51,11 +58,18 @@ export default function KanbanBoardApp() {
   const setApplications = useTrackerStore((s) => s.setApplications);
   const setColumns = useTrackerStore((s) => s.setColumns);
   const columns = useTrackerStore((s) => s.columns);
+  const applications = useTrackerStore((s) => s.applications);
   const moveCard = useTrackerStore((s) => s.moveCard);
   const reorderCard = useTrackerStore((s) => s.reorderCard);
   const updateApplicationStatus = useTrackerStore(
     (s) => s.updateApplicationStatus,
   );
+
+  // Currently dragged card id (used to render the DragOverlay preview).
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeApp = activeId
+    ? applications.find((a) => a.id === activeId.split(":")[1])
+    : undefined;
 
   const updateStatus = trpc.application.updateStatus.useMutation({
     onSuccess: () => {
@@ -77,8 +91,22 @@ export default function KanbanBoardApp() {
   }, [apps, setApplications, setColumns]);
 
   // DnD setup
-  const sensors = useSensors(useSensor(PointerSensor));
+  // A small distance activation constraint means a plain click never starts a
+  // drag. Without it, pointerdown events that bubble up (via the React tree)
+  // from portaled Radix modals/drawers rendered inside the draggable card would
+  // immediately begin a drag and swallow the click, breaking their buttons.
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+  );
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id.toString());
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveId(null);
     const { active, over } = event;
     if (!over) return;
 
@@ -110,28 +138,50 @@ export default function KanbanBoardApp() {
 
   if (isLoading) return <p className="p-4">Loading…</p>;
 
+  const totalCount = Object.values(columns).reduce(
+    (sum, col) => sum + col.items.length,
+    0,
+  );
+
   // Render Kanban board
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onDragCancel={() => setActiveId(null)}
     >
-      <div className="w-full bg-background py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 justify-items-center gap-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none">
-            {Object.values(columns).map((col) => (
-              <SortableContext
-                key={col.id}
-                items={col.items.map((id) => `${col.id}:${id}`)}
-                strategy={verticalListSortingStrategy}
-              >
-                <DroppableColumn columnId={col.id} />
-              </SortableContext>
-            ))}
-          </div>
+      <div className="w-full">
+        <div className="mb-6 flex items-baseline justify-center gap-3">
+          <h1 className="font-serif text-2xl font-bold tracking-tight">
+            Application Tracker
+          </h1>
+          <span className="rounded-full bg-muted px-2.5 py-0.5 text-sm font-medium text-muted-foreground">
+            {totalCount}
+          </span>
+        </div>
+
+        <div className="mx-auto flex w-fit max-w-full gap-4 overflow-x-auto pb-4">
+          {Object.values(columns).map((col) => (
+            <SortableContext
+              key={col.id}
+              items={col.items.map((id) => `${col.id}:${id}`)}
+              strategy={verticalListSortingStrategy}
+            >
+              <DroppableColumn columnId={col.id} />
+            </SortableContext>
+          ))}
         </div>
       </div>
+
+      <DragOverlay dropAnimation={null}>
+        {activeApp ? (
+          <div className="w-60 rotate-2 cursor-grabbing">
+            <ApplicationCard app={activeApp} />
+          </div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }
