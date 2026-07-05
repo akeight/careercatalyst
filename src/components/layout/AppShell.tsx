@@ -18,11 +18,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const showAuthenticatedChrome =
     status === "authenticated" && !publicRoutes.has(pathname);
+  const isLoginRoute = pathname === "/login";
 
   const pageContent = (
     <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
       <ClientHeader authed={showAuthenticatedChrome} />
-      <main className="mx-auto max-w-screen-2xl w-full flex-1 px-4 sm:px-6 lg:px-8 py-8 min-w-0">
+      <main
+        className={
+          isLoginRoute
+            ? "w-full flex-1 min-w-0"
+            : "mx-auto max-w-screen-2xl w-full flex-1 px-4 sm:px-6 lg:px-8 py-8 min-w-0"
+        }
+      >
         {children}
         <Toaster
           position="top-center"
@@ -42,7 +49,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "18rem",
+          "--sidebar-width-icon": "3.5rem",
+        } as React.CSSProperties
+      }
+    >
       <div className="flex min-h-dvh w-full">
         <AppSidebar />
         <div className="min-w-0 flex flex-1 flex-col">{pageContent}</div>

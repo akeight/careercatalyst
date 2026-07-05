@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ThemeToggle } from "../dashboard/ThemeToggle";
 import { AuroraText } from "../magicui/aurora-text";
 import { AuthButtons } from "@/components/AuthBtns";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -32,8 +31,6 @@ export default function Header({ authed = false }: { authed?: boolean }) {
   if (authed) {
     return (
       <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/20 bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <SidebarTrigger />
-        <div className="h-5 w-px bg-border/40" />
         <h1 className="truncate text-lg font-semibold tracking-tight">
           {getPageTitle(pathname)}
         </h1>
