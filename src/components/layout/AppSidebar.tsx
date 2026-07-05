@@ -70,7 +70,7 @@ const navLinks = [
   // },
   {
     label: "Contacts",
-    href: "/boards",
+    href: "/contacts",
     icon: <FontAwesomeIcon icon={faUser} size="lg" />,
   },
 ];
