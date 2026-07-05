@@ -39,10 +39,42 @@ model User {
   notes        Note[]
   Company      Company[]
   contacts     Contact[]
+  goals        Goal[]
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  // Profile fields
+  school       String?
+  major        String?
+  gradYear     Int?
+  targetRole   String?
+
+  // Professional links (optional)
+  linkedInUrl  String?
+  githubUrl    String?
+  portfolioUrl String?
+
+  // Resume (Vercel Blob)
+  resumeUrl    String?
+  resumeName   String?
+
+  // Goals / onboarding
+  weeklyGoal   Int       @default(5)
+  onboardedAt  DateTime?
+}
+
+model Goal {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  title       String
+  description String?
+  completed   Boolean   @default(false)
+  targetDate  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Account {
