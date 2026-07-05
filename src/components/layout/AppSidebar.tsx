@@ -23,6 +23,7 @@ import { faSuitcase } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faArrowRightFromBracket } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faAddressCard } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -200,6 +201,22 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 mb-10 border-t border-border/20">
         <div className="flex flex-col items-center justify-between gap-3 px-3">
           <div className="flex shrink-0  gap-1.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  asChild
+                  aria-label="Profile"
+                >
+                  <a href="/profile">
+                    <FontAwesomeIcon icon={faAddressCard} />
+                    <span className="sr-only">Profile</span>
+                  </a>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Profile</TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <ThemeToggle />
