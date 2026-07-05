@@ -40,6 +40,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc/client";
+import {
+  mapApplicationContact,
+  type ApplicationContactSummary,
+} from "@/lib/mapApplicationContact";
 import { columns, type FavoriteRow } from "./columns";
 
 const typeLabels: Record<FavoriteRow["type"], string> = {
@@ -104,15 +108,9 @@ export default function FavoritesList() {
           favorite: app.favorite,
           createdAt: app.createdAt,
           updatedAt: app.updatedAt,
-          contact: app.contact
-            ? {
-                name: app.contact.name,
-                email: app.contact.email,
-                phone: app.contact.phone,
-                linkedIn: app.contact.linkedIn,
-                role: app.contact.role,
-              }
-            : null,
+          contact: mapApplicationContact(
+            app.contact as ApplicationContactSummary | null,
+          ),
         };
       }),
     [favorites],

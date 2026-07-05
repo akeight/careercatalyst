@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { statusToVariant, type AppStatus } from "@/lib/colors";
 import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 import { FavoriteRowActions } from "./FavoriteRowActions";
+import type { ContactType } from "@/lib/contactTypes";
 
 export type FavoriteRow = {
   id: string;
@@ -27,11 +28,16 @@ export type FavoriteRow = {
   createdAt: string | Date | null;
   updatedAt: string | Date | null;
   contact: {
+    id: string;
     name: string;
+    type?: ContactType | null;
+    title?: string | null;
     email?: string | null;
     phone?: string | null;
     linkedIn?: string | null;
     role?: string | null;
+    notes?: string | null;
+    companyName?: string | null;
   } | null;
 };
 

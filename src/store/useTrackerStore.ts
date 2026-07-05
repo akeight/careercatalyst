@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { ContactType } from "@/lib/contactTypes";
 
 // ------------ TYPES ------------
 export type ApplicationType = "INTERNSHIP" | "FELLOWSHIP" | "EARLY_CAREER";
@@ -21,11 +22,16 @@ export type Application = {
   company?: { id?: string; name: string } | null;
   contactId?: string | null;
   contact?: {
+    id: string;
     name: string;
+    type?: ContactType | null;
+    title?: string | null;
     email?: string | null;
     phone?: string | null;
     linkedIn?: string | null;
-    role: string | null;
+    role?: string | null;
+    notes?: string | null;
+    company?: { id?: string; name: string } | null;
   } | null;
 };
 

@@ -83,11 +83,16 @@ export default function SavedInternshipsTable() {
         updatedAt: app.updatedAt,
         contact: app.contact
           ? {
+              id: app.contact.id,
               name: app.contact.name,
+              type: app.contact.type,
+              title: app.contact.title,
               email: app.contact.email,
               phone: app.contact.phone,
               linkedIn: app.contact.linkedIn,
               role: app.contact.role,
+              notes: app.contact.notes,
+              companyName: app.contact.company?.name,
             }
           : null,
       })),
