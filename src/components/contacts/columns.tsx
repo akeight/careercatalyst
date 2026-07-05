@@ -2,12 +2,15 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Linkedin, Mail, Phone } from "lucide-react";
-import { ContactType } from "@prisma/client";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { BadgeVariant } from "@/lib/colors";
 import { ContactRowActions } from "./ContactRowActions";
+import {
+  contactTypeLabels,
+  contactTypeVariant,
+  type ContactType,
+} from "@/lib/contactTypes";
 
 export type ContactRow = {
   id: string;
@@ -20,24 +23,6 @@ export type ContactRow = {
   phone: string | null;
   linkedIn: string | null;
   notes: string | null;
-};
-
-export const contactTypeLabels: Record<ContactType, string> = {
-  RECRUITER: "Recruiter",
-  REFERRAL: "Referral",
-  CONNECTION: "Connection",
-  MENTOR: "Mentor",
-  HIRING_MANAGER: "Hiring Manager",
-  OTHER: "Other",
-};
-
-const typeVariant: Record<ContactType, BadgeVariant> = {
-  RECRUITER: "default",
-  REFERRAL: "secondary",
-  CONNECTION: "outline",
-  MENTOR: "secondary",
-  HIRING_MANAGER: "default",
-  OTHER: "outline",
 };
 
 export const contactColumns: ColumnDef<ContactRow>[] = [
@@ -64,7 +49,9 @@ export const contactColumns: ColumnDef<ContactRow>[] = [
       const type = row.original.type;
       if (!type) return <span className="text-muted-foreground">—</span>;
       return (
-        <Badge variant={typeVariant[type]}>{contactTypeLabels[type]}</Badge>
+        <Badge variant={contactTypeVariant[type]}>
+          {contactTypeLabels[type]}
+        </Badge>
       );
     },
     filterFn: (row, id, value) => value === "ALL" || row.getValue(id) === value,

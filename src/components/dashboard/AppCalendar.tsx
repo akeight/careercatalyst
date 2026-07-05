@@ -94,7 +94,20 @@ export default function AppCalendar() {
                     favorite: app.favorite,
                     createdAt: app.createdAt,
                     updatedAt: app.updatedAt,
-                    contact: app.contact ?? null,
+                    contact: app.contact
+                      ? {
+                          id: app.contact.id,
+                          name: app.contact.name,
+                          type: app.contact.type,
+                          title: app.contact.title,
+                          email: app.contact.email,
+                          phone: app.contact.phone,
+                          linkedIn: app.contact.linkedIn,
+                          role: app.contact.role,
+                          notes: app.contact.notes,
+                          companyName: app.contact.company?.name,
+                        }
+                      : null,
                   }}
                   trigger={
                     <button className="w-fit text-xs font-medium text-primary hover:underline">

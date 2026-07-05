@@ -11,7 +11,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ContactType } from "@prisma/client";
 import { Search, Users } from "lucide-react";
 
 import {
@@ -41,7 +40,8 @@ import {
 } from "@/components/ui/select";
 import { trpc } from "@/lib/trpc/client";
 import AddContactModal from "./AddContactModal";
-import { contactColumns, contactTypeLabels, type ContactRow } from "./columns";
+import { contactColumns, type ContactRow } from "./columns";
+import { ContactType, contactTypeLabels } from "@/lib/contactTypes";
 
 const globalFilterFn = (
   row: { original: ContactRow },

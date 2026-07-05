@@ -7,8 +7,6 @@ import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { z } from "zod";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
@@ -37,6 +35,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TestCombobox } from "@/components/applications/TestCombobox";
+import { ContactCombobox } from "@/components/contacts/ContactCombobox";
 import { cn } from "@/lib/utils/utils";
 import { Status } from "@prisma/client";
 
@@ -90,6 +89,7 @@ export function EditApplicationForm({
     onSuccess: () => {
       utils.application.getAll.invalidate();
       utils.application.getFavorites.invalidate();
+      utils.application.getSaved.invalidate();
       utils.application.getStats.invalidate();
       utils.application.getUpcomingDeadlines.invalidate();
       toast.success("Application updated!");
@@ -125,8 +125,7 @@ export function EditApplicationForm({
         deadline: values.deadline,
         favorite: values.favorite,
         companyId,
-        referredByRecruiter: values.referredByRecruiter,
-        recruiter: values.referredByRecruiter ? values.recruiter : undefined,
+        contactId: values.contactId ?? "",
       },
     });
   };
@@ -347,102 +346,25 @@ export function EditApplicationForm({
 
         <FormField
           control={form.control}
-          name="referredByRecruiter"
+          name="contactId"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="rounded-xl border bg-muted/20 p-4">
+              <FormLabel>Helpful contact</FormLabel>
+              <p className="text-sm text-muted-foreground">
+                Link someone from your contacts who could help with this
+                opportunity.
+              </p>
               <FormControl>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={field.value ?? false}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                  <span>Referred by recruiter?</span>
-                </label>
+                <ContactCombobox
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  companyId={form.watch("companyId")}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {form.watch("referredByRecruiter") && (
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="recruiter.name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Recruiter Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="e.g. Jane Doe"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.linkedIn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>LinkedIn</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://linkedin.com/in/..."
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="jane@example.com"
-                      {...field}
-                      value={field.value ?? ""}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      international
-                      defaultCountry="US"
-                      placeholder="Enter phone number"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
 
         <FormField
           control={form.control}

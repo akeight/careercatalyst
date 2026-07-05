@@ -63,16 +63,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
     deadline: app.deadline ? new Date(app.deadline) : undefined,
     favorite: app.favorite ?? false,
     companyId: app.companyId ?? app.company?.id ?? "",
-    referredByRecruiter: Boolean(app.contact),
-    recruiter: app.contact
-      ? {
-          name: app.contact.name,
-          email: app.contact.email ?? undefined,
-          phone: app.contact.phone ?? undefined,
-          linkedIn: app.contact.linkedIn ?? undefined,
-          role: app.contact.role ?? undefined,
-        }
-      : undefined,
+    contactId: app.contactId ?? app.contact?.id ?? "",
   };
 
   return (
@@ -116,7 +107,20 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
                 favorite: app.favorite,
                 createdAt: app.createdAt,
                 updatedAt: app.updatedAt,
-                contact: app.contact ?? null,
+                contact: app.contact
+                  ? {
+                      id: app.contact.id,
+                      name: app.contact.name,
+                      type: app.contact.type,
+                      title: app.contact.title,
+                      email: app.contact.email,
+                      phone: app.contact.phone,
+                      linkedIn: app.contact.linkedIn,
+                      role: app.contact.role,
+                      notes: app.contact.notes,
+                      companyName: app.contact.company?.name,
+                    }
+                  : null,
               }}
               trigger={
                 <button

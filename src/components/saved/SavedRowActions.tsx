@@ -50,16 +50,7 @@ export function SavedRowActions({ row }: { row: SavedRow }) {
     deadline: row.deadline ? new Date(row.deadline) : undefined,
     favorite: row.favorite ?? false,
     companyId: row.companyId ?? "",
-    referredByRecruiter: Boolean(row.contact),
-    recruiter: row.contact
-      ? {
-          name: row.contact.name,
-          email: row.contact.email ?? undefined,
-          phone: row.contact.phone ?? undefined,
-          linkedIn: row.contact.linkedIn ?? undefined,
-          role: row.contact.role ?? undefined,
-        }
-      : undefined,
+    contactId: row.contact?.id ?? "",
   };
 
   return (

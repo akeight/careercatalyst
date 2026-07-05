@@ -21,5 +21,4 @@ export const EditApplicationSchema = z.object({
 
   referredByRecruiter: z.boolean().optional(),
   recruiter: RecruiterSchema.optional(),
-  recruiterName: z.string().optional(),
 });

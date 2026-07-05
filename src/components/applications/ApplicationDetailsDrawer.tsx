@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { ExternalLink, Info, Trash2 } from "lucide-react";
+import { ExternalLink, Info, Pencil, Trash2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
@@ -21,15 +21,23 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { trpc } from "@/lib/trpc/client";
 import { statusToVariant, type AppStatus } from "@/lib/colors";
-import EditApplicationModal from "@/components/applications/EditApplicationModal";
-import type { EditApplicationValues } from "@/components/applications/EditApplicationForm";
+import {
+  EditApplicationForm,
+  type EditApplicationValues,
+} from "@/components/applications/EditApplicationForm";
+import { ContactCard } from "@/components/contacts/ContactCard";
+import type { ContactType } from "@/lib/contactTypes";
 
 export type ApplicationDetails = {
   id: string;
@@ -48,11 +56,16 @@ export type ApplicationDetails = {
   createdAt?: string | Date | null;
   updatedAt?: string | Date | null;
   contact?: {
+    id?: string;
     name: string;
+    type?: ContactType | null;
+    title?: string | null;
     email?: string | null;
     phone?: string | null;
     linkedIn?: string | null;
     role?: string | null;
+    notes?: string | null;
+    companyName?: string | null;
   } | null;
 };
 
@@ -92,6 +105,7 @@ export function ApplicationDetailsDrawer({
   trigger?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const utils = trpc.useUtils();
 
@@ -120,16 +134,7 @@ export function ApplicationDetailsDrawer({
     deadline: application.deadline ? new Date(application.deadline) : undefined,
     favorite: application.favorite ?? false,
     companyId: application.companyId ?? "",
-    referredByRecruiter: Boolean(application.contact),
-    recruiter: application.contact
-      ? {
-          name: application.contact.name,
-          email: application.contact.email ?? undefined,
-          phone: application.contact.phone ?? undefined,
-          linkedIn: application.contact.linkedIn ?? undefined,
-          role: application.contact.role ?? undefined,
-        }
-      : undefined,
+    contactId: application.contact?.id ?? "",
   };
 
   return (
@@ -141,20 +146,55 @@ export function ApplicationDetailsDrawer({
           </Button>
         )}
       </SheetTrigger>
-      <SheetContent className="w-full gap-0 overflow-hidden p-5 sm:max-w-xl">
+      <SheetContent className="w-full gap-0 overflow-hidden p-5 sm:max-w-2xl">
         <SheetHeader className="shrink-0 border-b p-4 pr-10">
           <SheetTitle className="text-xl">{application.title}</SheetTitle>
           <SheetDescription>
             {application.companyName || "Unknown company"}
           </SheetDescription>
-          <div className="flex flex-wrap items-center gap-2 pt-2">
-            <Badge variant={statusToVariant[application.status]}>
-              {application.status.toLowerCase()}
-            </Badge>
-            <Badge variant="outline">{typeLabels[application.type]}</Badge>
-            {application.favorite && (
-              <Badge variant="secondary">Favorite</Badge>
-            )}
+          <div className="flex items-center justify-between gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant={statusToVariant[application.status]}>
+                {application.status.toLowerCase()}
+              </Badge>
+              <Badge variant="outline">{typeLabels[application.type]}</Badge>
+              {application.favorite && (
+                <Badge variant="secondary">Favorite</Badge>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setEditOpen(true)}
+                    aria-label="Edit application"
+                  >
+                    <Pencil className="size-4" />
+                    <span className="sr-only">Edit application</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Edit</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => setConfirmOpen(true)}
+                    aria-label="Delete application"
+                  >
+                    <Trash2 className="size-4" />
+                    <span className="sr-only">Delete application</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Delete</TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </SheetHeader>
 
@@ -275,90 +315,32 @@ export function ApplicationDetailsDrawer({
             </section>
 
             {application.contact && (
-              <section className="grid gap-3 rounded-lg border p-4">
-                <h3 className="text-sm font-semibold">Recruiter / Contact</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <DetailRow label="Name" value={application.contact.name} />
-                  <DetailRow
-                    label="Role"
-                    value={application.contact.role || "—"}
-                  />
-                  <DetailRow
-                    label="Email"
-                    value={
-                      application.contact.email ? (
-                        <a
-                          href={`mailto:${application.contact.email}`}
-                          className="text-primary hover:underline"
-                        >
-                          {application.contact.email}
-                        </a>
-                      ) : (
-                        "—"
-                      )
-                    }
-                  />
-                  <DetailRow
-                    label="Phone"
-                    value={
-                      application.contact.phone ? (
-                        <a
-                          href={`tel:${application.contact.phone}`}
-                          className="text-primary hover:underline"
-                        >
-                          {application.contact.phone}
-                        </a>
-                      ) : (
-                        "—"
-                      )
-                    }
-                  />
-                  <DetailRow
-                    label="LinkedIn"
-                    value={
-                      application.contact.linkedIn ? (
-                        <a
-                          href={application.contact.linkedIn}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-primary hover:underline"
-                        >
-                          Profile
-                          <ExternalLink className="size-3.5" />
-                        </a>
-                      ) : (
-                        "—"
-                      )
-                    }
-                  />
+              <section className="grid gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold">Helpful contact</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Someone connected to this opportunity.
+                  </p>
                 </div>
+                <ContactCard contact={application.contact} />
               </section>
             )}
           </div>
         </div>
-
-        <SheetFooter className="shrink-0 border-t bg-background">
-          <div className="mx-auto flex w-full max-w-md flex-col gap-2 sm:flex-row">
-            <EditApplicationModal
-              applicationId={application.id}
-              defaultValues={editDefaults}
-              trigger={
-                <Button variant="outline" className="w-full">
-                  Edit
-                </Button>
-              }
-            />
-            <Button
-              variant="destructive"
-              className="w-full"
-              onClick={() => setConfirmOpen(true)}
-            >
-              <Trash2 className="size-4" />
-              Delete
-            </Button>
-          </div>
-        </SheetFooter>
       </SheetContent>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Application</DialogTitle>
+          </DialogHeader>
+          <EditApplicationForm
+            applicationId={application.id}
+            defaultValues={editDefaults}
+            onClose={() => setEditOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>

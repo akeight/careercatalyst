@@ -5,8 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { z } from "zod";
 import { trpc } from "@/lib/trpc/client";
-import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import {
@@ -38,6 +36,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils/utils";
 import { Status } from "@prisma/client";
 import { TestCombobox } from "@/components/applications/TestCombobox";
+import { ContactCombobox } from "@/components/contacts/ContactCombobox";
 import { toast } from "sonner";
 
 type AddApplicationValues = z.infer<typeof AddApplicationSchema>;
@@ -52,6 +51,7 @@ const defaultValues: Partial<AddApplicationValues> = {
   notes: "",
   favorite: false,
   companyId: "",
+  contactId: "",
 };
 
 export function AddApplicationForm({
@@ -74,6 +74,10 @@ export function AddApplicationForm({
     onSuccess: async () => {
       form.reset();
       await utils.application.getAll.invalidate();
+      await utils.application.getFavorites.invalidate();
+      await utils.application.getSaved.invalidate();
+      await utils.application.getStats.invalidate();
+      await utils.application.getUpcomingDeadlines.invalidate();
       onSuccess?.();
       toast.success("Internship added successfully!");
     },
@@ -337,96 +341,25 @@ export function AddApplicationForm({
 
         <FormField
           control={form.control}
-          name="referredByRecruiter"
+          name="contactId"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="rounded-xl border bg-muted/20 p-4">
+              <FormLabel>Helpful contact</FormLabel>
+              <p className="text-sm text-muted-foreground">
+                Link someone from your contacts who could help with this
+                opportunity.
+              </p>
               <FormControl>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={field.value}
-                    onChange={(e) => field.onChange(e.target.checked)}
-                  />
-                  <span>Referred by recruiter?</span>
-                </label>
+                <ContactCombobox
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  companyId={form.watch("companyId")}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {form.watch("referredByRecruiter") && (
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="recruiterName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Recruiter Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Jane Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.linkedIn"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>LinkedIn</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://linkedin.com/in/..."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="jane@example.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recruiter.phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      international
-                      defaultCountry="US"
-                      placeholder="Enter phone number"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        )}
 
         <FormField
           control={form.control}
