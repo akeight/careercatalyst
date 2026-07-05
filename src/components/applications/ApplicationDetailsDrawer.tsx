@@ -31,7 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { trpc } from "@/lib/trpc/client";
-import { statusToVariant, type AppStatus } from "@/lib/colors";
+import { statusBadgeStyle, type AppStatus } from "@/lib/colors";
 import {
   EditApplicationForm,
   type EditApplicationValues,
@@ -154,7 +154,10 @@ export function ApplicationDetailsDrawer({
           </SheetDescription>
           <div className="flex items-center justify-between gap-3 pt-2">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant={statusToVariant[application.status]}>
+              <Badge
+                style={statusBadgeStyle(application.status)}
+                className="border-transparent capitalize"
+              >
                 {application.status.toLowerCase()}
               </Badge>
               <Badge variant="outline">{typeLabels[application.type]}</Badge>

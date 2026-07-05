@@ -21,7 +21,7 @@
 - **tRPC** API layer
 - **ShadCN/UI** Tailwind CSS components
 - **React Hook Form + Zod** for validation
-- **Auth.js** + **GitHub OAuth** for authentication
+- **Auth.js** + **GitHub, Google, and LinkedIn OAuth** for authentication
 
 ## 📸 Screenshots
 
@@ -62,6 +62,25 @@ Install dependencies:
 
 ```bash
 npm install
+```
+
+Configure authentication environment variables:
+
+```bash
+AUTH_SECRET=
+AUTH_URL=http://localhost:3000
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+LINKEDIN_CLIENT_ID=
+LINKEDIN_CLIENT_SECRET=
+
+# Local development only. Defaults are dev@example.com / password.
+DEV_AUTH_EMAIL=dev@example.com
+DEV_AUTH_PASSWORD=password
+DEV_AUTH_NAME=Dev User
 ```
 
 Run the dev server:

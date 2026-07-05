@@ -1,6 +1,6 @@
 "use client";
 
-import { isAfter, startOfWeek } from "date-fns";
+import { Flame } from "lucide-react";
 
 import {
   Card,
@@ -11,21 +11,20 @@ import {
 } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/client";
 
-const WEEKLY_GOAL = 5;
+const FALLBACK_GOAL = 5;
 
 export default function WeeklyGoalCard() {
-  const { data } = trpc.application.getAll.useQuery();
+  const { data } = trpc.profile.get.useQuery();
 
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
-  const thisWeek = (data ?? []).filter(
-    (app) => app.createdAt && isAfter(new Date(app.createdAt), weekStart),
-  ).length;
+  const weeklyGoal = data?.weeklyGoal ?? FALLBACK_GOAL;
+  const thisWeek = data?.thisWeekCount ?? 0;
+  const streak = data?.streak ?? 0;
 
-  const ratio = Math.min(1, thisWeek / WEEKLY_GOAL);
+  const ratio = weeklyGoal > 0 ? Math.min(1, thisWeek / weeklyGoal) : 0;
   const radius = 46;
   const circumference = 2 * Math.PI * radius;
   const dash = circumference * ratio;
-  const reached = thisWeek >= WEEKLY_GOAL;
+  const reached = thisWeek >= weeklyGoal;
 
   return (
     <Card className="w-full h-full">
@@ -34,10 +33,10 @@ export default function WeeklyGoalCard() {
         <CardDescription>
           {reached
             ? "Goal reached. Nice work this week!"
-            : `${WEEKLY_GOAL - thisWeek} more to hit your weekly target.`}
+            : `${weeklyGoal - thisWeek} more to hit your weekly target.`}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 items-center justify-center">
+      <CardContent className="flex flex-1 flex-col items-center justify-center gap-4">
         <div className="relative flex items-center justify-center">
           <svg width="120" height="120" viewBox="0 0 120 120">
             <circle
@@ -66,10 +65,17 @@ export default function WeeklyGoalCard() {
               {thisWeek}
             </span>
             <span className="text-xs text-muted-foreground">
-              of {WEEKLY_GOAL}
+              of {weeklyGoal}
             </span>
           </div>
         </div>
+
+        {streak > 0 && (
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Flame className="size-4 text-primary" />
+            <span>{streak}-week streak</span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

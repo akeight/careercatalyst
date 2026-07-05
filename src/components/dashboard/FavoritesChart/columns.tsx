@@ -6,7 +6,7 @@ import { format } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { statusToVariant, type AppStatus } from "@/lib/colors";
+import { statusBadgeStyle, type AppStatus } from "@/lib/colors";
 import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 import { FavoriteRowActions } from "./FavoriteRowActions";
 import type { ContactType } from "@/lib/contactTypes";
@@ -81,8 +81,8 @@ export const columns: ColumnDef<FavoriteRow>[] = [
     header: "Status",
     cell: ({ row }) => (
       <Badge
-        variant={statusToVariant[row.original.status]}
-        className="capitalize"
+        style={statusBadgeStyle(row.original.status)}
+        className="border-transparent capitalize"
       >
         {row.original.status.toLowerCase()}
       </Badge>

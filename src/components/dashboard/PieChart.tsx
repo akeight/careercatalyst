@@ -29,27 +29,27 @@ const chartConfig = {
   },
   saved: {
     label: "Saved",
-    color: "var(--chart-1)",
+    color: "var(--status-saved)",
   },
   applied: {
     label: "Applied",
-    color: "var(--chart-2)",
+    color: "var(--status-applied)",
   },
   interview: {
     label: "Interview",
-    color: "var(--chart-3)",
+    color: "var(--status-interview)",
   },
   pending: {
     label: "Pending",
-    color: "var(--chart-4)",
+    color: "var(--status-pending)",
   },
   offer: {
     label: "Offer",
-    color: "var(--chart-5)",
+    color: "var(--status-offer)",
   },
   rejected: {
     label: "Rejected",
-    color: "var(--chart-6)",
+    color: "var(--status-rejected)",
   },
 } satisfies ChartConfig;
 

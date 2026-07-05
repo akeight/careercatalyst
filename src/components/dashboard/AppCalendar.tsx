@@ -7,7 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
-import { statusToVariant } from "@/lib/colors";
+import { statusBadgeStyle } from "@/lib/colors";
 import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 
 export default function AppCalendar() {
@@ -72,8 +72,8 @@ export default function AppCalendar() {
                   {app.company?.name ?? "Unknown company"}
                 </p>
                 <Badge
-                  variant={statusToVariant[app.status]}
-                  className="w-fit text-[10px]"
+                  style={statusBadgeStyle(app.status)}
+                  className="w-fit border-transparent text-[10px]"
                 >
                   {app.status}
                 </Badge>

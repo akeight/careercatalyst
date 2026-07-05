@@ -1,4 +1,5 @@
 // lib/colors.ts
+import type { CSSProperties } from "react";
 import { VariantProps } from "class-variance-authority";
 import { badgeVariants } from "@/components/ui/badge";
 
@@ -12,17 +13,17 @@ export type AppStatus =
   | "OFFER"
   | "REJECTED";
 
-// 1) Status -> Badge variant (UI semantics)
-export const statusToVariant: Record<AppStatus, BadgeVariant> = {
-  SAVED: "secondary",
-  APPLIED: "default",
-  INTERVIEW: "outline",
-  PENDING: "secondary",
-  OFFER: "destructive",
-  REJECTED: "default",
+// 1) Status -> dedicated theme token (defined in globals.css, hue-tuned per mode)
+const statusToken: Record<AppStatus, string> = {
+  SAVED: "status-saved",
+  APPLIED: "status-applied",
+  INTERVIEW: "status-interview",
+  PENDING: "status-pending",
+  OFFER: "status-offer",
+  REJECTED: "status-rejected",
 };
 
-// 2) Badge variant -> theme token (CSS var that actually exists)
+// 2) Badge variant -> theme token (kept for non-status badges)
 export const variantToToken: Record<NonNullable<BadgeVariant>, string> = {
   default: "primary",
   secondary: "secondary",
@@ -31,15 +32,29 @@ export const variantToToken: Record<NonNullable<BadgeVariant>, string> = {
 };
 
 // 3) Helper to get a CSS color value for inline styles
-// Return the CSS variable directly since your variables already contain oklch values
 export function cssColorForVariant(variant: NonNullable<BadgeVariant>) {
   const token = variantToToken[variant];
   return `var(--${token})`;
 }
 
-// Optional convenience: go straight from status -> CSS color
+// 4) Status -> CSS background color (used for kanban borders, charts, etc.)
 export function cssColorForStatus(status: AppStatus) {
-  const variant = statusToVariant[status];
-  if (!variant) return "var(--muted)"; // fallback color
-  return cssColorForVariant(variant);
+  const token = statusToken[status];
+  if (!token) return "var(--muted)"; // fallback color
+  return `var(--${token})`;
+}
+
+// 5) Status -> inline style for a colored badge (background + readable text)
+export function statusBadgeStyle(status: AppStatus): CSSProperties {
+  const token = statusToken[status];
+  if (!token) {
+    return {
+      backgroundColor: "var(--muted)",
+      color: "var(--muted-foreground)",
+    };
+  }
+  return {
+    backgroundColor: `var(--${token})`,
+    color: `var(--${token}-foreground)`,
+  };
 }

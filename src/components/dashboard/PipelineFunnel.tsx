@@ -10,10 +10,10 @@ import {
 import { trpc } from "@/lib/trpc/client";
 
 const STAGES = [
-  { key: "SAVED", label: "Saved", color: "var(--chart-1)" },
-  { key: "APPLIED", label: "Applied", color: "var(--chart-2)" },
-  { key: "INTERVIEW", label: "Interview", color: "var(--chart-3)" },
-  { key: "OFFER", label: "Offer", color: "var(--chart-5)" },
+  { key: "SAVED", label: "Saved", color: "var(--status-saved)" },
+  { key: "APPLIED", label: "Applied", color: "var(--status-applied)" },
+  { key: "INTERVIEW", label: "Interview", color: "var(--status-interview)" },
+  { key: "OFFER", label: "Offer", color: "var(--status-offer)" },
 ] as const;
 
 export default function PipelineFunnel() {

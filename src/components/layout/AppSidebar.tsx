@@ -8,6 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
+  SidebarTrigger,
+  useSidebar,
 } from "../ui/sidebar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
@@ -23,6 +25,7 @@ import { faSuitcase } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faBolt } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faHeart } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { faArrowRightFromBracket } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { faAddressCard } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -36,32 +39,32 @@ const navLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: <FontAwesomeIcon icon={faHouse} size="lg" />,
+    icon: <FontAwesomeIcon icon={faHouse} size="xl" />,
   },
   {
     label: "Applications Tracker",
     href: "/tracker",
-    icon: <FontAwesomeIcon icon={faCompass} size="lg" />,
+    icon: <FontAwesomeIcon icon={faCompass} size="xl" />,
   },
   {
     label: "Internship Search",
     href: "/search",
-    icon: <FontAwesomeIcon icon={faLaptop} size="lg" />,
+    icon: <FontAwesomeIcon icon={faLaptop} size="xl" />,
   },
   {
     label: "Saved Internships",
     href: "/saved",
-    icon: <FontAwesomeIcon icon={faBookmark} size="lg" />,
+    icon: <FontAwesomeIcon icon={faBookmark} size="xl" />,
   },
   {
     label: "Favorites",
     href: "/favorites",
-    icon: <FontAwesomeIcon icon={faHeart} size="lg" />,
+    icon: <FontAwesomeIcon icon={faHeart} size="xl" />,
   },
   {
     label: "View Calendar",
     href: "/calendar",
-    icon: <FontAwesomeIcon icon={faCalendar} size="lg" />,
+    icon: <FontAwesomeIcon icon={faCalendar} size="xl" />,
   },
   // {
   //   label: "Resume Builder",
@@ -71,7 +74,7 @@ const navLinks = [
   {
     label: "Contacts",
     href: "/contacts",
-    icon: <FontAwesomeIcon icon={faUser} size="lg" />,
+    icon: <FontAwesomeIcon icon={faUser} size="xl" />,
   },
 ];
 
@@ -79,17 +82,17 @@ const supportLinks = [
   {
     label: "NSpire AI Career Coach",
     url: "https://web.nspire.ai/",
-    icon: <FontAwesomeIcon icon={faBolt} size="lg" />,
+    icon: <FontAwesomeIcon icon={faBolt} size="xl" />,
   },
   {
     label: "Prampt Interview Practice",
     url: "https://www.pramp.com/#/",
-    icon: <FontAwesomeIcon icon={faSuitcase} size="lg" />,
+    icon: <FontAwesomeIcon icon={faSuitcase} size="xl" />,
   },
   {
     label: "Resume Template",
     url: "https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs",
-    icon: <FontAwesomeIcon icon={faFile} size="lg" />,
+    icon: <FontAwesomeIcon icon={faFile} size="xl" />,
   },
   //{
   //  label: "Settings",
@@ -107,9 +110,13 @@ const userId = "demo@example.com";
 
 export function AppSidebar() {
   const { data: session } = useSession();
+  const { state, isMobile } = useSidebar();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+  const showCollapsedTooltip = state === "collapsed" && !isMobile;
+  const sidebarToggleTooltip =
+    state === "collapsed" ? "Expand sidebar" : "Collapse sidebar";
   const themeTooltip =
     mounted && resolvedTheme === "dark" ? "Light mode" : "Dark mode";
   const user = session?.user;
@@ -124,30 +131,39 @@ export function AppSidebar() {
       .toUpperCase() || "?";
 
   return (
-    <Sidebar className="bg-sidebar border-r border-border/20 ">
-      <SidebarContent className="p-4 space-y-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t ">
+    <Sidebar
+      collapsible="icon"
+      className="bg-sidebar border-r border-border/20"
+    >
+      <SidebarContent className="space-y-6 p-4 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-4 dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none">
         {/* Logo Section */}
-        <div className="flex justify-between px-3 py-2">
-          <h2 className="text-lg font-semibold text-sidebar-foreground">
+        <div className="flex items-center justify-between gap-2 px-3 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+          <h2 className="truncate text-xl font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
             Internship Tracker
           </h2>
+          <SidebarTrigger
+            className="shrink-0 group-data-[collapsible=icon]:mx-auto"
+            title={sidebarToggleTooltip}
+            aria-label={sidebarToggleTooltip}
+          />
         </div>
 
         {/* Navigation Section */}
-        <div className="space-y-2 ">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+        <div className="space-y-2 group-data-[collapsible=icon]:w-full">
+          <SidebarGroupLabel className="px-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">
             Navigation
           </SidebarGroupLabel>
-          <div className="space-y-1 list-none">
+          <div className="space-y-1 list-none group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
             {navLinks.map((navLinks) => (
               <SidebarMenuItem key={navLinks.label} className="list-none">
                 <SidebarMenuButton
                   asChild
-                  className="w-full justify-start gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                  tooltip={navLinks.label}
+                  className="h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5"
                 >
                   <a href={navLinks.href}>
                     {navLinks.icon}
-                    <span className="text-sm font-medium">
+                    <span className="text-base font-medium">
                       {navLinks.label}
                     </span>
                   </a>
@@ -158,16 +174,17 @@ export function AppSidebar() {
         </div>
 
         {/* Tools Section */}
-        <div className="space-y-2">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+        <div className="space-y-2 group-data-[collapsible=icon]:w-full">
+          <SidebarGroupLabel className="px-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">
             Tools
           </SidebarGroupLabel>
-          <div className="space-y-1 list-none">
+          <div className="space-y-1 list-none group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
             {supportLinks.map((supportLinks) => (
               <SidebarMenuItem key={supportLinks.label} className="list-none">
                 <SidebarMenuButton
                   asChild
-                  className="w-full justify-start gap-3 px-3 py-2.5 rounded-md hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
+                  tooltip={supportLinks.label}
+                  className="h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5"
                 >
                   <a
                     href={supportLinks.url}
@@ -175,7 +192,7 @@ export function AppSidebar() {
                     rel="noopener noreferrer"
                   >
                     {supportLinks.icon}
-                    <span className="text-sm font-medium">
+                    <span className="text-base font-medium">
                       {supportLinks.label}
                     </span>
                   </a>
@@ -186,54 +203,111 @@ export function AppSidebar() {
         </div>
 
         {/* Quick Actions Section */}
-        <div className="space-y-2">
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-3">
+        <div className="space-y-2 group-data-[collapsible=icon]:hidden">
+          <SidebarGroupLabel className="px-3 text-sm font-medium uppercase tracking-wider text-muted-foreground">
             Quick Actions
           </SidebarGroupLabel>
           <div className="px-3">
             <AddApplicationModal userId={userId} />
           </div>
         </div>
+        <div className="hidden w-full justify-center group-data-[collapsible=icon]:flex">
+          <AddApplicationModal
+            userId={userId}
+            iconOnly
+            triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-5"
+          />
+        </div>
       </SidebarContent>
 
       {/* Footer with User Profile */}
-      <SidebarFooter className="p-4 mb-10 border-t border-border/20">
-        <div className="flex flex-col items-center justify-between gap-3 px-3">
-          <div className="flex shrink-0  gap-1.5">
+      <SidebarFooter className="mb-10 border-t border-border/20 p-4 group-data-[collapsible=icon]:p-2">
+        <div className="flex flex-col items-center justify-between gap-3 px-3 group-data-[collapsible=icon]:px-0">
+          <div className="flex shrink-0 gap-1.5 group-data-[collapsible=icon]:flex-col">
             <Tooltip>
               <TooltipTrigger asChild>
-                <ThemeToggle />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  asChild
+                  className="size-10 [&_svg]:size-5"
+                  aria-label="Profile"
+                >
+                  <a href="/profile">
+                    <FontAwesomeIcon icon={faAddressCard} />
+                    <span className="sr-only">Profile</span>
+                  </a>
+                </Button>
               </TooltipTrigger>
-              <TooltipContent>{themeTooltip}</TooltipContent>
+              <TooltipContent side="right" hidden={!showCollapsedTooltip}>
+                Profile
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ThemeToggle className="size-10 [&_svg]:size-5" />
+              </TooltipTrigger>
+              <TooltipContent side="right" hidden={!showCollapsedTooltip}>
+                {themeTooltip}
+              </TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  className="size-10 [&_svg]:size-5"
                   aria-label="Sign out"
                 >
                   <FontAwesomeIcon icon={faArrowRightFromBracket} />
                   <span className="sr-only">Sign out</span>
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Sign out</TooltipContent>
+              <TooltipContent side="right" hidden={!showCollapsedTooltip}>
+                Sign out
+              </TooltipContent>
             </Tooltip>
           </div>
-          <div className="flex min-w-0 items-center gap-3">
-            <Avatar className="h-8 w-8">
-              {user?.image && (
-                <AvatarImage src={user.image} alt={displayName} />
-              )}
-              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 text-sm">
+          <div className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="shrink-0 rounded-full"
+                  tabIndex={0}
+                  aria-label={
+                    displayEmail
+                      ? `${displayName}, ${displayEmail}`
+                      : displayName
+                  }
+                >
+                  <Avatar className="h-9 w-9">
+                    {user?.image && (
+                      <AvatarImage src={user.image} alt={displayName} />
+                    )}
+                    <AvatarFallback className="text-sm">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" hidden={!showCollapsedTooltip}>
+                <div className="flex flex-col">
+                  <span>{displayName}</span>
+                  {displayEmail && (
+                    <span className="text-xs text-muted-foreground">
+                      {displayEmail}
+                    </span>
+                  )}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+            <div className="min-w-0 text-base group-data-[collapsible=icon]:hidden">
               <p className="truncate font-medium text-sidebar-foreground">
                 {displayName}
               </p>
               {displayEmail && (
-                <p className="truncate text-xs text-muted-foreground">
+                <p className="truncate text-sm text-muted-foreground">
                   {displayEmail}
                 </p>
               )}

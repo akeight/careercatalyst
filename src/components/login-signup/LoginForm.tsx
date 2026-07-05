@@ -11,100 +11,300 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { fadeInUp, hoverTap, staggerContainer } from "@/lib/motion";
+import { Loader2 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import { signIn } from "next-auth/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+type ProviderId = "google" | "github" | "linkedin";
+
+const isDevAuthEnabled = process.env.NODE_ENV !== "production";
+
+const providers: Array<{
+  id: ProviderId;
+  label: string;
+  description: string;
+  icon: React.ReactNode;
+  variant: "default" | "outline";
+}> = [
+  {
+    id: "google",
+    label: "Continue with Google",
+    description: "Best for school or personal accounts",
+    icon: <GoogleIcon />,
+    variant: "default",
+  },
+  {
+    id: "github",
+    label: "Continue with GitHub",
+    description: "Use your developer profile",
+    icon: <GitHubIcon />,
+    variant: "outline",
+  },
+  {
+    id: "linkedin",
+    label: "Continue with LinkedIn",
+    description: "Connect with your professional identity",
+    icon: <LinkedInIcon />,
+    variant: "outline",
+  },
+];
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const reduceMotion = useReducedMotion();
+  const [pendingProvider, setPendingProvider] = useState<ProviderId | null>(
+    null,
+  );
+  const [devPending, setDevPending] = useState(false);
+  const [devEmail, setDevEmail] = useState("dev@example.com");
+  const [devPassword, setDevPassword] = useState("password");
+  const [resetOnboarding, setResetOnboarding] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [configuredProviders, setConfiguredProviders] =
+    useState<Set<string> | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetch("/api/auth/providers")
+      .then((response) => response.json())
+      .then((data: Record<string, unknown>) => {
+        if (mounted) {
+          setConfiguredProviders(new Set(Object.keys(data)));
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setConfiguredProviders(new Set());
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleProviderSignIn = async (provider: ProviderId) => {
+    setError(null);
+    setPendingProvider(provider);
+
+    try {
+      await signIn(provider, { redirectTo: "/dashboard" });
+    } catch {
+      setPendingProvider(null);
+      setError(
+        "That provider is not configured yet. Check your auth env vars.",
+      );
+    }
+  };
+
+  const handleDevSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setDevPending(true);
+    const callbackUrl = resetOnboarding ? "/onboarding" : "/dashboard";
+
+    const result = await signIn("dev-credentials", {
+      email: devEmail,
+      password: devPassword,
+      resetOnboarding: resetOnboarding ? "true" : "false",
+      redirect: false,
+      redirectTo: callbackUrl,
+    });
+
+    setDevPending(false);
+
+    if (result?.error) {
+      setError("Dev sign-in failed. Check the email and password.");
+      return;
+    }
+
+    window.location.assign(callbackUrl);
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>
-            Login with your GitHub or Google account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button
-                  onClick={() => signIn("github", { redirectTo: "/dashboard" })}
-                  variant="outline"
-                  type="button"
-                  className="w-full"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="256px"
-                    height="250px"
-                    viewBox="0 0 256 250"
+      <motion.div
+        className="flex flex-col gap-6"
+        variants={reduceMotion ? undefined : staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={reduceMotion ? undefined : fadeInUp}>
+          <Card className="overflow-hidden border-border/70 shadow-xl shadow-primary/5">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                Welcome to your tracker
+              </CardTitle>
+              <CardDescription>
+                Sign in or create an account to personalize your internship
+                search.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                {providers.map((provider) => (
+                  <motion.div
+                    key={provider.id}
+                    {...(reduceMotion ? {} : hoverTap)}
                   >
-                    <path
-                      d="M128.00106,0 C57.3172926,0 0,57.3066942 0,128.00106 C0,184.555281 36.6761997,232.535542 87.534937,249.460899 C93.9320223,250.645779 96.280588,246.684165 96.280588,243.303333 C96.280588,240.251045 96.1618878,230.167899 96.106777,219.472176 C60.4967585,227.215235 52.9826207,204.369712 52.9826207,204.369712 C47.1599584,189.574598 38.770408,185.640538 38.770408,185.640538 C27.1568785,177.696113 39.6458206,177.859325 39.6458206,177.859325 C52.4993419,178.762293 59.267365,191.04987 59.267365,191.04987 C70.6837675,210.618423 89.2115753,204.961093 96.5158685,201.690482 C97.6647155,193.417512 100.981959,187.77078 104.642583,184.574357 C76.211799,181.33766 46.324819,170.362144 46.324819,121.315702 C46.324819,107.340889 51.3250588,95.9223682 59.5132437,86.9583937 C58.1842268,83.7344152 53.8029229,70.715562 60.7532354,53.0843636 C60.7532354,53.0843636 71.5019501,49.6441813 95.9626412,66.2049595 C106.172967,63.368876 117.123047,61.9465949 128.00106,61.8978432 C138.879073,61.9465949 149.837632,63.368876 160.067033,66.2049595 C184.49805,49.6441813 195.231926,53.0843636 195.231926,53.0843636 C202.199197,70.715562 197.815773,83.7344152 196.486756,86.9583937 C204.694018,95.9223682 209.660343,107.340889 209.660343,121.315702 C209.660343,170.478725 179.716133,181.303747 151.213281,184.472614 C155.80443,188.444828 159.895342,196.234518 159.895342,208.176593 C159.895342,225.303317 159.746968,239.087361 159.746968,243.303333 C159.746968,246.709601 162.05102,250.70089 168.53925,249.443941 C219.370432,232.499507 256,184.536204 256,128.00106 C256,57.3066942 198.691187,0 128.00106,0 Z M47.9405593,182.340212 C47.6586465,182.976105 46.6581745,183.166873 45.7467277,182.730227 C44.8183235,182.312656 44.2968914,181.445722 44.5978808,180.80771 C44.8734344,180.152739 45.876026,179.97045 46.8023103,180.409216 C47.7328342,180.826786 48.2627451,181.702199 47.9405593,182.340212 Z M54.2367892,187.958254 C53.6263318,188.524199 52.4329723,188.261363 51.6232682,187.366874 C50.7860088,186.474504 50.6291553,185.281144 51.2480912,184.70672 C51.8776254,184.140775 53.0349512,184.405731 53.8743302,185.298101 C54.7115892,186.201069 54.8748019,187.38595 54.2367892,187.958254 Z M58.5562413,195.146347 C57.7719732,195.691096 56.4895886,195.180261 55.6968417,194.042013 C54.9125733,192.903764 54.9125733,191.538713 55.713799,190.991845 C56.5086651,190.444977 57.7719732,190.936735 58.5753181,192.066505 C59.3574669,193.22383 59.3574669,194.58888 58.5562413,195.146347 Z M65.8613592,203.471174 C65.1597571,204.244846 63.6654083,204.03712 62.5716717,202.981538 C61.4524999,201.94927 61.1409122,200.484596 61.8446341,199.710926 C62.5547146,198.935137 64.0575422,199.15346 65.1597571,200.200564 C66.2704506,201.230712 66.6095936,202.705984 65.8613592,203.471174 Z M75.3025151,206.281542 C74.9930474,207.284134 73.553809,207.739857 72.1039724,207.313809 C70.6562556,206.875043 69.7087748,205.700761 70.0012857,204.687571 C70.302275,203.678621 71.7478721,203.20382 73.2083069,203.659543 C74.6539041,204.09619 75.6035048,205.261994 75.3025151,206.281542 Z M86.046947,207.473627 C86.0829806,208.529209 84.8535871,209.404622 83.3316829,209.4237 C81.8013,209.457614 80.563428,208.603398 80.5464708,207.564772 C80.5464708,206.498591 81.7483088,205.631657 83.2786917,205.606221 C84.8005962,205.576546 86.046947,206.424403 86.046947,207.473627 Z M96.6021471,207.069023 C96.7844366,208.099171 95.7267341,209.156872 94.215428,209.438785 C92.7295577,209.710099 91.3539086,209.074206 91.1652603,208.052538 C90.9808515,206.996955 92.0576306,205.939253 93.5413813,205.66582 C95.054807,205.402984 96.4092596,206.021919 96.6021471,207.069023 Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Login with GitHub
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Login with Google
-                </Button>
-              </div>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
-                </span>
-              </div>
-              <div className="grid gap-6">
-                <div className="grid gap-3">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                    <Button
+                      onClick={() => handleProviderSignIn(provider.id)}
+                      variant={provider.variant}
+                      type="button"
+                      disabled={
+                        Boolean(pendingProvider) ||
+                        devPending ||
+                        configuredProviders?.has(provider.id) === false
+                      }
+                      className="h-auto w-full justify-start gap-3 px-4 py-3 text-left"
                     >
-                      Forgot your password?
-                    </a>
+                      <span className="flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground">
+                        {provider.icon}
+                      </span>
+                      <span className="grid gap-0.5">
+                        <span className="font-medium">{provider.label}</span>
+                        <span
+                          className={cn(
+                            "text-xs",
+                            provider.variant === "default"
+                              ? "text-primary-foreground/80"
+                              : "text-muted-foreground",
+                          )}
+                        >
+                          {configuredProviders?.has(provider.id) === false
+                            ? "Add provider env vars to enable locally"
+                            : provider.description}
+                        </span>
+                      </span>
+                      {pendingProvider === provider.id && (
+                        <Loader2 className="ml-auto size-4 animate-spin" />
+                      )}
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+
+              {isDevAuthEnabled && (
+                <form
+                  onSubmit={handleDevSignIn}
+                  className="mt-6 rounded-2xl border border-dashed bg-muted/40 p-4"
+                >
+                  <div className="mb-4">
+                    <p className="text-sm font-medium">Local dev account</p>
+                    <p className="text-xs text-muted-foreground">
+                      Use this to refine onboarding without OAuth setup.
+                    </p>
                   </div>
-                  <Input id="password" type="password" required />
-                </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
-              </div>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
-                  Sign up
-                </a>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
+                  <div className="grid gap-3">
+                    <div className="grid gap-2">
+                      <Label htmlFor="dev-email">Email</Label>
+                      <Input
+                        id="dev-email"
+                        type="email"
+                        value={devEmail}
+                        onChange={(event) => setDevEmail(event.target.value)}
+                        autoComplete="email"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="dev-password">Password</Label>
+                      <Input
+                        id="dev-password"
+                        type="password"
+                        value={devPassword}
+                        onChange={(event) => setDevPassword(event.target.value)}
+                        autoComplete="current-password"
+                      />
+                    </div>
+                    <label className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        checked={resetOnboarding}
+                        onChange={(event) =>
+                          setResetOnboarding(event.target.checked)
+                        }
+                        className="mt-0.5"
+                      />
+                      Reset onboarding for this account after sign-in
+                    </label>
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      disabled={devPending || Boolean(pendingProvider)}
+                      className="w-full"
+                    >
+                      {devPending && (
+                        <Loader2 className="size-4 animate-spin" />
+                      )}
+                      Continue with dev account
+                    </Button>
+                  </div>
+                </form>
+              )}
+
+              {error && (
+                <p className="mt-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {error}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+        <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+          By clicking continue, you agree to our{" "}
+          <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </div>
+      </motion.div>
     </div>
+  );
+}
+
+function GoogleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06L5.84 9.9C6.71 7.3 9.14 5.38 12 5.38z"
+      />
+    </svg>
+  );
+}
+
+function GitHubIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.92.58.1.79-.25.79-.56v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.16 1.18A10.93 10.93 0 0 1 12 6.09c.98 0 1.96.13 2.88.39 2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.79.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"
+      />
+    </svg>
+  );
+}
+
+function LinkedInIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+      <path
+        fill="#0A66C2"
+        d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.1 20.45H3.53V9H7.1v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.23 0z"
+      />
+    </svg>
   );
 }
