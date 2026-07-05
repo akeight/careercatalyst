@@ -10,6 +10,12 @@ export const KANBAN_STATUSES: Status[] = [
   "REJECTED",
 ];
 
+// Statuses that get their own board column. REJECTED remains a valid status
+// everywhere else (dashboard, stats, edit form) but is hidden from the board.
+export const KANBAN_COLUMN_STATUSES: Status[] = KANBAN_STATUSES.filter(
+  (s) => s !== "REJECTED",
+);
+
 // Column id (lowercased status) -> Status enum value.
 export const columnIdToStatus = (columnId: string): Status | undefined =>
   KANBAN_STATUSES.find((s) => s.toLowerCase() === columnId.toLowerCase());

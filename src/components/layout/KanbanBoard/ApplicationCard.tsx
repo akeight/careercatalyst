@@ -19,6 +19,8 @@ import {
   faTrash,
   faPencil,
 } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { Calendar, MapPin } from "lucide-react";
+import { format } from "date-fns";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
 import { statusBadgeStyle, cssColorForStatus } from "@/lib/colors";
@@ -65,33 +67,20 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
     contactId: app.contactId ?? app.contact?.id ?? "",
   };
 
+  const deadlineLabel = app.deadline
+    ? format(new Date(app.deadline), "MMM d")
+    : null;
+
   return (
-    <div className="border-left-primary- *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="group">
       <Card
-        className="w-49 h-35 mb-0.5 my-1.5 shadow-2xs"
+        className="w-full gap-2 rounded-lg border-l-4 bg-gradient-to-t from-muted/20 to-card py-3 shadow-xs transition duration-150 hover:-translate-y-0.5 hover:shadow-md"
         style={{
-          borderLeft: `6px solid ${cssColorForStatus(app.status)}`,
+          borderLeftColor: cssColorForStatus(app.status),
         }}
       >
-        <CardHeader>
-          <CardTitle className="font-small font-sans text-foreground">
-            {app.title}
-          </CardTitle>
-          <Badge
-            style={statusBadgeStyle(app.status)}
-            className="border-transparent text-[11px] px-1.75 py-0.75"
-          >
-            {app.status}
-          </Badge>
-        </CardHeader>
-        <CardContent className="text-[12px] flex items-center justify-between font-sans">
-          {app.company?.name && (
-            <p>
-              <strong>{app.company.name}</strong>
-            </p>
-          )}
-
-          <div className="flex items-center gap-3">
+        <CardHeader className="gap-1.5 px-3">
+          <CardTitle className="font-sans text-sm leading-snug text-foreground">
             <ApplicationDetailsDrawer
               application={{
                 id: app.id,
@@ -131,13 +120,49 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
                   onPointerDown={stopDrag}
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
-                  className="text-[11px] font-medium text-primary hover:underline"
+                  className="text-left hover:underline"
                 >
-                  Details
+                  {app.title}
                 </button>
               }
             />
+          </CardTitle>
 
+          <Badge
+            style={statusBadgeStyle(app.status)}
+            className="w-fit border-transparent px-1.75 py-0.75 text-[11px]"
+          >
+            {app.status}
+          </Badge>
+        </CardHeader>
+
+        <CardContent className="flex items-end justify-between gap-2 px-3 font-sans text-xs">
+          <div className="flex min-w-0 flex-col gap-1.5">
+            {app.company?.name && (
+              <p className="truncate font-semibold text-foreground">
+                {app.company.name}
+              </p>
+            )}
+
+            {(deadlineLabel || app.location) && (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-muted-foreground">
+                {deadlineLabel && (
+                  <span className="flex items-center gap-1">
+                    <Calendar className="size-3" />
+                    {deadlineLabel}
+                  </span>
+                )}
+                {app.location && (
+                  <span className="flex items-center gap-1">
+                    <MapPin className="size-3" />
+                    {app.location}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex shrink-0 items-center gap-2 opacity-70 transition-opacity group-hover:opacity-100">
             <EditApplicationModal
               applicationId={app.id}
               defaultValues={editDefaults}
@@ -148,9 +173,9 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
                   onPointerDown={stopDrag}
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <FontAwesomeIcon icon={faPencil} size="lg" />
+                  <FontAwesomeIcon icon={faPencil} />
                 </button>
               }
             />
@@ -164,9 +189,9 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
               onPointerDown={stopDrag}
               draggable={false}
               onDragStart={(e) => e.preventDefault()}
-              className="text-muted-foreground hover:text-destructive"
+              className="text-muted-foreground transition-colors hover:text-destructive"
             >
-              <FontAwesomeIcon icon={faTrash} size="lg" />
+              <FontAwesomeIcon icon={faTrash} />
             </button>
           </div>
         </CardContent>
