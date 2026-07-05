@@ -10,7 +10,7 @@ export const AddApplicationSchema = z.object({
   title: z.string().min(1, "Position is required"),
   status: z.nativeEnum(Status),
   location: z.string().optional(),
-  link: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  jobUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   notes: z.string().max(1000).optional(),
   deadline: z.coerce.date().optional(),
   favorite: z.boolean().optional(),

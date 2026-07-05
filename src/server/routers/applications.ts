@@ -30,6 +30,20 @@ export const applicationRouter = router({
     });
   }),
 
+  // 🔖 Get saved internships
+  getSaved: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.application.findMany({
+      where: {
+        userId: ctx.session.user.id,
+        status: "SAVED",
+      },
+      include: {
+        company: true,
+        contact: true,
+      },
+    });
+  }),
+
   // 📊 Aggregated counts by status (for dashboard stat cards + pie chart)
   getStats: protectedProcedure.query(async ({ ctx }) => {
     const grouped = await ctx.prisma.application.groupBy({
@@ -106,19 +120,22 @@ export const applicationRouter = router({
         contactId = newContact.id;
       }
 
+      const applicationData = {
+        title: input.title,
+        status: input.status,
+        type: input.type,
+        location: input.location,
+        source: input.source,
+        jobUrl: input.jobUrl || null,
+        deadline: input.deadline ? new Date(input.deadline) : undefined,
+        favorite: input.favorite ?? false,
+        userId,
+        companyId: companyId!,
+        contactId,
+      };
+
       return ctx.prisma.application.create({
-        data: {
-          title: input.title,
-          status: input.status,
-          type: input.type,
-          location: input.location,
-          source: input.source,
-          deadline: input.deadline ? new Date(input.deadline) : undefined,
-          favorite: input.favorite ?? false,
-          userId,
-          companyId: companyId!,
-          contactId,
-        },
+        data: applicationData,
       });
     }),
 
@@ -186,19 +203,22 @@ export const applicationRouter = router({
         contactUpdate = { contact: { connect: { id: newContact.id } } };
       }
 
+      const applicationData = {
+        title: rest.title,
+        status: rest.status,
+        type: rest.type,
+        location: rest.location,
+        source: rest.source,
+        jobUrl: rest.jobUrl,
+        favorite: rest.favorite,
+        companyId: rest.companyId,
+        deadline: formattedDeadline,
+        ...contactUpdate,
+      };
+
       return ctx.prisma.application.update({
         where: { id },
-        data: {
-          title: rest.title,
-          status: rest.status,
-          type: rest.type,
-          location: rest.location,
-          source: rest.source,
-          favorite: rest.favorite,
-          companyId: rest.companyId,
-          deadline: formattedDeadline,
-          ...contactUpdate,
-        },
+        data: applicationData,
       });
     }),
 

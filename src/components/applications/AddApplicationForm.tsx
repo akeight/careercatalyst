@@ -48,7 +48,7 @@ const defaultValues: Partial<AddApplicationValues> = {
   location: "",
   status: "SAVED",
   source: "",
-  link: "",
+  jobUrl: "",
   notes: "",
   favorite: false,
   companyId: "",
@@ -256,7 +256,7 @@ export function AddApplicationForm({
 
         <FormField
           control={form.control}
-          name="link"
+          name="jobUrl"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Job Link</FormLabel>

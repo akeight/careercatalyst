@@ -57,6 +57,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
     status: app.status,
     location: app.location ?? "",
     source: app.source ?? "",
+    jobUrl: app.jobUrl ?? "",
     deadline: app.deadline ? new Date(app.deadline) : undefined,
     favorite: app.favorite ?? false,
     companyId: app.companyId ?? app.company?.id ?? "",

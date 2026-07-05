@@ -110,6 +110,7 @@ model Application {
   location  String?
   status    Status          @default(SAVED)
   source    String?
+  jobUrl    String?
   appliedAt DateTime        @default(now())
   deadline  DateTime?
   favorite  Boolean         @default(false)
