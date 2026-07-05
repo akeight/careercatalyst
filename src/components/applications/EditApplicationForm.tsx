@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -61,6 +62,7 @@ export function EditApplicationForm({
       location: "",
       source: "",
       jobUrl: "",
+      notes: "",
       favorite: false,
       companyId: "",
       ...defaultValues,
@@ -119,6 +121,7 @@ export function EditApplicationForm({
         location: values.location,
         source: values.source,
         jobUrl: values.jobUrl,
+        notes: values.notes,
         deadline: values.deadline,
         favorite: values.favorite,
         companyId,
@@ -127,6 +130,8 @@ export function EditApplicationForm({
       },
     });
   };
+
+  const notesLength = form.watch("notes")?.length ?? 0;
 
   return (
     <Form {...form}>
@@ -309,6 +314,32 @@ export function EditApplicationForm({
                   />
                 </PopoverContent>
               </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="notes"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes (Markdown supported)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="- Follow up with recruiter&#10;- Prep system design examples&#10;- Questions about the role..."
+                  className="min-h-40 resize-y"
+                  maxLength={4000}
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                <span>
+                  Supports Markdown: bullets, links, headings, checklists.
+                </span>
+                <span className="tabular-nums">{notesLength}/4000</span>
+              </div>
               <FormMessage />
             </FormItem>
           )}
