@@ -46,6 +46,7 @@ export function SavedRowActions({ row }: { row: SavedRow }) {
     location: row.location ?? "",
     source: row.source ?? "",
     jobUrl: row.jobUrl ?? "",
+    notes: row.notes ?? "",
     deadline: row.deadline ? new Date(row.deadline) : undefined,
     favorite: row.favorite ?? false,
     companyId: row.companyId ?? "",

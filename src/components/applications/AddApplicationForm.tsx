@@ -130,6 +130,8 @@ export function AddApplicationForm({
 
   if (!session?.user) return null;
 
+  const notesLength = form.watch("notes")?.length ?? 0;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -312,13 +314,22 @@ export function AddApplicationForm({
           name="notes"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Notes</FormLabel>
+              <FormLabel>Notes (Markdown supported)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Any details you want to remember..."
+                  placeholder="- Follow up with recruiter&#10;- Prep system design examples&#10;- Questions about the role..."
+                  className="min-h-40 resize-y"
+                  maxLength={4000}
                   {...field}
+                  value={field.value ?? ""}
                 />
               </FormControl>
+              <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                <span>
+                  Supports Markdown: bullets, links, headings, checklists.
+                </span>
+                <span className="tabular-nums">{notesLength}/4000</span>
+              </div>
               <FormMessage />
             </FormItem>
           )}

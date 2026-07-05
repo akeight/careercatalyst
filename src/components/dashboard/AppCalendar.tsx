@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
 import { statusToVariant } from "@/lib/colors";
+import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 
 export default function AppCalendar() {
   const { data: apps } = trpc.application.getAll.useQuery();
@@ -76,6 +77,31 @@ export default function AppCalendar() {
                 >
                   {app.status}
                 </Badge>
+                <ApplicationDetailsDrawer
+                  application={{
+                    id: app.id,
+                    type: app.type,
+                    title: app.title,
+                    companyId: app.companyId,
+                    companyName: app.company?.name ?? "Unknown company",
+                    location: app.location,
+                    status: app.status,
+                    source: app.source,
+                    jobUrl: app.jobUrl,
+                    notes: app.notes,
+                    appliedAt: app.appliedAt,
+                    deadline: app.deadline,
+                    favorite: app.favorite,
+                    createdAt: app.createdAt,
+                    updatedAt: app.updatedAt,
+                    contact: app.contact ?? null,
+                  }}
+                  trigger={
+                    <button className="w-fit text-xs font-medium text-primary hover:underline">
+                      View details
+                    </button>
+                  }
+                />
               </div>
             ))
           )}

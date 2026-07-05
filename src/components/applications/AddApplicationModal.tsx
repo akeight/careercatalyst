@@ -24,7 +24,7 @@ export default function AddApplicationModal({ userId }: { userId: string }) {
           Add Internship
         </button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add New Internship</DialogTitle>
         </DialogHeader>

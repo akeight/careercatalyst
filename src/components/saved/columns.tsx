@@ -1,12 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, ArrowUpRight } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { format } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { statusToVariant, type AppStatus } from "@/lib/colors";
+import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 import { SavedRowActions } from "./SavedRowActions";
 
 export type SavedRow = {
@@ -18,9 +19,13 @@ export type SavedRow = {
   location: string | null;
   source: string | null;
   jobUrl: string | null;
+  notes: string | null;
+  appliedAt: string | Date | null;
   deadline: string | Date | null;
   status: AppStatus;
   favorite: boolean;
+  createdAt: string | Date | null;
+  updatedAt: string | Date | null;
   contact: {
     name: string;
     email?: string | null;
@@ -127,24 +132,19 @@ export const savedColumns: ColumnDef<SavedRow>[] = [
     },
   },
   {
-    id: "apply",
-    header: "Apply",
+    id: "details",
+    header: "Details",
     enableSorting: false,
-    cell: ({ row }) => {
-      const url = row.original.jobUrl;
-      if (!url) return <span className="text-muted-foreground">—</span>;
-      return (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-        >
-          Apply
-          <ArrowUpRight className="h-3.5 w-3.5" />
-        </a>
-      );
-    },
+    cell: ({ row }) => (
+      <ApplicationDetailsDrawer
+        application={row.original}
+        trigger={
+          <button className="font-medium text-primary hover:underline">
+            View details
+          </button>
+        }
+      />
+    ),
   },
   {
     id: "actions",
