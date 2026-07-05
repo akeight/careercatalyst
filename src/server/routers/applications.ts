@@ -93,15 +93,19 @@ export const applicationRouter = router({
 
       // Create recruiter contact if present
       if (input.recruiter) {
+        const contactData = {
+          name: input.recruiter.name,
+          email: input.recruiter.email,
+          phone: input.recruiter.phone,
+          linkedIn: normalizeLinkedIn(input.recruiter.linkedIn),
+          role: input.recruiter.role ?? "Recruiter",
+          type: "RECRUITER" as const,
+          userId,
+          companyId: companyId!,
+        };
+
         const newContact = await ctx.prisma.contact.create({
-          data: {
-            name: input.recruiter.name,
-            email: input.recruiter.email,
-            phone: input.recruiter.phone,
-            linkedIn: normalizeLinkedIn(input.recruiter.linkedIn),
-            role: input.recruiter.role ?? "Recruiter",
-            companyId: companyId!,
-          },
+          data: contactData,
         });
         contactId = newContact.id;
       }
@@ -159,28 +163,36 @@ export const applicationRouter = router({
 
       // ✏️ CASE 2: Recruiter checked and a contact already exists → update it
       if (referredByRecruiter && recruiter && existing.contactId) {
+        const contactData = {
+          name: recruiter.name ?? undefined,
+          email: recruiter.email ?? undefined,
+          phone: recruiter.phone ?? undefined,
+          linkedIn: normalizeLinkedIn(recruiter.linkedIn) ?? undefined,
+          type: "RECRUITER" as const,
+          userId: ctx.session.user.id,
+        };
+
         await ctx.prisma.contact.update({
           where: { id: existing.contactId },
-          data: {
-            name: recruiter.name ?? undefined,
-            email: recruiter.email ?? undefined,
-            phone: recruiter.phone ?? undefined,
-            linkedIn: normalizeLinkedIn(recruiter.linkedIn) ?? undefined,
-          },
+          data: contactData,
         });
       }
 
       // ➕ CASE 3: Recruiter checked but no contact yet → create one
       if (referredByRecruiter && recruiter && !existing.contactId) {
+        const contactData = {
+          name: recruiter.name,
+          email: recruiter.email,
+          phone: recruiter.phone,
+          linkedIn: normalizeLinkedIn(recruiter.linkedIn),
+          role: recruiter.role ?? "Recruiter",
+          type: "RECRUITER" as const,
+          userId: ctx.session.user.id,
+          companyId: rest.companyId ?? existing.companyId,
+        };
+
         const newContact = await ctx.prisma.contact.create({
-          data: {
-            name: recruiter.name,
-            email: recruiter.email,
-            phone: recruiter.phone,
-            linkedIn: normalizeLinkedIn(recruiter.linkedIn),
-            role: recruiter.role ?? "Recruiter",
-            companyId: rest.companyId ?? existing.companyId,
-          },
+          data: contactData,
         });
 
         contactUpdate = { contact: { connect: { id: newContact.id } } };
