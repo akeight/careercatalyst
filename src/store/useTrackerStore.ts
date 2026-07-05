@@ -11,8 +11,12 @@ export type Application = {
   status: Status;
   source?: string | null;
   jobUrl?: string | null;
+  notes?: string | null;
+  appliedAt?: string | Date | null;
   deadline?: string | Date | null;
   favorite?: boolean;
+  createdAt?: string | Date | null;
+  updatedAt?: string | Date | null;
   companyId?: string;
   company?: { id?: string; name: string } | null;
   contactId?: string | null;

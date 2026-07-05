@@ -11,7 +11,10 @@ export const AddApplicationSchema = z.object({
   status: z.nativeEnum(Status),
   location: z.string().optional(),
   jobUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  notes: z.string().max(1000).optional(),
+  notes: z
+    .string()
+    .max(4000, "Notes must be 4000 characters or fewer")
+    .optional(),
   deadline: z.coerce.date().optional(),
   favorite: z.boolean().optional(),
   source: z.string().optional(),

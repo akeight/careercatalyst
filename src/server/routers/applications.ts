@@ -81,7 +81,10 @@ export const applicationRouter = router({
         deadline: { gte: startOfToday },
       },
       orderBy: { deadline: "asc" },
-      include: { company: true },
+      include: {
+        company: true,
+        contact: true,
+      },
     });
   }),
 
@@ -137,6 +140,8 @@ export const applicationRouter = router({
         companyId: companyId!,
         contactId,
       };
+
+      Object.assign(applicationData, { notes: input.notes || null });
 
       return ctx.prisma.application.create({
         data: applicationData,
@@ -227,6 +232,10 @@ export const applicationRouter = router({
         deadline: formattedDeadline,
         ...contactUpdate,
       };
+
+      if (rest.notes !== undefined) {
+        Object.assign(applicationData, { notes: rest.notes || null });
+      }
 
       return ctx.prisma.application.update({
         where: { id },
