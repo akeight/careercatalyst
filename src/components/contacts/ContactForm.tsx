@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { ContactType } from "@prisma/client";
 
 import {
   ContactFormSchema,
   type ContactFormValues,
 } from "@/lib/validations/ContactFormSchema";
+import { ContactType, contactTypeLabels } from "@/lib/contactTypes";
 import { trpc } from "@/lib/trpc/client";
 import {
   Form,
@@ -33,15 +33,6 @@ import {
 } from "@/components/ui/select";
 import { TestCombobox } from "@/components/applications/TestCombobox";
 
-const typeLabels: Record<ContactType, string> = {
-  RECRUITER: "Recruiter",
-  REFERRAL: "Referral",
-  CONNECTION: "Connection",
-  MENTOR: "Mentor",
-  HIRING_MANAGER: "Hiring Manager",
-  OTHER: "Other",
-};
-
 export function ContactForm({
   contactId,
   defaultValues,
@@ -49,7 +40,7 @@ export function ContactForm({
 }: {
   contactId?: string;
   defaultValues?: Partial<ContactFormValues>;
-  onSuccess?: () => void;
+  onSuccess?: (contact?: { id: string }) => void;
 }) {
   const isEdit = Boolean(contactId);
   const [newCompanyName, setNewCompanyName] = useState("");
@@ -89,20 +80,20 @@ export function ContactForm({
   };
 
   const createContact = trpc.contact.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (contact) => {
       invalidate();
       toast.success("Contact added!");
       form.reset();
-      onSuccess?.();
+      onSuccess?.(contact);
     },
     onError: () => toast.error("Failed to add contact."),
   });
 
   const updateContact = trpc.contact.update.useMutation({
-    onSuccess: () => {
+    onSuccess: (contact) => {
       invalidate();
       toast.success("Contact updated!");
-      onSuccess?.();
+      onSuccess?.(contact);
     },
     onError: () => toast.error("Failed to update contact."),
   });
@@ -162,7 +153,7 @@ export function ContactForm({
                 <SelectContent>
                   {Object.values(ContactType).map((t) => (
                     <SelectItem key={t} value={t}>
-                      {typeLabels[t]}
+                      {contactTypeLabels[t]}
                     </SelectItem>
                   ))}
                 </SelectContent>
