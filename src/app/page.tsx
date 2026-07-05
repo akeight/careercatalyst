@@ -47,21 +47,21 @@ export default function HomePage() {
   return (
     <div className="flex items-start w-full justify-center flex-wrap mx-6 pt-8">
       <div className="size-full max-w-lg items-center justify-center overflow-hidden pt-8">
-        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
           <p className="text-[2.5rem] font-semibold">
             The <AuroraText> career launchpad</AuroraText> for students.
           </p>
         </BoxReveal>
 
-        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
           <div className="mt-6">
             <p>
               -&gt; Your path to a tech internship,
-              <span className="font-semibold text-[#5046e6]"> simplified</span>.
+              <span className="font-semibold text-primary"> simplified</span>.
               <br />
               -&gt; All your applications,
-              <span className="font-semibold text-[#5046e6]"> one </span> place,
-              <span className="font-semibold text-[#5046e6]">
+              <span className="font-semibold text-primary"> one </span> place,
+              <span className="font-semibold text-primary">
                 {" "}
                 no missed deadlines
               </span>
@@ -71,9 +71,9 @@ export default function HomePage() {
           </div>
         </BoxReveal>
 
-        <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
           <Link href="/dashboard">
-            <Button className="mt-[1.6rem] bg-[#5046e6]">Begin Tracking</Button>
+            <Button className="mt-[1.6rem]">Begin Tracking</Button>
           </Link>
         </BoxReveal>
       </div>

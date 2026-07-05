@@ -21,7 +21,7 @@ import {
 } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
 import { trpc } from "@/lib/trpc/client";
 import { toast } from "sonner";
-import { statusToVariant, cssColorForStatus } from "@/lib/colors";
+import { statusBadgeStyle, cssColorForStatus } from "@/lib/colors";
 import EditApplicationModal from "@/components/applications/EditApplicationModal";
 import type { EditApplicationValues } from "@/components/applications/EditApplicationForm";
 import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
@@ -31,7 +31,6 @@ type ApplicationCardProps = {
 };
 
 export default function ApplicationCard({ app }: ApplicationCardProps) {
-  const variant = statusToVariant[app.status];
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const utils = trpc.useUtils();
@@ -67,7 +66,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
   };
 
   return (
-    <div className="border-left-primary- *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="border-left-primary- *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card
         className="w-49 h-35 mb-0.5 my-1.5 shadow-2xs"
         style={{
@@ -78,7 +77,10 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
           <CardTitle className="font-small font-sans text-foreground">
             {app.title}
           </CardTitle>
-          <Badge variant={variant} className="text-[11px] px-1.75 py-0.75">
+          <Badge
+            style={statusBadgeStyle(app.status)}
+            className="border-transparent text-[11px] px-1.75 py-0.75"
+          >
             {app.status}
           </Badge>
         </CardHeader>

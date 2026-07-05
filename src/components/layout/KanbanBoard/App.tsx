@@ -119,7 +119,7 @@ export default function KanbanBoardApp() {
     >
       <div className="w-full bg-background py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 justify-items-center gap-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card *:data-[slot=card]:bg-gradient-to-t">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 justify-items-center gap-6 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none">
             {Object.values(columns).map((col) => (
               <SortableContext
                 key={col.id}

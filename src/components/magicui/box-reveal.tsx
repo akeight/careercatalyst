@@ -13,7 +13,7 @@ interface BoxRevealProps {
 export const BoxReveal = ({
   children,
   width = "fit-content",
-  boxColor = "#5046e6",
+  boxColor = "#7B68EE",
   duration,
 }: BoxRevealProps) => {
   const mainControls = useAnimation();
