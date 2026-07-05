@@ -10,7 +10,7 @@ export function AuthButtons() {
 
   if (session) {
     return (
-      <Button onClick={() => signOut()} variant="outline">
+      <Button onClick={() => signOut({ callbackUrl: "/" })} variant="outline">
         Sign Out
       </Button>
     );
