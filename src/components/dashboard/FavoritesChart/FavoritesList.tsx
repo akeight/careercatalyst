@@ -82,29 +82,39 @@ export default function FavoritesList() {
 
   const rows: FavoriteRow[] = React.useMemo(
     () =>
-      favorites.map((app) => ({
-        id: app.id,
-        type: app.type,
-        title: app.title,
-        companyId: app.companyId,
-        companyName: app.company?.name ?? "Unknown company",
-        location: app.location,
-        status: app.status,
-        source: app.source,
-        jobUrl: app.jobUrl,
-        appliedAt: app.appliedAt,
-        deadline: app.deadline,
-        favorite: app.favorite,
-        contact: app.contact
-          ? {
-              name: app.contact.name,
-              email: app.contact.email,
-              phone: app.contact.phone,
-              linkedIn: app.contact.linkedIn,
-              role: app.contact.role,
-            }
-          : null,
-      })),
+      favorites.map((app) => {
+        const appWithDetails = app as typeof app & {
+          jobUrl: string | null;
+          notes: string | null;
+        };
+
+        return {
+          id: app.id,
+          type: app.type,
+          title: app.title,
+          companyId: app.companyId,
+          companyName: app.company?.name ?? "Unknown company",
+          location: app.location,
+          status: app.status,
+          source: app.source,
+          jobUrl: appWithDetails.jobUrl,
+          notes: appWithDetails.notes,
+          appliedAt: app.appliedAt,
+          deadline: app.deadline,
+          favorite: app.favorite,
+          createdAt: app.createdAt,
+          updatedAt: app.updatedAt,
+          contact: app.contact
+            ? {
+                name: app.contact.name,
+                email: app.contact.email,
+                phone: app.contact.phone,
+                linkedIn: app.contact.linkedIn,
+                role: app.contact.role,
+              }
+            : null,
+        };
+      }),
     [favorites],
   );
 

@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { statusToVariant, cssColorForStatus } from "@/lib/colors";
 import EditApplicationModal from "@/components/applications/EditApplicationModal";
 import type { EditApplicationValues } from "@/components/applications/EditApplicationForm";
+import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 
 type ApplicationCardProps = {
   app: Application;
@@ -58,6 +59,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
     location: app.location ?? "",
     source: app.source ?? "",
     jobUrl: app.jobUrl ?? "",
+    notes: app.notes ?? "",
     deadline: app.deadline ? new Date(app.deadline) : undefined,
     favorite: app.favorite ?? false,
     companyId: app.companyId ?? app.company?.id ?? "",
@@ -97,6 +99,39 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
           )}
 
           <div className="flex items-center gap-3">
+            <ApplicationDetailsDrawer
+              application={{
+                id: app.id,
+                type: app.type ?? "INTERNSHIP",
+                title: app.title,
+                companyId: app.companyId ?? app.company?.id ?? "",
+                companyName: app.company?.name ?? "Unknown company",
+                location: app.location,
+                status: app.status,
+                source: app.source,
+                jobUrl: app.jobUrl,
+                notes: app.notes,
+                appliedAt: app.appliedAt,
+                deadline: app.deadline,
+                favorite: app.favorite,
+                createdAt: app.createdAt,
+                updatedAt: app.updatedAt,
+                contact: app.contact ?? null,
+              }}
+              trigger={
+                <button
+                  aria-label="View application details"
+                  onClick={stopDrag}
+                  onPointerDown={stopDrag}
+                  draggable={false}
+                  onDragStart={(e) => e.preventDefault()}
+                  className="text-[11px] font-medium text-primary hover:underline"
+                >
+                  Details
+                </button>
+              }
+            />
+
             <EditApplicationModal
               applicationId={app.id}
               defaultValues={editDefaults}

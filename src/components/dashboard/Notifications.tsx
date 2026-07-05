@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/client";
+import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
 
 type CardProps = React.ComponentProps<typeof Card>;
 
@@ -70,6 +71,31 @@ export function Notifications({ className, ...props }: CardProps) {
                     {deadlineLabel(deadline)} &middot;{" "}
                     {format(deadline, "MMM dd, yyyy")}
                   </p>
+                  <ApplicationDetailsDrawer
+                    application={{
+                      id: app.id,
+                      type: app.type,
+                      title: app.title,
+                      companyId: app.companyId,
+                      companyName: app.company?.name ?? "Unknown company",
+                      location: app.location,
+                      status: app.status,
+                      source: app.source,
+                      jobUrl: app.jobUrl,
+                      notes: app.notes,
+                      appliedAt: app.appliedAt,
+                      deadline: app.deadline,
+                      favorite: app.favorite,
+                      createdAt: app.createdAt,
+                      updatedAt: app.updatedAt,
+                      contact: app.contact ?? null,
+                    }}
+                    trigger={
+                      <button className="text-xs font-medium text-primary hover:underline">
+                        View details
+                      </button>
+                    }
+                  />
                 </div>
               </div>
             );

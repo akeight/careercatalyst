@@ -74,9 +74,13 @@ export default function SavedInternshipsTable() {
         location: app.location,
         source: app.source,
         jobUrl: app.jobUrl,
+        notes: app.notes,
+        appliedAt: app.appliedAt,
         deadline: app.deadline,
         status: app.status,
         favorite: app.favorite,
+        createdAt: app.createdAt,
+        updatedAt: app.updatedAt,
         contact: app.contact
           ? {
               name: app.contact.name,
