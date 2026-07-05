@@ -1,117 +1,183 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowUpDown, ArrowUpRight } from "lucide-react";
+import { format } from "date-fns";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { statusToVariant, type AppStatus } from "@/lib/colors";
+import { FavoriteRowActions } from "./FavoriteRowActions";
 
-// Keep table data aligned with your app status type
-export type Tracker = {
+export type FavoriteRow = {
   id: string;
-  date: string;
-  status: AppStatus; // <-- align types
-  company: string;
+  type: "INTERNSHIP" | "FELLOWSHIP" | "EARLY_CAREER";
+  title: string;
+  companyId: string;
+  companyName: string;
+  location: string | null;
+  status: AppStatus;
+  source: string | null;
+  jobUrl: string | null;
+  appliedAt: string | Date | null;
+  deadline: string | Date | null;
+  favorite: boolean;
+  contact: {
+    name: string;
+    email?: string | null;
+    phone?: string | null;
+    linkedIn?: string | null;
+    role?: string | null;
+  } | null;
 };
 
-export const columns: ColumnDef<Tracker>[] = [
+const typeLabels: Record<FavoriteRow["type"], string> = {
+  INTERNSHIP: "Internship",
+  FELLOWSHIP: "Fellowship",
+  EARLY_CAREER: "Early Career",
+};
+
+export const columns: ColumnDef<FavoriteRow>[] = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(v) => row.toggleSelected(!!v)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as AppStatus;
-      const variant = statusToVariant[status];
-      return (
-        <Badge variant={variant} className="capitalize">
-          {status}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "company",
+    accessorKey: "title",
     header: ({ column }) => (
       <Button
         variant="ghost"
+        className="-ml-3 h-8"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Position
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div className="font-medium">{row.original.title}</div>,
+  },
+  {
+    accessorKey: "companyName",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="-ml-3 h-8"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Company
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
+    cell: ({ row }) => <div>{row.original.companyName}</div>,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("company")}</div>
+      <Badge
+        variant={statusToVariant[row.original.status]}
+        className="capitalize"
+      >
+        {row.original.status.toLowerCase()}
+      </Badge>
+    ),
+    filterFn: (row, id, value) => value === "ALL" || row.getValue(id) === value,
+  },
+  {
+    accessorKey: "type",
+    header: "Type",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">
+        {typeLabels[row.original.type] ?? row.original.type}
+      </span>
+    ),
+    filterFn: (row, id, value) => value === "ALL" || row.getValue(id) === value,
+  },
+  {
+    accessorKey: "location",
+    header: "Location",
+    cell: ({ row }) => (
+      <span className="text-muted-foreground">
+        {row.original.location || "—"}
+      </span>
     ),
   },
   {
-    accessorKey: "date",
-    header: () => <div className="text-right">Date Applied</div>,
+    accessorKey: "source",
+    header: "Source",
     cell: ({ row }) => (
-      <div className="text-right font-medium">{row.getValue("date")}</div>
+      <span className="text-muted-foreground">
+        {row.original.source || "—"}
+      </span>
     ),
+  },
+  {
+    id: "apply",
+    header: "Apply",
+    enableSorting: false,
+    cell: ({ row }) => {
+      const url = row.original.jobUrl;
+      if (!url) return <span className="text-muted-foreground">—</span>;
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+        >
+          Apply
+          <ArrowUpRight className="h-3.5 w-3.5" />
+        </a>
+      );
+    },
+  },
+  {
+    accessorKey: "appliedAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="-ml-3 h-8"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date Applied
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const appliedAt = row.original.appliedAt;
+      return (
+        <span className="text-muted-foreground">
+          {appliedAt ? format(new Date(appliedAt), "MMM dd, yyyy") : "—"}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "deadline",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="-ml-3 h-8"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Deadline
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const deadline = row.original.deadline;
+      return (
+        <span className="text-muted-foreground">
+          {deadline ? format(new Date(deadline), "MMM dd, yyyy") : "—"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",
+    header: () => <div className="text-right">Actions</div>,
+    enableSorting: false,
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy ID
-              </DropdownMenuItem>
-              <DropdownMenuItem>View company</DropdownMenuItem>
-              <DropdownMenuItem>View posting</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {/* Example: you can even show a tiny status badge in the actions cell */}
-          {/* <Badge variant={variant} className="ml-2">{payment.status}</Badge> */}
-        </>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <FavoriteRowActions row={row.original} />
+      </div>
+    ),
   },
 ];
