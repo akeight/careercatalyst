@@ -106,7 +106,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         token.onboarded = Boolean(dbUser?.onboardedAt);
       }
-
       if (!token.id && token.email) {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email },
