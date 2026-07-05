@@ -10,7 +10,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 
-const publicRoutes = new Set(["/", "/login"]);
+const publicRoutes = new Set(["/", "/login", "/onboarding"]);
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

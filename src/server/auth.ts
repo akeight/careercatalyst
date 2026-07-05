@@ -13,9 +13,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id; // 👈 ensure token gets user ID
+        // The adapter returns the full user row, including onboardedAt.
+        token.onboarded = Boolean(
+          (user as { onboardedAt?: Date | null }).onboardedAt,
+        );
+      }
+      // Refresh flag when the client calls session.update({ onboarded: true }).
+      if (trigger === "update" && session?.onboarded) {
+        token.onboarded = true;
       }
       return token;
     },
@@ -23,6 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token?.id) {
         session.user.id = token.id as string;
       }
+      session.user.onboarded = Boolean(token?.onboarded);
       return session;
     },
   },
