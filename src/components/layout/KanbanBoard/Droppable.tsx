@@ -23,7 +23,6 @@ export default function DroppableColumn({ columnId }: DroppableProps) {
       Saved: "SAVED",
       Applied: "APPLIED",
       Interview: "INTERVIEW",
-      Pending: "PENDING",
       Offer: "OFFER",
       Rejected: "REJECTED",
     };

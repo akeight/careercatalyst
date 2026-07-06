@@ -90,7 +90,6 @@ export const applicationRouter = router({
       SAVED: 0,
       APPLIED: 0,
       INTERVIEW: 0,
-      PENDING: 0,
       OFFER: 0,
       REJECTED: 0,
     };

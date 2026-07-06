@@ -56,7 +56,6 @@ const statusLabels: Record<Status, string> = {
   SAVED: "Saved",
   APPLIED: "Applied",
   INTERVIEW: "Interview",
-  PENDING: "Pending",
   OFFER: "Offer",
   REJECTED: "Rejected",
 };
@@ -141,7 +140,7 @@ export default function FavoritesList() {
         <div className="grid gap-1">
           <CardTitle className="flex items-center gap-2 text-2xl">
             <Heart className="size-5 text-primary" />
-            Favorite Internships
+            Favorites
           </CardTitle>
           <CardDescription>
             Your most important opportunities in one place. Search, filter, and
