@@ -34,8 +34,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { status } = useSession();
 
-  const showAuthenticatedChrome =
-    status === "authenticated" && !publicRoutes.has(pathname);
+  const isPublicRoute = publicRoutes.has(pathname);
+  const showAuthenticatedChrome = status === "authenticated" && !isPublicRoute;
+  // While the session is still resolving on a protected route, avoid rendering
+  // the logged-out header (theme toggle + Sign In) so it never flashes between
+  // navigations.
+  const isResolvingProtected = status === "loading" && !isPublicRoute;
+  const showPublicHeader = !showAuthenticatedChrome && !isResolvingProtected;
   const isLoginRoute = pathname === "/login";
   // The Kanban board still auto-collapses the sidebar, but it shares the same
   // centered content container as the other pages (favorites, contacts, saved).
@@ -47,7 +52,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const pageContent = (
     <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
-      <ClientHeader authed={showAuthenticatedChrome} />
+      {showAuthenticatedChrome || showPublicHeader ? (
+        <ClientHeader authed={showAuthenticatedChrome} />
+      ) : null}
       <main className={mainClassName}>
         {children}
         <Toaster
