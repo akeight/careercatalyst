@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { Status } from "@prisma/client";
+import type { Prisma, PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { STATUS_VALUES, type StatusValue } from "@/lib/status";
 import { router, protectedProcedure } from "../trpc";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { normalizeLinkedIn } from "@/lib/utils/normalizeLinkedIn";
-import type { Context } from "@/server/context";
 
 const applicationInclude = {
   company: true,
@@ -23,13 +23,13 @@ async function getOwnedContactId({
 }: {
   contactId?: string | null;
   userId: string;
-  prisma: Context["prisma"];
+  prisma: PrismaClient;
   linkedContactId?: string | null;
 }) {
   if (!contactId) return undefined;
 
   const ownedContact = await prisma.contact.findFirst({
-    where: { id: contactId, userId },
+    where: { id: contactId, userId } as Prisma.ContactWhereInput,
     select: { id: true },
   });
 
@@ -86,16 +86,19 @@ export const applicationRouter = router({
       _count: { _all: true },
     });
 
-    const counts: Record<Status, number> = {
-      SAVED: 0,
-      APPLIED: 0,
-      INTERVIEW: 0,
-      OFFER: 0,
-      REJECTED: 0,
-    };
+    const counts = STATUS_VALUES.reduce(
+      (acc, status) => {
+        acc[status] = 0;
+        return acc;
+      },
+      {} as Record<StatusValue, number>,
+    );
 
     for (const g of grouped) {
-      counts[g.status] = g._count._all;
+      const status = g.status as StatusValue;
+      if (status in counts) {
+        counts[status] = g._count._all;
+      }
     }
 
     const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
@@ -287,7 +290,7 @@ export const applicationRouter = router({
 
   // 🔄 Update only status (used by the Kanban drag-and-drop board)
   updateStatus: protectedProcedure
-    .input(z.object({ id: z.string(), status: z.nativeEnum(Status) }))
+    .input(z.object({ id: z.string(), status: z.enum(STATUS_VALUES) }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.prisma.application.findFirst({
         where: { id: input.id, userId: ctx.session.user.id },

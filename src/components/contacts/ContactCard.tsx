@@ -1,6 +1,8 @@
 "use client";
 
-import { ExternalLink, Linkedin, Mail, Phone, UserRound } from "lucide-react";
+import { ExternalLink, Mail, Phone, UserRound } from "lucide-react";
+
+import { LinkedinIcon } from "@/components/icons/LinkedinIcon";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -104,7 +106,7 @@ export function ContactCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Linkedin className="size-3.5" />
+                <LinkedinIcon className="size-3.5" />
                 LinkedIn
                 <ExternalLink className="size-3" />
               </a>

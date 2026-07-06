@@ -118,7 +118,7 @@ export function AddApplicationForm({
   const companiesQuery = trpc.company.getAll.useQuery();
 
   const companies =
-    companiesQuery.data?.map((company) => ({
+    companiesQuery.data?.map((company: { id: string; name: string }) => ({
       label: company.name,
       value: company.id,
     })) || [];

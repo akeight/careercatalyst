@@ -2,11 +2,11 @@
 import type { CSSProperties } from "react";
 import { VariantProps } from "class-variance-authority";
 import { badgeVariants } from "@/components/ui/badge";
-import type { Status } from "@prisma/client";
+import type { StatusValue } from "@/lib/status";
 
 // If you have a Status enum/string union, import it instead of `string`
 export type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
-export type AppStatus = Status;
+export type AppStatus = StatusValue;
 
 // 1) Status -> dedicated theme token (defined in globals.css, hue-tuned per mode)
 const statusToken: Partial<Record<AppStatus, string>> = {

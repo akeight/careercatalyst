@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import React from "react";
 import "@/styles/globals.css";
-import { Providers } from "@/components/Providers";
-import { AppShell } from "@/components/layout/AppShell";
+import { ThemeProviders } from "@/components/ThemeProviders";
 
 export const metadata: Metadata = {
   title: "Internship Tracker",
@@ -17,9 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>
-          <AppShell>{children}</AppShell>
-        </Providers>
+        <ThemeProviders>{children}</ThemeProviders>
       </body>
     </html>
   );

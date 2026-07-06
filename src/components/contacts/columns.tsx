@@ -1,7 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Linkedin, Mail, Phone } from "lucide-react";
+import { ArrowUpDown, Mail, Phone } from "lucide-react";
+
+import { LinkedinIcon } from "@/components/icons/LinkedinIcon";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,7 +132,7 @@ export const contactColumns: ColumnDef<ContactRow>[] = [
           className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
           aria-label="Open LinkedIn profile"
         >
-          <Linkedin className="h-4 w-4" />
+          <LinkedinIcon className="h-4 w-4" />
           Profile
         </a>
       );
