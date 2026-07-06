@@ -16,10 +16,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
 
-  // Onboarded users shouldn't see the wizard again.
-  if (session.user.onboarded && pathname === "/onboarding") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
+  // Keep /onboarding reachable for authenticated users; the page decides
+  // whether to show the flow or redirect (and can honor force overrides).
 
   return NextResponse.next();
 }

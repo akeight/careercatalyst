@@ -106,7 +106,7 @@ export function LoginForm({
     event.preventDefault();
     setError(null);
     setDevPending(true);
-    const callbackUrl = resetOnboarding ? "/onboarding" : "/dashboard";
+    const callbackUrl = resetOnboarding ? "/onboarding?force=1" : "/dashboard";
 
     const result = await signIn("dev-credentials", {
       email: devEmail,
@@ -123,7 +123,7 @@ export function LoginForm({
       return;
     }
 
-    window.location.assign(callbackUrl);
+    window.location.assign(result?.url ?? callbackUrl);
   };
 
   return (

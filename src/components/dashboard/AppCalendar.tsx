@@ -8,7 +8,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc/client";
 import { statusBadgeStyle } from "@/lib/colors";
-import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
+import {
+  ApplicationDetailsDrawer,
+  type ApplicationDetails,
+} from "@/components/applications/ApplicationDetailsDrawer";
 
 export default function AppCalendar() {
   const { data: apps } = trpc.application.getAll.useQuery();
@@ -85,10 +88,8 @@ export default function AppCalendar() {
                     companyId: app.companyId,
                     companyName: app.company?.name ?? "Unknown company",
                     location: app.location,
-                    status: app.status,
+                    status: app.status as ApplicationDetails["status"],
                     source: app.source,
-                    jobUrl: app.jobUrl,
-                    notes: app.notes,
                     appliedAt: app.appliedAt,
                     deadline: app.deadline,
                     favorite: app.favorite,
@@ -98,13 +99,10 @@ export default function AppCalendar() {
                       ? {
                           id: app.contact.id,
                           name: app.contact.name,
-                          type: app.contact.type,
-                          title: app.contact.title,
                           email: app.contact.email,
                           phone: app.contact.phone,
                           linkedIn: app.contact.linkedIn,
                           role: app.contact.role,
-                          notes: app.contact.notes,
                           companyName: app.contact.company?.name,
                         }
                       : null,
