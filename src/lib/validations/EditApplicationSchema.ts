@@ -7,7 +7,7 @@ export const EditApplicationSchema = z.object({
   type: z.enum(["INTERNSHIP", "FELLOWSHIP", "EARLY_CAREER"]),
 
   title: z.string().min(1, "Position is required"),
-  status: z.nativeEnum(Status),
+  status: z.enum(Status),
   location: z.string().optional(),
   link: z.string().url("Must be a valid URL").optional(),
   notes: z.string().max(1000).optional(),

@@ -8,7 +8,7 @@ import { CreateCompanySchema } from "@/lib/validations/CreateCompanySchema";
 export const AddApplicationSchema = z.object({
   type: z.enum(["INTERNSHIP", "FELLOWSHIP", "EARLY_CAREER"]),
   title: z.string().min(1, "Position is required"),
-  status: z.nativeEnum(Status),
+  status: z.enum(Status),
   location: z.string().optional(),
   jobUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   notes: z

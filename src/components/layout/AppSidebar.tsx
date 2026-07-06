@@ -116,8 +116,11 @@ export function AppSidebar() {
   const { state, isMobile } = useSidebar();
   const { resolvedTheme } = useTheme();
   const pathname = usePathname();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const isActiveLink = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
   const showCollapsedTooltip = state === "collapsed" && !isMobile;
