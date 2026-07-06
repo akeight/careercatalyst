@@ -11,6 +11,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  ApplicationDetailsDrawer,
+  type ApplicationDetails,
+} from "@/components/applications/ApplicationDetailsDrawer";
 import { trpc } from "@/lib/trpc/client";
 
 export default function SavedInternships() {
@@ -24,10 +28,10 @@ export default function SavedInternships() {
       <CardHeader className="flex-row items-start justify-between space-y-0">
         <div className="grid gap-1">
           <CardTitle className="font-serif text-2xl">
-            Saved Internships
+            Saved Applications
           </CardTitle>
           <CardDescription>
-            Pick up where you left off and finish applying.
+            Pick up where you left off and continue your applications.
           </CardDescription>
         </div>
         {saved.length > 0 && (
@@ -52,22 +56,49 @@ export default function SavedInternships() {
         )}
 
         {preview.map((app) => (
-          <Link
+          <ApplicationDetailsDrawer
             key={app.id}
-            href="/tracker"
-            className="group flex items-center justify-between gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/50"
-          >
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium leading-none">
-                {app.title}
-              </p>
-              <p className="mt-1 truncate text-xs text-muted-foreground">
-                {app.company?.name ?? "Unknown company"}
-                {app.location ? ` \u00b7 ${app.location}` : ""}
-              </p>
-            </div>
-            <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-          </Link>
+            application={{
+              id: app.id,
+              type: app.type,
+              title: app.title,
+              companyId: app.companyId,
+              companyName: app.company?.name ?? "Unknown company",
+              location: app.location,
+              status: app.status as ApplicationDetails["status"],
+              source: app.source,
+              appliedAt: app.appliedAt,
+              deadline: app.deadline,
+              favorite: app.favorite,
+              createdAt: app.createdAt,
+              updatedAt: app.updatedAt,
+              contact: app.contact
+                ? {
+                    id: app.contact.id,
+                    name: app.contact.name,
+                    email: app.contact.email,
+                    phone: app.contact.phone,
+                    linkedIn: app.contact.linkedIn,
+                    role: app.contact.role,
+                    companyName: app.contact.company?.name,
+                  }
+                : null,
+            }}
+            trigger={
+              <button className="group flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left transition-colors hover:bg-accent/50">
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium leading-none">
+                    {app.title}
+                  </p>
+                  <p className="mt-1 truncate text-xs text-muted-foreground">
+                    {app.company?.name ?? "Unknown company"}
+                    {app.location ? ` \u00b7 ${app.location}` : ""}
+                  </p>
+                </div>
+                <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+              </button>
+            }
+          />
         ))}
 
         {saved.length > 0 && (

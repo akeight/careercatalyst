@@ -321,7 +321,7 @@ export function AddApplicationForm({
               <FormLabel>Notes (Markdown supported)</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="- Follow up with recruiter&#10;- Prep system design examples&#10;- Questions about the role..."
+                  placeholder="- Follow up with recruiter&#10;- Copy and paste the job description&#10;- Questions about the role..."
                   className="min-h-40 resize-y"
                   maxLength={4000}
                   {...field}
