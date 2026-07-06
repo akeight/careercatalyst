@@ -34,7 +34,7 @@ export default function AppCalendar() {
 
   return (
     <Card className="w-full gap-0 p-0">
-      <CardContent className="relative p-0 md:pr-60">
+      <CardContent className="relative p-0 md:pr-70">
         <div className="p-6">
           <Calendar
             mode="single"
@@ -56,7 +56,7 @@ export default function AppCalendar() {
             }}
           />
         </div>
-        <div className="no-scrollbar inset-y-0 right-0 flex max-h-72 w-full scroll-pb-6 flex-col gap-3 overflow-y-auto border-t p-6 md:absolute md:max-h-none md:w-60 md:border-t-0 md:border-l">
+        <div className="no-scrollbar inset-y-0 right-0 flex max-h-72 w-full scroll-pb-6 flex-col gap-3 overflow-y-auto border-t p-6 md:absolute md:max-h-none md:w-80 md:border-t-0 md:border-l">
           <p className="text-sm font-medium">
             {date ? format(date, "EEEE, MMM d") : "Select a date"}
           </p>

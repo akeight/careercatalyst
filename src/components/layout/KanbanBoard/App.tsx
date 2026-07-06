@@ -153,9 +153,9 @@ export default function KanbanBoardApp() {
       onDragCancel={() => setActiveId(null)}
     >
       <div className="w-full">
-        <div className="mb-6 flex items-baseline justify-center gap-3">
+        <div className="mb-10 flex items-baseline justify-center gap-3">
           <h1 className="font-serif text-2xl font-bold tracking-tight">
-            Application Tracker
+            Manage Your Applications
           </h1>
           <span className="rounded-full bg-muted px-2.5 py-0.5 text-sm font-medium text-muted-foreground">
             {totalCount}

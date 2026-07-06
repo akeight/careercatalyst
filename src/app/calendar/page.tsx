@@ -13,7 +13,7 @@ export default async function CalendarPage() {
 
   return (
     <div className="min-h-screen w-full pt-8">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold tracking-tight">
             Deadline Calendar
@@ -22,7 +22,7 @@ export default async function CalendarPage() {
             Track your application deadlines in one place.
           </p>
         </div>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 justify-items-center">
+        <div className="flex flex-col gap-6">
           <AppCalendar />
           <Notifications />
         </div>

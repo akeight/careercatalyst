@@ -1,5 +1,23 @@
 "use client";
 
+import * as React from "react";
+import {
+  addMonths,
+  addYears,
+  eachMonthOfInterval,
+  eachWeekOfInterval,
+  endOfMonth,
+  endOfWeek,
+  endOfYear,
+  format,
+  isSameMonth,
+  isWithinInterval,
+  startOfMonth,
+  startOfYear,
+} from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -7,52 +25,177 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { trpc } from "@/lib/trpc/client";
 
-const STAGES = [
-  { key: "SAVED", label: "Saved", color: "var(--status-saved)" },
-  { key: "APPLIED", label: "Applied", color: "var(--status-applied)" },
-  { key: "INTERVIEW", label: "Interview", color: "var(--status-interview)" },
-  { key: "OFFER", label: "Offer", color: "var(--status-offer)" },
-] as const;
+type View = "month" | "year";
+
+const chartConfig = {
+  count: {
+    label: "Applications",
+    color: "var(--primary)",
+  },
+} satisfies ChartConfig;
 
 export default function PipelineFunnel() {
-  const { data } = trpc.application.getStats.useQuery();
-  const counts = data?.counts;
+  const { data: apps } = trpc.application.getAll.useQuery();
+  const [view, setView] = React.useState<View>("month");
+  const [anchor, setAnchor] = React.useState<Date>(() => new Date());
 
-  const values = STAGES.map((stage) => counts?.[stage.key] ?? 0);
-  const max = Math.max(1, ...values);
+  const submittedDates = React.useMemo(
+    () => (apps ?? []).map((a) => new Date(a.appliedAt as string | Date)),
+    [apps],
+  );
+
+  const chartData = React.useMemo(() => {
+    if (view === "month") {
+      const weeks = eachWeekOfInterval(
+        { start: startOfMonth(anchor), end: endOfMonth(anchor) },
+        { weekStartsOn: 0 },
+      );
+      return weeks.map((weekStart, i) => {
+        const weekEnd = endOfWeek(weekStart, { weekStartsOn: 0 });
+        const count = submittedDates.filter((d) =>
+          isWithinInterval(d, { start: weekStart, end: weekEnd }),
+        ).length;
+        return {
+          label: `Wk ${i + 1}`,
+          range: format(weekStart, "MMM d"),
+          count,
+        };
+      });
+    }
+
+    const months = eachMonthOfInterval({
+      start: startOfYear(anchor),
+      end: endOfYear(anchor),
+    });
+    return months.map((month) => {
+      const count = submittedDates.filter((d) => isSameMonth(d, month)).length;
+      return {
+        label: format(month, "MMM"),
+        range: format(month, "MMMM"),
+        count,
+      };
+    });
+  }, [view, anchor, submittedDates]);
+
+  const periodTotal = chartData.reduce((sum, point) => sum + point.count, 0);
+  const periodLabel =
+    view === "month" ? format(anchor, "MMMM yyyy") : format(anchor, "yyyy");
+
+  const shift = (direction: 1 | -1) => {
+    setAnchor((current) =>
+      view === "month"
+        ? addMonths(current, direction)
+        : addYears(current, direction),
+    );
+  };
 
   return (
     <Card className="w-full h-full">
-      <CardHeader>
-        <CardTitle className="font-serif text-2xl">Pipeline</CardTitle>
-        <CardDescription>
-          Your applications across each stage of the funnel.
-        </CardDescription>
+      <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
+        <div className="grid gap-1">
+          <CardTitle className="font-serif text-2xl">
+            Applications Submitted
+          </CardTitle>
+          <CardDescription>
+            {periodTotal} submitted in {periodLabel}.
+          </CardDescription>
+        </div>
+        <Select value={view} onValueChange={(v) => setView(v as View)}>
+          <SelectTrigger
+            className="h-7 w-[130px] rounded-lg"
+            aria-label="Select time range"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent align="end" className="rounded-xl">
+            <SelectItem value="month" className="rounded-lg">
+              Weekly
+            </SelectItem>
+            <SelectItem value="year" className="rounded-lg">
+              Monthly
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        {STAGES.map((stage, i) => {
-          const value = values[i];
-          const width = Math.round((value / max) * 100);
-          return (
-            <div key={stage.key} className="grid gap-1.5">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{stage.label}</span>
-                <span className="font-medium tabular-nums">{value}</span>
-              </div>
-              <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${Math.max(value > 0 ? 6 : 0, width)}%`,
-                    backgroundColor: stage.color,
-                  }}
+      <CardContent className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7"
+            onClick={() => shift(-1)}
+            aria-label={view === "month" ? "Previous month" : "Previous year"}
+          >
+            <ChevronLeft className="size-4" />
+          </Button>
+          <span className="text-sm font-medium tabular-nums">
+            {periodLabel}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7"
+            onClick={() => shift(1)}
+            aria-label={view === "month" ? "Next month" : "Next year"}
+          >
+            <ChevronRight className="size-4" />
+          </Button>
+        </div>
+        <ChartContainer config={chartConfig} className="h-[220px] w-full">
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={{ left: 4, right: 12, top: 8, bottom: 4 }}
+          >
+            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+            <XAxis
+              dataKey="label"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+            />
+            <YAxis
+              allowDecimals={false}
+              tickLine={false}
+              axisLine={false}
+              width={28}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(_, payload) =>
+                    payload?.[0]?.payload?.range ?? ""
+                  }
                 />
-              </div>
-            </div>
-          );
-        })}
+              }
+            />
+            <Line
+              dataKey="count"
+              type="monotone"
+              stroke="var(--color-count)"
+              strokeWidth={2}
+              dot={{ fill: "var(--color-count)", r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+          </LineChart>
+        </ChartContainer>
       </CardContent>
     </Card>
   );

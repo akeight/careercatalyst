@@ -39,7 +39,7 @@ export default function AddApplicationModal({
       title={iconOnly ? "Add Internship" : undefined}
     >
       <FontAwesomeIcon icon={faPlus} size={iconOnly ? "xl" : "lg"} />
-      {!iconOnly && <span>Add Internship</span>}
+      {!iconOnly && <span>Add Application</span>}
     </button>
   );
 
@@ -50,14 +50,14 @@ export default function AddApplicationModal({
           <TooltipTrigger asChild>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
           </TooltipTrigger>
-          <TooltipContent side="right">Add Internship</TooltipContent>
+          <TooltipContent side="right">Add Application</TooltipContent>
         </Tooltip>
       ) : (
         <DialogTrigger asChild>{trigger}</DialogTrigger>
       )}
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Add New Internship</DialogTitle>
+          <DialogTitle>Add New Application</DialogTitle>
         </DialogHeader>
         <AddApplicationForm userId={userId} onSuccess={() => setOpen(false)} />
       </DialogContent>

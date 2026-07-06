@@ -78,10 +78,10 @@ export default function InternshipSearchPage() {
             <div className="container mx-full px-4 py-8">
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold tracking-tight">
-                  Find Your Next Internship
+                  Find Your Next Opportunity
                 </h1>
                 <p className="mt-2 text-lg text-muted-foreground">
-                  Explore these top resources to discover your next opportunity.
+                  Explore these top resources and track your next application.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none @xl/main:grid-cols-2 @5xl/main:grid-cols-4">

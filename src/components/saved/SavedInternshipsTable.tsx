@@ -122,11 +122,11 @@ export default function SavedInternshipsTable() {
         <div className="grid gap-1">
           <CardTitle className="flex items-center gap-2 text-2xl">
             <Bookmark className="size-5 text-primary" />
-            Saved Internships
+            Saved Applications
           </CardTitle>
           <CardDescription>
-            Every internship you&apos;ve saved. Search, open the posting, or
-            pick up where you left off.
+            Every roles you&apos;ve saved. Search, open the posting, or pick up
+            where you left off.
           </CardDescription>
         </div>
         {rows.length > 0 && (

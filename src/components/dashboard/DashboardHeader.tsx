@@ -21,7 +21,7 @@ export default function DashboardHeader({ name }: { name?: string | null }) {
         {firstName ? `, ${firstName}` : ""}.
       </h1>
       <p className="text-sm text-muted-foreground">
-        Here&apos;s where your internship search stands today.
+        Here&apos;s where your job search stands today.
       </p>
     </div>
   );
