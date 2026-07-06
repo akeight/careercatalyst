@@ -1,16 +1,20 @@
 ![CI](https://github.com/akeight/internship-tracker/actions/workflows/ci.yml/badge.svg)
 
-# Internship Tracker
+# Catalyst
 
-⚡ **Internship Tracker** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter contact management.
+## Turn opportunities into offers.
+
+⚡ **Catalyst** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter/network contact management.
 
 ## ✨ Features
 
-- **Add, edit, and delete applications** — track status, recruiter contacts, and notes
+- **User profile** - create goals, mananage weekly streak goals, upload resume
+- **Add, edit, and delete applications** — track status, recruiter contacts, and markdown notes
 - **Kanban-style board** — visually manage applications through different stages
+- **Saved applications** — never lose track of the ones you don't finish
 - **Favorite applications** — mark top opportunities for easy reference
 - **Dynamic filtering** — search and filter by company, status, and favorite
-- **Company + recruiter database** — automatically create or select from existing
+- **Company + network database** — automatically create or select from existing
 - **User authentication** — secure, personalized data with Auth.js
 - **Responsive design** — works seamlessly on desktop and mobile
 
@@ -25,37 +29,37 @@
 
 ## 📸 Screenshots
 
-- [x] **Home Page**
+- [x] **Dashboard Landing Page**
 
-<img src="public/HomePage.png" width='400px' alt='Home Page' />
+<img src="public/dashboard.png" width='400px' alt='Home Page' />
 
-- [x] **Tracker Page**
+- [x] **Kanban Board Page**
 
-<img src="public/TrackerPage.png" width='400px' alt='Tracker Board Page' />
+<img src="public/board.png" width='400px' alt='Tracker Board Page' />
 
 - [x] **Favorites Page**
 
-<img src="public/FavoritesList.png" width='400px' alt='Favorites Page' />
+<img src="public/favorites.png" width='400px' alt='Favorites Page' />
 
-- [x] **Search Internships Page**
+- [x] **Find Opportunities Page**
 
-<img src="public/Search.png" width='400px' alt='Search Internship Page' />
+<img src="public/searchjobs.png" width='400px' alt='Search Internship Page' />
 
 - [x] **Add Internship Modal**
 
-<img src="public/AddInternship.png" width='400px' alt='Add Internship Modal' />
+<img src="public/addapp.png" width='400px' alt='Add Internship Modal' />
 
 ## 🚧 Current Status
 
-This project is **actively in development**. Key features are implemented, and enhancements are ongoing — including ui and components, additional pages, analytics, automated reminders, and AI-based suggestions.
+This project is **actively in development**. Core product is built and ready for test users. Next up is to add analytics and build a user friendly public landing page. Set to deploy within 2 weeks.
 
 ## 📂 Getting Started
 
 Clone the repo:
 
 ```bash
-git clone https://github.com/akeight/internship-tracker.git
-cd internship-tracker
+git clone https://github.com/akeight/careercatalyst.git
+cd careercatalyst
 ```
 
 Install dependencies:
@@ -91,16 +95,14 @@ npm run dev
 
 ## 💡 Future Plans
 
-- Edit analytics dashboard
-- Add components to edit and delete applications for full CRUD processes
 - AI-powered suggestions (e.g., resume tips, matching internships)
-- Calendar view for application deadlines and push notifications
+- Calendar integrated with push notifications
 
 ## 👀 Live Demo
 
 Check for updates later!
 
-<img src="public/InternshipTracker.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
+<img src="public/catalystdemo.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
 
 ## 🤝 Contributions
 
