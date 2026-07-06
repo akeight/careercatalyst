@@ -9,22 +9,15 @@ export function StatCardInfo() {
 
   return (
     <>
-      <StatCard
-        title="Applications"
-        value={data?.total ?? 0}
-        status="APPLIED"
-      />
+      <StatCard title="Saved" value={counts?.SAVED ?? 0} status="SAVED" />
+
+      <StatCard title="Applied" value={data?.total ?? 0} status="APPLIED" />
       <StatCard
         title="Interviews"
         value={counts?.INTERVIEW ?? 0}
         status="INTERVIEW"
       />
       <StatCard title="Offers" value={counts?.OFFER ?? 0} status="OFFER" />
-      <StatCard
-        title="Rejections"
-        value={counts?.REJECTED ?? 0}
-        status="REJECTED"
-      />
     </>
   );
 }

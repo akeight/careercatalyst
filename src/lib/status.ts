@@ -5,7 +5,6 @@ export const KANBAN_STATUSES: Status[] = [
   "SAVED",
   "APPLIED",
   "INTERVIEW",
-  "PENDING",
   "OFFER",
   "REJECTED",
 ];

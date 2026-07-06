@@ -9,7 +9,6 @@ export type AppStatus =
   | "SAVED"
   | "APPLIED"
   | "INTERVIEW"
-  | "PENDING"
   | "OFFER"
   | "REJECTED";
 
@@ -18,7 +17,6 @@ const statusToken: Record<AppStatus, string> = {
   SAVED: "status-saved",
   APPLIED: "status-applied",
   INTERVIEW: "status-interview",
-  PENDING: "status-pending",
   OFFER: "status-offer",
   REJECTED: "status-rejected",
 };

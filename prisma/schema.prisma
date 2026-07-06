@@ -17,7 +17,6 @@ enum Status {
   SAVED
   APPLIED
   INTERVIEW
-  PENDING
   OFFER
   REJECTED
 }

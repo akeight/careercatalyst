@@ -35,13 +35,7 @@ export type Application = {
   } | null;
 };
 
-export type Status =
-  | "SAVED"
-  | "APPLIED"
-  | "INTERVIEW"
-  | "PENDING"
-  | "OFFER"
-  | "REJECTED";
+export type Status = "SAVED" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
 
 export type ColumnType = {
   id: string;

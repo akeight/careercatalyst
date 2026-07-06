@@ -39,10 +39,6 @@ const chartConfig = {
     label: "Interview",
     color: "var(--status-interview)",
   },
-  pending: {
-    label: "Pending",
-    color: "var(--status-pending)",
-  },
   offer: {
     label: "Offer",
     color: "var(--status-offer)",
@@ -75,11 +71,6 @@ export function ChartPieInteractive() {
         status: "interview",
         amount: counts?.INTERVIEW ?? 0,
         fill: "var(--color-interview)",
-      },
-      {
-        status: "pending",
-        amount: counts?.PENDING ?? 0,
-        fill: "var(--color-pending)",
       },
       {
         status: "offer",
