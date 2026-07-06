@@ -6,6 +6,10 @@
 
 ⚡ **Catalyst** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter/network contact management.
 
+## Live Demo
+
+<img src="public/catalystdemo.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
+
 ## ✨ Features
 
 - **User profile** - create goals, mananage weekly streak goals, upload resume
@@ -97,12 +101,6 @@ npm run dev
 
 - AI-powered suggestions (e.g., resume tips, matching internships)
 - Calendar integrated with push notifications
-
-## 👀 Live Demo
-
-Check for updates later!
-
-<img src="public/catalystdemo.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
 
 ## 🤝 Contributions
 
