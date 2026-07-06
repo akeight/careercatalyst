@@ -33,48 +33,51 @@ import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
 import AddApplicationModal from "@/components/applications/AddApplicationModal";
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { cn } from "@/lib/utils/utils";
 import React from "react";
 
 const navLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: <FontAwesomeIcon icon={faHouse} size="xl" />,
+    icon: <FontAwesomeIcon icon={faHouse} size="lg" />,
   },
   {
-    label: "Applications Tracker",
+    label: "Applications Board",
     href: "/tracker",
-    icon: <FontAwesomeIcon icon={faCompass} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCompass} size="lg" />,
   },
   {
-    label: "Internship Search",
+    label: "Search for Opportunities",
     href: "/search",
-    icon: <FontAwesomeIcon icon={faLaptop} size="xl" />,
+    icon: <FontAwesomeIcon icon={faLaptop} size="lg" />,
   },
   {
-    label: "Saved Internships",
+    label: "Saved for Later",
     href: "/saved",
-    icon: <FontAwesomeIcon icon={faBookmark} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBookmark} size="lg" />,
   },
   {
     label: "Favorites",
     href: "/favorites",
-    icon: <FontAwesomeIcon icon={faHeart} size="xl" />,
+    icon: <FontAwesomeIcon icon={faHeart} size="lg" />,
   },
   {
     label: "View Calendar",
     href: "/calendar",
-    icon: <FontAwesomeIcon icon={faCalendar} size="xl" />,
+    icon: <FontAwesomeIcon icon={faCalendar} size="lg" />,
   },
   // {
   //   label: "Resume Builder",
   //   href: "/resume",
-  //   icon: <FontAwesomeIcon icon={faFileCircleCheck} size="xl" />,
+  //   icon: <FontAwesomeIcon icon={faFileCircleCheck} size="lg" />,
   // },
   {
     label: "Contacts",
     href: "/contacts",
-    icon: <FontAwesomeIcon icon={faUser} size="xl" />,
+    icon: <FontAwesomeIcon icon={faUser} size="lg" />,
   },
 ];
 
@@ -82,17 +85,17 @@ const supportLinks = [
   {
     label: "NSpire AI Career Coach",
     url: "https://web.nspire.ai/",
-    icon: <FontAwesomeIcon icon={faBolt} size="xl" />,
+    icon: <FontAwesomeIcon icon={faBolt} size="lg" />,
   },
   {
     label: "Prampt Interview Practice",
     url: "https://www.pramp.com/#/",
-    icon: <FontAwesomeIcon icon={faSuitcase} size="xl" />,
+    icon: <FontAwesomeIcon icon={faSuitcase} size="lg" />,
   },
   {
     label: "Resume Template",
     url: "https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs",
-    icon: <FontAwesomeIcon icon={faFile} size="xl" />,
+    icon: <FontAwesomeIcon icon={faFile} size="lg" />,
   },
   //{
   //  label: "Settings",
@@ -112,8 +115,11 @@ export function AppSidebar() {
   const { data: session } = useSession();
   const { state, isMobile } = useSidebar();
   const { resolvedTheme } = useTheme();
+  const pathname = usePathname();
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+  const isActiveLink = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
   const showCollapsedTooltip = state === "collapsed" && !isMobile;
   const sidebarToggleTooltip =
     state === "collapsed" ? "Expand sidebar" : "Collapse sidebar";
@@ -137,15 +143,22 @@ export function AppSidebar() {
     >
       <SidebarContent className="space-y-6 p-4 *:data-[slot=card]:from-muted/5 *:data-[slot=card]:to-card *:data-[slot=card]:bg-gradient-to-t group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-4 dark:*:data-[slot=card]:bg-card dark:*:data-[slot=card]:bg-none">
         {/* Logo Section */}
-        <div className="flex items-center justify-between gap-2 px-3 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-          <h2 className="truncate text-xl font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
-            Internship Tracker
-          </h2>
-          <SidebarTrigger
-            className="shrink-0 group-data-[collapsible=icon]:mx-auto"
-            title={sidebarToggleTooltip}
-            aria-label={sidebarToggleTooltip}
-          />
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between gap-2 px-3 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
+            <h2 className="truncate font-serif text-2xl font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+              Catalyst
+            </h2>
+            <SidebarTrigger
+              className="shrink-0 group-data-[collapsible=icon]:mx-auto"
+              title={sidebarToggleTooltip}
+              aria-label={sidebarToggleTooltip}
+            />
+          </div>
+          <div className="px-3 group-data-[collapsible=icon]:hidden">
+            <h3 className="truncate text-sm font-normal text-sidebar-foreground group-data-[collapsible=icon]:hidden">
+              Turn opportunities into offers.
+            </h3>
+          </div>
         </div>
 
         {/* Navigation Section */}
@@ -154,22 +167,30 @@ export function AppSidebar() {
             Navigation
           </SidebarGroupLabel>
           <div className="space-y-1 list-none group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
-            {navLinks.map((navLinks) => (
-              <SidebarMenuItem key={navLinks.label} className="list-none">
-                <SidebarMenuButton
-                  asChild
-                  tooltip={navLinks.label}
-                  className="h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5"
-                >
-                  <a href={navLinks.href}>
-                    {navLinks.icon}
-                    <span className="text-base font-medium">
-                      {navLinks.label}
-                    </span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {navLinks.map((navLink) => {
+              const active = isActiveLink(navLink.href);
+              return (
+                <SidebarMenuItem key={navLink.label} className="list-none">
+                  <SidebarMenuButton
+                    asChild
+                    isActive={active}
+                    tooltip={navLink.label}
+                    className={cn(
+                      "h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5",
+                      active &&
+                        "data-[active=true]:bg-[var(--nav-active)]/40 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
+                    )}
+                  >
+                    <Link href={navLink.href}>
+                      {navLink.icon}
+                      <span className="text-base font-medium">
+                        {navLink.label}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </div>
         </div>
 
@@ -215,7 +236,7 @@ export function AppSidebar() {
           <AddApplicationModal
             userId={userId}
             iconOnly
-            triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-5"
+            triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-10"
           />
         </div>
       </SidebarContent>
@@ -230,13 +251,13 @@ export function AppSidebar() {
                   variant="outline"
                   size="icon"
                   asChild
-                  className="size-10 [&_svg]:size-5"
+                  className="size-11"
                   aria-label="Profile"
                 >
-                  <a href="/profile">
-                    <FontAwesomeIcon icon={faAddressCard} />
+                  <Link href="/profile">
+                    <FontAwesomeIcon icon={faAddressCard} className="!size-5" />
                     <span className="sr-only">Profile</span>
-                  </a>
+                  </Link>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" hidden={!showCollapsedTooltip}>
@@ -245,7 +266,7 @@ export function AppSidebar() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <ThemeToggle className="size-10 [&_svg]:size-5" />
+                <ThemeToggle className="size-11 [&_svg]:!size-5" />
               </TooltipTrigger>
               <TooltipContent side="right" hidden={!showCollapsedTooltip}>
                 {themeTooltip}
@@ -257,10 +278,13 @@ export function AppSidebar() {
                   variant="outline"
                   size="icon"
                   onClick={() => signOut({ callbackUrl: "/" })}
-                  className="size-10 [&_svg]:size-5"
+                  className="size-11"
                   aria-label="Sign out"
                 >
-                  <FontAwesomeIcon icon={faArrowRightFromBracket} />
+                  <FontAwesomeIcon
+                    icon={faArrowRightFromBracket}
+                    className="!size-5"
+                  />
                   <span className="sr-only">Sign out</span>
                 </Button>
               </TooltipTrigger>

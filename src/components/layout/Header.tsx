@@ -1,39 +1,20 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import { ThemeToggle } from "../dashboard/ThemeToggle";
 import { AuroraText } from "../magicui/aurora-text";
 import { AuthButtons } from "@/components/AuthBtns";
-
-const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/tracker": "Applications Tracker",
-  "/search": "Internship Search",
-  "/saved": "Saved Internships",
-  "/favorites": "Favorites",
-  "/calendar": "Calendar",
-  "/boards": "Contacts",
-};
-
-function getPageTitle(pathname: string): string {
-  if (pageTitles[pathname]) return pageTitles[pathname];
-  const match = Object.keys(pageTitles).find((href) =>
-    pathname.startsWith(href),
-  );
-  return match ? pageTitles[match] : "Dashboard";
-}
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Header({ authed = false }: { authed?: boolean }) {
-  const pathname = usePathname();
-
   if (authed) {
+    // Logged-in pages get their titles from the sidebar's active link, so the
+    // header only needs to expose a way to open the off-canvas sidebar on
+    // mobile. It stays out of the way on larger screens.
     return (
-      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/20 bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <h1 className="truncate text-lg font-semibold tracking-tight">
-          {getPageTitle(pathname)}
-        </h1>
+      <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/20 bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
+        <SidebarTrigger aria-label="Open sidebar" />
       </header>
     );
   }
