@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { ArrowRight, GalleryVerticalEnd, Sparkles } from "lucide-react";
 import { auth } from "@/server/auth";
+import type { Session } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LoginForm } from "@/components/login-signup/LoginForm";
@@ -10,7 +11,7 @@ export default async function LoginPage() {
   // Resolve the session in isolation. redirect() throws a NEXT_REDIRECT
   // control-flow signal, so it must live OUTSIDE any try/catch or the catch
   // swallows it and the redirect silently never happens.
-  let session: Awaited<ReturnType<typeof auth>> = null;
+  let session: Session | null = null;
   try {
     session = await auth();
   } catch (error) {
