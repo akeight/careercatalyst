@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { toast } from "sonner";
 import { Minus, Plus } from "lucide-react";
@@ -23,8 +23,12 @@ export function WeeklyGoalSettings({ weeklyGoal }: { weeklyGoal: number }) {
   const utils = trpc.useUtils();
   const reduceMotion = useReducedMotion();
   const [value, setValue] = useState(weeklyGoal);
+  const [prevWeeklyGoal, setPrevWeeklyGoal] = useState(weeklyGoal);
 
-  useEffect(() => setValue(weeklyGoal), [weeklyGoal]);
+  if (weeklyGoal !== prevWeeklyGoal) {
+    setPrevWeeklyGoal(weeklyGoal);
+    setValue(weeklyGoal);
+  }
 
   const updateProfile = trpc.profile.updateProfile.useMutation({
     onSuccess: () => {

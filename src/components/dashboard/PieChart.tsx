@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Label, Pie, PieChart, Sector } from "recharts";
-import { PieSectorDataItem } from "recharts/types/polar/Pie";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -159,20 +158,31 @@ export function ChartPieInteractive() {
               nameKey="status"
               innerRadius={75}
               strokeWidth={5}
-              activeIndex={activeIndex}
-              activeShape={({
-                outerRadius = 0,
-                ...props
-              }: PieSectorDataItem) => (
-                <g>
-                  <Sector {...props} outerRadius={outerRadius + 8} />
-                  <Sector
-                    {...props}
-                    outerRadius={outerRadius + 20}
-                    innerRadius={outerRadius + 10}
-                  />
-                </g>
-              )}
+              shape={(props) => {
+                const {
+                  outerRadius = 0,
+                  index,
+                  isActive: _isActive,
+                  ...sectorProps
+                } = props;
+                const isSelected = index === activeIndex;
+
+                if (isSelected) {
+                  return (
+                    <g>
+                      <Sector {...sectorProps} outerRadius={outerRadius + 8} />
+                      <Sector
+                        {...sectorProps}
+                        outerRadius={outerRadius + 20}
+                        innerRadius={outerRadius + 10}
+                      />
+                    </g>
+                  );
+                }
+
+                const { isActive: _hoverActive, index: _idx, ...rest } = props;
+                return <Sector {...rest} />;
+              }}
             >
               <Label
                 content={({ viewBox }) => {

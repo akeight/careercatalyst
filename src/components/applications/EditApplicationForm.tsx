@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { z } from "zod";
@@ -53,7 +53,9 @@ export function EditApplicationForm({
   onClose: () => void;
 }) {
   const form = useForm<z.infer<typeof AddApplicationSchema>>({
-    resolver: zodResolver(AddApplicationSchema),
+    resolver: zodResolver(AddApplicationSchema) as Resolver<
+      z.infer<typeof AddApplicationSchema>
+    >,
     defaultValues: {
       type: "INTERNSHIP",
       title: "",

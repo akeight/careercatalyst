@@ -1,9 +1,9 @@
-// middleware.ts
+// proxy.ts
 import { auth } from "@/server/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const session = await auth();
   const { pathname } = req.nextUrl;
 
@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
-// middleware.ts (continued)
+
 export const config = {
   matcher: [
     "/dashboard/:path*",

@@ -287,7 +287,7 @@ export const applicationRouter = router({
 
   // 🔄 Update only status (used by the Kanban drag-and-drop board)
   updateStatus: protectedProcedure
-    .input(z.object({ id: z.string(), status: z.nativeEnum(Status) }))
+    .input(z.object({ id: z.string(), status: z.enum(Status) }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.prisma.application.findFirst({
         where: { id: input.id, userId: ctx.session.user.id },

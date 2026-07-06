@@ -8,7 +8,7 @@
 
 ## Live Demo
 
-<img src="public/catalystdemo.gif" title='Video Walkthrough' width='400' alt='Video Walkthrough' />
+<img src="public/catalystdemo.gif" title='Video Walkthrough' width='600' alt='Video Walkthrough' />
 
 ## ✨ Features
 
