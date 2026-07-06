@@ -54,7 +54,7 @@ export default function WeeklyGoalCard() {
               fill="none"
               strokeWidth="10"
               strokeLinecap="round"
-              stroke="var(--primary)"
+              stroke="var(--secondary)"
               strokeDasharray={`${dash} ${circumference}`}
               transform="rotate(-90 60 60)"
               className="transition-all"

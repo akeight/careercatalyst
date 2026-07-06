@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { ContactType } from "@/lib/contactTypes";
+import type { Status } from "@prisma/client";
 
 // ------------ TYPES ------------
 export type ApplicationType = "INTERNSHIP" | "FELLOWSHIP" | "EARLY_CAREER";
@@ -34,8 +35,6 @@ export type Application = {
     company?: { id?: string; name: string } | null;
   } | null;
 };
-
-export type Status = "SAVED" | "APPLIED" | "INTERVIEW" | "OFFER" | "REJECTED";
 
 export type ColumnType = {
   id: string;

@@ -7,19 +7,18 @@ import Link from "next/link";
 import { LoginForm } from "@/components/login-signup/LoginForm";
 
 export default async function LoginPage() {
+  // Resolve the session in isolation. redirect() throws a NEXT_REDIRECT
+  // control-flow signal, so it must live OUTSIDE any try/catch or the catch
+  // swallows it and the redirect silently never happens.
+  let session: Awaited<ReturnType<typeof auth>> = null;
   try {
-    const session = await auth();
-
-    if (session?.user) {
-      if (!session.user.onboarded) {
-        redirect("/onboarding");
-      }
-
-      redirect("/dashboard");
-    }
+    session = await auth();
   } catch (error) {
     console.error("Failed to load session:", error);
-    // optional: render a fallback or allow login
+  }
+
+  if (session?.user) {
+    redirect(session.user.onboarded ? "/dashboard" : "/onboarding");
   }
 
   return (
