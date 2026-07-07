@@ -134,6 +134,176 @@
   --shadow-2xl: 0 24px 60px -28px rgb(0 0 0 / 0.65);
 }
 
+/* Marketing route: force the light editorial palette regardless of the app
+   theme (next-themes may set .dark on <html>). Tailwind v4 binds --color-* to
+   the base tokens at :root, so a nested subtree must re-bind --color-* to its
+   own base tokens for utilities like bg-card/text-foreground to follow. */
+.site-theme-light {
+  --font-sans: var(--font-host), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-aleo), ui-serif, Georgia, serif;
+  --background: #f7f8fb;
+  --foreground: #292d34;
+  --card: #ffffff;
+  --card-foreground: #292d34;
+  --popover: #ffffff;
+  --popover-foreground: #292d34;
+  --primary: #6860d7;
+  --primary-foreground: #ffffff;
+  --secondary: #ffc800;
+  --secondary-foreground: #0b2b38;
+  --muted: #eef0f5;
+  --muted-foreground: #5b6172;
+  --accent: #fff2cc;
+  --accent-foreground: #4a3a00;
+  --border: #e3e5ec;
+  --input: #e3e5ec;
+  --ring: #6860d7;
+  --sidebar: #f3f4f8;
+  --sidebar-foreground: #292d34;
+  --sidebar-accent: #ecebfd;
+  --sidebar-accent-foreground: #2b2350;
+  --sidebar-border: #e3e5ec;
+  --status-saved: #fd71af;
+  --status-applied: #65d3c6;
+  --status-applied-foreground: #06222e;
+  --status-interview: #6860d7;
+  --status-offer: #ffc800;
+  --nav-active: #ffc800;
+  --nav-active-foreground: #4a3a00;
+  /* hero ink is scrubbed light -> dark by JS; charcoal is the resting state */
+  --hero-ink: #292d34;
+  --hero-ink-muted: #5b6172;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+}
+
+/* Dark theme zone used by the hero mockup crossfade. Same re-binding trick so
+   Tailwind color utilities pick up the dark tokens within this subtree only. */
+.site-theme-dark {
+  --font-sans: var(--font-host), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-aleo), ui-serif, Georgia, serif;
+  --background: #191b20;
+  --foreground: #f2f3f7;
+  --card: #23262e;
+  --card-foreground: #f2f3f7;
+  --popover: #23262e;
+  --popover-foreground: #f2f3f7;
+  --primary: #6860d7;
+  --primary-foreground: #14151b;
+  --secondary: #ffc800;
+  --secondary-foreground: #06222e;
+  --muted: #262932;
+  --muted-foreground: #a6acbd;
+  --accent: #2c2f39;
+  --accent-foreground: #f2f3f7;
+  --border: rgb(242 243 247 / 9%);
+  --input: rgb(242 243 247 / 12%);
+  --ring: #6860d7;
+  --sidebar: #17191d;
+  --sidebar-foreground: #f2f3f7;
+  --sidebar-accent: #262932;
+  --sidebar-accent-foreground: #f2f3f7;
+  --sidebar-border: rgb(242 243 247 / 9%);
+  --status-saved: #fd71af;
+  --status-applied: #65d3c6;
+  --status-applied-foreground: #06222e;
+  --status-interview: #6860d7;
+  --status-offer: #ffc800;
+  --nav-active: #ffc800;
+  --nav-active-foreground: #0d0a00;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+}
+
+/* Pinned hero (JS-enhanced, desktop + motion allowed). The tall zone gives
+   scrub room; the stage sticks to the viewport while the dashboard parallaxes
+   up into the headline and the palette scrubs to dark. Without .is-pinned the
+   hero is a normal-flow, always-light section (mobile / reduced motion). */
+.hero-zone.is-pinned {
+  height: 380vh;
+}
+.hero-zone.is-pinned .hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.hero-zone.is-pinned .hero-scene,
+.hero-zone.is-pinned .hero-scene-dark {
+  position: absolute;
+  inset-inline: 0;
+  /* Base rest position for the dashboard. Both the light and dark copies share
+     this so they stay pixel-aligned through the clip-path wipe. The JS parallax
+     stacks its own transform on top; keep positioning here (not via a translate
+     utility) so it doesn't fight the animation or shift the dark surface. */
+  top: calc(40% - 140px);
+  margin-top: 0;
+  padding-bottom: 0;
+  will-change: transform;
+}
+.hero-zone.is-pinned .hero-copy-block {
+  will-change: transform;
+}
+
+/* Dark stage only exists in the pinned/enhanced experience. It sits above the
+   light hero and is revealed bottom-to-top by a JS-driven clip-path wipe. */
+.hero-dark-stage {
+  display: none;
+}
+.hero-zone.is-pinned .hero-dark-stage {
+  display: block;
+  clip-path: inset(100% 0 0 0);
+  will-change: clip-path;
+}
+
+/* The band after the hero slides up and folds over the pinned stage. */
+.site-fold.is-folding {
+  margin-top: -100vh;
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  box-shadow: 0 -30px 60px -30px rgb(41 45 52 / 0.45);
+  will-change: transform;
+}
+
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
