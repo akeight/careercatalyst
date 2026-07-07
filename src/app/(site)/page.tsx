@@ -1,86 +1,35 @@
 "use client";
 
-import { IconCloud } from "@/components/magicui/icon-cloud";
-import { Button } from "@/components/ui/button";
-import { BoxReveal } from "@/components/magicui/box-reveal";
-import { AuroraText } from "@/components/magicui/aurora-text";
-import Link from "next/link";
+import { useRef } from "react";
 
-const slugs = [
-  "typescript",
-  "javascript",
-  "dart",
-  "java",
-  "react",
-  "flutter",
-  "android",
-  "html5",
-  "css3",
-  "nodedotjs",
-  "express",
-  "nextdotjs",
-  "prisma",
-  "amazonaws",
-  "postgresql",
-  "firebase",
-  "nginx",
-  "vercel",
-  "testinglibrary",
-  "jest",
-  "cypress",
-  "docker",
-  "git",
-  "jira",
-  "github",
-  "gitlab",
-  "visualstudiocode",
-  "androidstudio",
-  "sonarqube",
-  "figma",
-];
+import { MarketingNav } from "./_components/MarketingNav";
+import { HeroSection } from "./_components/HeroSection";
+import { MetricStrip } from "./_components/MetricStrip";
+import { ProblemSection } from "./_components/ProblemSection";
+import { FeatureShowcase } from "./_components/FeatureShowcase";
+import { HowItWorks } from "./_components/HowItWorks";
+import { ResourcesTeaser } from "./_components/ResourcesTeaser";
+import { FinalCTA } from "./_components/FinalCTA";
+import { LandingAnimations } from "./_components/LandingAnimations";
 
-export default function HomePage() {
-  const images = slugs.map(
-    (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`,
-  );
+export default function LandingPage() {
+  const rootRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="flex items-start w-full justify-center flex-wrap mx-6 pt-8">
-      <div className="size-full max-w-lg items-center justify-center overflow-hidden pt-8">
-        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
-          <p className="text-[2.5rem] font-semibold">
-            The <AuroraText> career launchpad</AuroraText> for students.
-          </p>
-        </BoxReveal>
-
-        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
-          <div className="mt-6">
-            <p>
-              -&gt; Your path to a tech internship,
-              <span className="font-semibold text-primary"> simplified</span>.
-              <br />
-              -&gt; All your applications,
-              <span className="font-semibold text-primary"> one </span> place,
-              <span className="font-semibold text-primary">
-                {" "}
-                no missed deadlines
-              </span>
-              .
-              <br />
-            </p>
-          </div>
-        </BoxReveal>
-
-        <BoxReveal boxColor={"#7B68EE"} duration={0.5}>
-          <Link href="/dashboard">
-            <Button className="mt-[1.6rem]">Begin Tracking</Button>
-          </Link>
-        </BoxReveal>
-      </div>
-
-      <div className="flex items-center justify-center overflow-hidden">
-        <IconCloud images={images} />
-      </div>
+    <div ref={rootRef} className="w-full">
+      <MarketingNav />
+      <main>
+        <HeroSection />
+        <div className="site-fold relative z-10 bg-background">
+          <MetricStrip />
+          <ProblemSection />
+          <FeatureShowcase />
+          <HowItWorks />
+          <ResourcesTeaser />
+          <FinalCTA />
+        </div>
+      </main>
+      <LandingAnimations rootRef={rootRef} />
     </div>
   );
 }
