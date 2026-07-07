@@ -89,6 +89,7 @@ if (process.env.NODE_ENV !== "production") {
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers,
+  trustHost: true,
   session: { strategy: "jwt" },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
