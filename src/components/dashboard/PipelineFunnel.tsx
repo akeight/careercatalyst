@@ -181,7 +181,7 @@ export default function PipelineFunnel() {
               content={
                 <ChartTooltipContent
                   labelFormatter={(_, payload) =>
-                    payload?.[0]?.payload?.range ?? ""
+                    String(payload?.[0]?.payload?.range ?? "")
                   }
                 />
               }

@@ -23,7 +23,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="relative isolate flex min-h-[calc(100dvh-8rem)] w-full items-center overflow-hidden bg-background px-4 py-16 sm:px-6 lg:px-8">
+    <div className="relative isolate flex min-h-dvh w-full items-center overflow-hidden bg-background px-4 py-16 sm:px-6 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_20%,color-mix(in_srgb,#7b68ee_22%,transparent)_0%,transparent_34%),radial-gradient(circle_at_82%_78%,color-mix(in_srgb,#49ccf9_24%,transparent)_0%,transparent_32%),radial-gradient(circle_at_50%_100%,color-mix(in_srgb,#fd71af_18%,transparent)_0%,transparent_38%)]" />
       <div className="absolute inset-x-0 top-0 -z-10 h-px bg-border/60" />
       <div className="absolute inset-0 -z-10 opacity-[0.28] [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:radial-gradient(ellipse_at_center,black_0%,transparent_72%)]" />

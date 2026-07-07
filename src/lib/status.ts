@@ -1,5 +1,15 @@
 import { Status } from "@prisma/client";
 
+export const STATUS_VALUES = [
+  "SAVED",
+  "APPLIED",
+  "INTERVIEW",
+  "OFFER",
+  "REJECTED",
+] as const satisfies readonly Status[];
+
+export type StatusValue = (typeof STATUS_VALUES)[number];
+
 // Ordered list of statuses used to render the Kanban columns.
 export const KANBAN_STATUSES: Status[] = [
   "SAVED",
@@ -16,8 +26,9 @@ export const KANBAN_COLUMN_STATUSES: Status[] = KANBAN_STATUSES.filter(
 );
 
 // Column id (lowercased status) -> Status enum value.
-export const columnIdToStatus = (columnId: string): Status | undefined =>
-  KANBAN_STATUSES.find((s) => s.toLowerCase() === columnId.toLowerCase());
+export const columnIdToStatus = (columnId: string): StatusValue | undefined =>
+  KANBAN_STATUSES.find((s) => s.toLowerCase() === columnId.toLowerCase()) as
+    StatusValue | undefined;
 
 // Human-friendly label, e.g. "SAVED" -> "Saved".
 export const statusLabel = (status: string): string =>

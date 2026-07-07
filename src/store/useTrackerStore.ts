@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { ContactType } from "@/lib/contactTypes";
-import type { Status } from "@prisma/client";
+import type { StatusValue } from "@/lib/status";
 
 // ------------ TYPES ------------
 export type ApplicationType = "INTERNSHIP" | "FELLOWSHIP" | "EARLY_CAREER";
@@ -10,7 +10,7 @@ export type Application = {
   type?: ApplicationType;
   title: string;
   location?: string | null;
-  status: Status;
+  status: StatusValue;
   source?: string | null;
   jobUrl?: string | null;
   notes?: string | null;
@@ -53,7 +53,7 @@ export type TrackerStore = {
 
   reorderCard: (columnId: string, oldIndex: number, newIndex: number) => void;
 
-  updateApplicationStatus: (id: string, status: Status) => void;
+  updateApplicationStatus: (id: string, status: StatusValue) => void;
 };
 
 // ------------ STORE ------------
