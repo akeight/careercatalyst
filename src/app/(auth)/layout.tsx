@@ -8,7 +8,7 @@ export default function AuthLayout({
 }) {
   return (
     <AppProviders>
-      <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
+      <div className="flex min-h-dvh w-full flex-col overflow-x-clip">
         <main className="w-full flex-1 min-w-0">
           {children}
           <Toaster

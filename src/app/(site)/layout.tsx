@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/server/auth";
-import Footer from "@/components/layout/Footer";
-import SiteHeader from "@/components/layout/SiteHeader";
+
+export const metadata: Metadata = {
+  title: "Catalyst — Track every internship application in one place",
+  description:
+    "Catalyst keeps your applications, deadlines, notes, documents, and interview prep in one focused workspace. Built for internship season.",
+};
 
 export default async function SiteLayout({
   children,
@@ -10,19 +15,13 @@ export default async function SiteLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  if (session?.user) {
+  if (session?.user?.onboarded) {
     redirect("/dashboard");
   }
 
   return (
-    <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
-      <div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8">
-        <SiteHeader />
-      </div>
-      <main className="mx-auto min-w-0 w-full max-w-screen-2xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        {children}
-      </main>
-      <Footer />
+    <div className="site-theme-light flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
+      {children}
     </div>
   );
 }

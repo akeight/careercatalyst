@@ -2,13 +2,7 @@
 
 import { cn } from "@/lib/utils/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { fadeInUp, hoverTap, staggerContainer } from "@/lib/motion";
@@ -21,30 +15,32 @@ type ProviderId = "google" | "github" | "linkedin";
 
 const isDevAuthEnabled = process.env.NODE_ENV !== "production";
 
+type AuthMode = "signin" | "signup";
+
 const providers: Array<{
   id: ProviderId;
-  label: string;
+  name: string;
   description: string;
   icon: React.ReactNode;
   variant: "default" | "outline";
 }> = [
   {
     id: "google",
-    label: "Continue with Google",
+    name: "Google",
     description: "Best for school or personal accounts",
     icon: <GoogleIcon />,
     variant: "default",
   },
   {
     id: "github",
-    label: "Continue with GitHub",
+    name: "GitHub",
     description: "Use your developer profile",
     icon: <GitHubIcon />,
     variant: "outline",
   },
   {
     id: "linkedin",
-    label: "Continue with LinkedIn",
+    name: "LinkedIn",
     description: "Connect with your professional identity",
     icon: <LinkedInIcon />,
     variant: "outline",
@@ -53,8 +49,9 @@ const providers: Array<{
 
 export function LoginForm({
   className,
+  mode = "signin",
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div"> & { mode?: AuthMode }) {
   const reduceMotion = useReducedMotion();
   const [pendingProvider, setPendingProvider] = useState<ProviderId | null>(
     null,
@@ -135,17 +132,8 @@ export function LoginForm({
         animate="visible"
       >
         <motion.div variants={reduceMotion ? undefined : fadeInUp}>
-          <Card className="overflow-hidden border-border/70 shadow-xl shadow-primary/5">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">
-                Welcome to your tracker
-              </CardTitle>
-              <CardDescription>
-                Sign in or create an account to personalize your internship
-                search.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <Card className="overflow-hidden border-border/70 text-left shadow-xl shadow-primary/5">
+            <CardContent className="pt-6">
               <div className="grid gap-4">
                 {providers.map((provider) => (
                   <motion.div
@@ -167,7 +155,12 @@ export function LoginForm({
                         {provider.icon}
                       </span>
                       <span className="grid gap-0.5">
-                        <span className="font-medium">{provider.label}</span>
+                        <span className="font-medium">
+                          {mode === "signup"
+                            ? "Sign up with "
+                            : "Continue with "}
+                          {provider.name}
+                        </span>
                         <span
                           className={cn(
                             "text-xs",

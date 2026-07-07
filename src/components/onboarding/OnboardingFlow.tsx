@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { AuroraText } from "@/components/magicui/aurora-text";
 import { easeCurve, stepVariants } from "@/lib/motion";
 
 type FormData = {
@@ -84,7 +83,7 @@ export function OnboardingFlow() {
   const progress = (step / (TOTAL_STEPS - 1)) * 100;
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col justify-center px-4 py-10">
+    <div className="mx-auto w-full max-w-xl px-4 pb-10 sm:px-0">
       {/* Progress bar */}
       <div className="mb-8 h-1.5 w-full overflow-hidden rounded-full bg-muted">
         <motion.div
@@ -96,8 +95,8 @@ export function OnboardingFlow() {
         />
       </div>
 
-      <Card className="overflow-hidden">
-        <CardContent className="min-h-[360px] p-8">
+      <Card className="overflow-hidden border-border/70 bg-card shadow-sm">
+        <CardContent className="min-h-[360px] p-7 sm:p-8">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={step}
@@ -113,7 +112,8 @@ export function OnboardingFlow() {
                   icon={<Rocket className="size-7 text-primary" />}
                   title={
                     <>
-                      Welcome to your <AuroraText>launchpad</AuroraText>
+                      Welcome to your{" "}
+                      <span className="text-primary">launchpad</span>
                     </>
                   }
                   subtitle="Let's set up your profile so we can tailor your internship search. It only takes a minute."
