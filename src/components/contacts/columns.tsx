@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Mail, Phone } from "lucide-react";
-
 import { LinkedinIcon } from "@/components/icons/LinkedinIcon";
 
 import { Badge } from "@/components/ui/badge";

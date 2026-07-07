@@ -28,8 +28,7 @@ export const KANBAN_COLUMN_STATUSES: Status[] = KANBAN_STATUSES.filter(
 // Column id (lowercased status) -> Status enum value.
 export const columnIdToStatus = (columnId: string): StatusValue | undefined =>
   KANBAN_STATUSES.find((s) => s.toLowerCase() === columnId.toLowerCase()) as
-    | StatusValue
-    | undefined;
+    StatusValue | undefined;
 
 // Human-friendly label, e.g. "SAVED" -> "Saved".
 export const statusLabel = (status: string): string =>

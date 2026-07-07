@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
 import { z } from "zod";
@@ -62,7 +62,9 @@ export function AddApplicationForm({
   onSuccess?: () => void;
 }) {
   const form = useForm<AddApplicationValues>({
-    resolver: zodResolver(AddApplicationSchema),
+    resolver: zodResolver(
+      AddApplicationSchema,
+    ) as Resolver<AddApplicationValues>,
     defaultValues,
   });
 

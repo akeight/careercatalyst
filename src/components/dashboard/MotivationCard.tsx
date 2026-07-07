@@ -9,7 +9,7 @@ export default function MotivationCard() {
     "Drink water. Breathe deep. You’re building an empire.",
   ];
 
-  const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+  const randomQuote = quotes[new Date().getDate() % quotes.length];
 
   return (
     <Card className="w-full h-full flex flex-row items-center justify-center gap-3 py-5">

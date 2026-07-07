@@ -1,7 +1,6 @@
 "use client";
 
 import { ExternalLink, Mail, Phone, UserRound } from "lucide-react";
-
 import { LinkedinIcon } from "@/components/icons/LinkedinIcon";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
