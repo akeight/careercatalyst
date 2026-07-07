@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/server/auth";
 import { OnboardingFlow } from "@/components/onboarding/OnboardingFlow";
+import { OnboardingShell } from "@/app/(auth)/_components/OnboardingShell";
 
 export default async function OnboardingPage({
   searchParams,
@@ -19,5 +20,12 @@ export default async function OnboardingPage({
     redirect("/dashboard");
   }
 
-  return <OnboardingFlow />;
+  return (
+    <OnboardingShell
+      title="Set up your workspace."
+      subtitle="A few quick details so Catalyst can tailor your search and goals."
+    >
+      <OnboardingFlow />
+    </OnboardingShell>
+  );
 }
