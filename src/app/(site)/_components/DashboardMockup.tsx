@@ -30,22 +30,22 @@ const TOOL_ITEMS = [
 ];
 
 const STATS = [
-  { label: "Saved", value: "3", color: "var(--status-saved)" },
-  { label: "Applied", value: "5", color: "var(--status-applied)" },
-  { label: "Interviews", value: "1", color: "var(--status-interview)" },
-  { label: "Offers", value: "0", color: "var(--status-offer)" },
+  { label: "Saved", value: "8", color: "var(--status-saved)" },
+  { label: "Applied", value: "94", color: "var(--status-applied)" },
+  { label: "Interviews", value: "5", color: "var(--status-interview)" },
+  { label: "Offers", value: "2", color: "var(--status-offer)" },
 ];
 
 const INSIGHTS = [
-  { value: "50%", label: "Response rate" },
-  { value: "50%", label: "Interview rate" },
-  { value: "0%", label: "Offer rate" },
+  { value: "63%", label: "Response rate" },
+  { value: "5%", label: "Interview rate" },
+  { value: "2%", label: "Offer rate" },
 ];
 
 const SAVED_APPS = [
-  { role: "Experience Design Summer Intern", meta: "US Bank · Minneapolis" },
-  { role: "Software Engineering Intern", meta: "Figma · New York" },
-  { role: "SWE", meta: "Dropbox" },
+  { role: "Software Engineer Intern", meta: "Pinterest · Seattle" },
+  { role: "Software Engineer Intern", meta: "Figma · New York" },
+  { role: "Software Engineer Intern", meta: "Vercel · San Francisco" },
 ];
 
 function SidebarLink({
@@ -98,7 +98,7 @@ export function DashboardMockup() {
         <div className="flex items-center gap-2">
           <Calendar className="size-4 text-primary" />
           <span className="text-xs font-medium text-foreground">
-            Follow up with US Bank
+            Follow up with Google
           </span>
         </div>
       </div>
@@ -153,7 +153,7 @@ export function DashboardMockup() {
                   Ally
                 </p>
                 <p className="truncate text-[10px] text-muted-foreground">
-                  ally@outlook.com
+                  user@gmail.com
                 </p>
               </div>
             </div>
@@ -202,7 +202,7 @@ export function DashboardMockup() {
                       Applications Submitted
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      2 submitted in July 2026.
+                      9 submitted in July 2026.
                     </p>
                   </div>
                   <span className="rounded-md border border-border px-2 py-0.5 text-[10px] text-muted-foreground">

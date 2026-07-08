@@ -114,10 +114,10 @@ export function LandingAnimations({
           if (scene) scene.style.transform = t;
           if (sceneDark) sceneDark.style.transform = t;
 
-          // Copy is "almost pinned": a slow drift up, stays fully opaque as the
+          // Copy is "almost pinned": a slow drift down, stays fully opaque as the
           // dashboard passes over it.
           if (copyBlock) {
-            copyBlock.style.transform = `translateY(${(-p * 40).toFixed(1)}px)`;
+            copyBlock.style.transform = `translateY(${(p * 40).toFixed(1)}px)`;
           }
 
           // Phase B: dark theme wipe from bottom -> top via clip-path inset.

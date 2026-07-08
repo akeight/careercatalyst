@@ -93,9 +93,7 @@ export function LoginForm({
       await signIn(provider, { redirectTo: "/dashboard" });
     } catch {
       setPendingProvider(null);
-      setError(
-        "That provider is not configured yet. Check your auth env vars.",
-      );
+      setError("This provider is not configured yet. Please choose another.");
     }
   };
 
@@ -170,7 +168,7 @@ export function LoginForm({
                           )}
                         >
                           {configuredProviders?.has(provider.id) === false
-                            ? "Add provider env vars to enable locally"
+                            ? "This provider is not configured yet."
                             : provider.description}
                         </span>
                       </span>

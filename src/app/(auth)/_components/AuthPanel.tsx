@@ -40,17 +40,15 @@ export function AuthPanel() {
       <p className="auth-subtitle mx-auto mt-4 max-w-sm text-pretty text-base leading-7 text-muted-foreground">
         {copy.subtitle}
       </p>
-
+      <button
+        type="button"
+        onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
+        className="mt-6 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+      >
+        {copy.toggle}
+      </button>
       <div className="auth-form mt-8">
         <LoginForm mode={mode} />
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-6 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          {copy.toggle}
-        </button>
       </div>
     </div>
   );

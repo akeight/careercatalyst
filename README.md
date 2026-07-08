@@ -4,13 +4,13 @@
 
 ## Turn opportunities into offers.
 
-⚡ **Catalyst** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter/network contact management.
+**Catalyst** is a full-stack web app designed to help students and early-career professionals organize, track, and manage their internship, fellowship, and job applications. Built with **Next.js, TypeScript, Prisma, tRPC, ShadCN, and Auth.js**, it features a clean UI, drag-and-drop Kanban board, advanced filtering, and recruiter/network contact management.
 
 ## Live Demo
 
 <img src="public/catalystdemo.gif" title='Video Walkthrough' width='600' alt='Video Walkthrough' />
 
-## ✨ Features
+## Features
 
 - **User profile** - create goals, mananage weekly streak goals, upload resume
 - **Add, edit, and delete applications** — track status, recruiter contacts, and markdown notes
@@ -22,7 +22,7 @@
 - **User authentication** — secure, personalized data with Auth.js
 - **Responsive design** — works seamlessly on desktop and mobile
 
-## 🛠 Current Tech Stack
+## Current Tech Stack
 
 - **Next.js** + **TypeScript**
 - **Prisma ORM** + **PostgreSQL** database powerhouse
@@ -31,7 +31,7 @@
 - **React Hook Form + Zod** for validation
 - **Auth.js** + **GitHub, Google, and LinkedIn OAuth** for authentication
 
-## 📸 Screenshots
+## Screenshots
 
 - [x] **Dashboard Landing Page**
 
@@ -53,11 +53,11 @@
 
 <img src="public/addapp.png" width='400px' alt='Add Internship Modal' />
 
-## 🚧 Current Status
+## Current Status
 
-This project is **actively in development**. Core product is built and ready for test users. Next up is to add analytics and build a user friendly public landing page. Set to deploy within 2 weeks.
+This project is **actively in development**. Core product is built and ready for test users. Next up is to add analytics and expand on feature development.
 
-## 📂 Getting Started
+## Getting Started
 
 Clone the repo:
 
@@ -97,12 +97,12 @@ Run the dev server:
 npm run dev
 ```
 
-## 💡 Future Plans
+## Future Plans
 
 - AI-powered suggestions (e.g., resume tips, matching internships)
 - Calendar integrated with push notifications
 
-## 🤝 Contributions
+## Contributions
 
 I welcome feedback, suggestions, and collaborators as I continue building this out!
 

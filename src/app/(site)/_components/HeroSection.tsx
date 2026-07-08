@@ -32,24 +32,26 @@ export function HeroSection() {
                 "color-mix(in srgb, var(--hero-ink) 22%, transparent)",
             }}
           >
-            <span className="size-1.5 rounded-full bg-primary" />
+            <span className="size-1 rounded-full bg-primary" />
             Built for internship season
           </span>
 
           <h1
-            className="hero-title mx-auto mt-6 max-w-3xl text-balance font-serif text-4xl font-light leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
+            className="hero-title mx-auto mt-6 max-w-6xl text-balance font-serif text-3xl font-light leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl"
             style={{ color: "var(--hero-ink)" }}
           >
-            Track every application. Follow up at the right time. Walk into
-            interviews prepared.
+            Track every application. <br />
+            Follow up on time. <br />
+            Walk into your interviews prepared.
           </h1>
 
           <p
             className="hero-copy mx-auto mt-5 max-w-xl text-pretty text-base leading-7 sm:text-lg"
             style={{ color: "var(--hero-ink-muted)" }}
           >
-            Catalyst keeps your applications, deadlines, notes, documents, and
-            interview prep in one focused workspace.
+            Catalyst is built for tech majors and the extreme pipeline. <br />{" "}
+            Keep your applications, deadlines, notes, documents, and interview
+            prep in one focused workspace.
           </p>
 
           <div className="hero-cta mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

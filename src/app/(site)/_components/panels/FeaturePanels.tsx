@@ -45,20 +45,25 @@ const PIPELINE = [
   {
     stage: "Saved",
     color: "var(--status-saved)",
-    cards: [{ role: "Product Design Intern", org: "Notion" }],
+    cards: [
+      { role: "iOS Developer Intern", org: "Apple" },
+      { role: "AI Engineer Intern", org: "OpenAI" },
+    ],
   },
   {
     stage: "Applied",
     color: "var(--status-applied)",
     cards: [
-      { role: "SWE Intern", org: "Stripe" },
-      { role: "Data Intern", org: "Airbnb" },
+      { role: "Frontend Developer Intern", org: "Google" },
+      { role: "Software Engineer Intern", org: "Airbnb" },
+      { role: "Full Stack Developer Intern", org: "GitHub" },
+      { role: "Frontend Engineer Intern", org: "Shopify" },
     ],
   },
   {
     stage: "Interview",
     color: "var(--status-interview)",
-    cards: [{ role: "Frontend Intern", org: "Figma" }],
+    cards: [{ role: "Frontend Developer Intern", org: "Figma" }],
   },
 ];
 
@@ -103,7 +108,7 @@ export function PipelinePanel() {
 
 const REMINDERS = [
   {
-    org: "US Bank",
+    org: "Robinhood",
     note: "Thank-you note after phone screen",
     when: "Today",
     due: true,
@@ -245,7 +250,8 @@ export function InterviewPanel() {
 
 const DOCS = [
   { name: "Resume — SWE.pdf", meta: "Sent to Stripe, Airbnb", tag: "v3" },
-  { name: "Resume — Design.pdf", meta: "Sent to Figma", tag: "v2" },
+  { name: "Resume — Frontend.pdf", meta: "Sent to Figma", tag: "v2" },
+  { name: "Resume — Mobile.pdf", meta: "Sent to Apple", tag: "v1" },
   { name: "Cover letter.pdf", meta: "Draft", tag: "v1" },
 ];
 
@@ -280,9 +286,9 @@ export function DocumentsPanel() {
 }
 
 const RATES = [
-  { label: "Response", value: "50%" },
-  { label: "Interview", value: "50%" },
-  { label: "Offer", value: "0%" },
+  { label: "Response", value: "48%" },
+  { label: "Interview", value: "6%" },
+  { label: "Offer", value: "2%" },
 ];
 
 export function InsightsPanel() {
