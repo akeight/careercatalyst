@@ -33,6 +33,10 @@
 
 ## Screenshots
 
+- [x] **Site Home Page**
+
+<img src="public/catalysthome.png" width='400px' alt='Home Page' />
+
 - [x] **Dashboard Landing Page**
 
 <img src="public/dashboard.png" width='400px' alt='Home Page' />

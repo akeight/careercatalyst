@@ -19,8 +19,8 @@ const hostGrotesk = Host_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Internship Tracker",
-  description: "Track your job search like a pro",
+  title: "Catalyst",
+  description: "Built for internship season.",
 };
 
 export default function RootLayout({
