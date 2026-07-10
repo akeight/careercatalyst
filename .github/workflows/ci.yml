@@ -13,16 +13,13 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v5
         with:
-          node-version: "20"
-          registry-url: "https://npm.fontawesome.com/" # Use Font Awesome's registry
-          scope: "@fortawesome" # Specify the scope
+          node-version: "22"
 
       - name: Install Dependencies
         run: npm ci
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          # Provide the token using the standard NODE_AUTH_TOKEN name
-          NODE_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
+          FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}
 
       - name: Prettier Check
         run: npx prettier . --check
