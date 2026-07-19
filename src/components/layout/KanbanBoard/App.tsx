@@ -72,9 +72,33 @@ export default function KanbanBoardApp() {
     : undefined;
 
   const updateStatus = trpc.application.updateStatus.useMutation({
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       utils.application.getAll.invalidate();
       utils.application.getStats.invalidate();
+      if (variables.status === "APPLIED") {
+        toast("Create a Company Snapshot while you wait?", {
+          action: {
+            label: "Create Snapshot",
+            onClick: () => {
+              window.location.href = `/applications/${variables.id}/interview-prep`;
+            },
+          },
+        });
+      }
+      if (variables.status === "INTERVIEW") {
+        toast(
+          "You got an interview. Turn your company research into a complete Interview Brief.",
+          {
+            action: {
+              label: "Build Interview Brief",
+              onClick: () => {
+                window.location.href = `/applications/${variables.id}/interview-prep`;
+              },
+            },
+            cancel: { label: "Later", onClick: () => {} },
+          },
+        );
+      }
     },
     onError: () => {
       toast.error("Couldn't save the status change. Reverting.");

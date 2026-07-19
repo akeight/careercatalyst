@@ -38,6 +38,11 @@ import {
 } from "@/components/applications/EditApplicationForm";
 import { ContactCard } from "@/components/contacts/ContactCard";
 import type { ContactType } from "@/lib/contactTypes";
+import { InterviewPrepDrawerCard } from "@/components/interview-prep/InterviewPrepDrawerCard";
+import type {
+  RoleFamilyValue,
+  MobileSpecializationValue,
+} from "@/lib/roleFamily";
 
 export type ApplicationDetails = {
   id: string;
@@ -49,6 +54,9 @@ export type ApplicationDetails = {
   status: AppStatus;
   source?: string | null;
   jobUrl?: string | null;
+  jobDescription?: string | null;
+  roleFamily?: RoleFamilyValue | null;
+  mobileSpecialization?: MobileSpecializationValue | null;
   notes?: string | null;
   appliedAt?: string | Date | null;
   deadline?: string | Date | null;
@@ -130,6 +138,9 @@ export function ApplicationDetailsDrawer({
     location: application.location ?? "",
     source: application.source ?? "",
     jobUrl: application.jobUrl ?? "",
+    jobDescription: application.jobDescription ?? "",
+    roleFamily: application.roleFamily ?? undefined,
+    mobileSpecialization: application.mobileSpecialization ?? undefined,
     notes: application.notes ?? "",
     deadline: application.deadline ? new Date(application.deadline) : undefined,
     favorite: application.favorite ?? false,
@@ -227,6 +238,11 @@ export function ApplicationDetailsDrawer({
                 )}
               </div>
             </section>
+
+            <InterviewPrepDrawerCard
+              applicationId={application.id}
+              applicationStatus={application.status}
+            />
 
             <section className="grid gap-3">
               <h3 className="text-sm font-semibold">Notes</h3>

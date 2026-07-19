@@ -26,7 +26,10 @@ import { toast } from "sonner";
 import { statusBadgeStyle, cssColorForStatus } from "@/lib/colors";
 import EditApplicationModal from "@/components/applications/EditApplicationModal";
 import type { EditApplicationValues } from "@/components/applications/EditApplicationForm";
-import { ApplicationDetailsDrawer } from "@/components/applications/ApplicationDetailsDrawer";
+import {
+  ApplicationDetailsDrawer,
+  type ApplicationDetails,
+} from "@/components/applications/ApplicationDetailsDrawer";
 
 type ApplicationCardProps = {
   app: Application;
@@ -92,6 +95,23 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
                 status: app.status,
                 source: app.source,
                 jobUrl: app.jobUrl,
+                jobDescription:
+                  "jobDescription" in app
+                    ? (app as { jobDescription?: string | null }).jobDescription
+                    : null,
+                roleFamily:
+                  "roleFamily" in app
+                    ? (app as { roleFamily?: ApplicationDetails["roleFamily"] })
+                        .roleFamily
+                    : null,
+                mobileSpecialization:
+                  "mobileSpecialization" in app
+                    ? (
+                        app as {
+                          mobileSpecialization?: ApplicationDetails["mobileSpecialization"];
+                        }
+                      ).mobileSpecialization
+                    : null,
                 notes: app.notes,
                 appliedAt: app.appliedAt,
                 deadline: app.deadline,

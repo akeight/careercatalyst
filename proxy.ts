@@ -30,6 +30,8 @@ export const config = {
     "/calendar/:path*",
     "/favorites/:path*",
     "/profile/:path*",
+    "/interview-prep/:path*",
+    "/applications/:path*",
     "/onboarding",
   ], // Add protected routes here
 };
