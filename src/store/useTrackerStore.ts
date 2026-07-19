@@ -13,6 +13,9 @@ export type Application = {
   status: StatusValue;
   source?: string | null;
   jobUrl?: string | null;
+  jobDescription?: string | null;
+  roleFamily?: string | null;
+  mobileSpecialization?: string | null;
   notes?: string | null;
   appliedAt?: string | Date | null;
   deadline?: string | Date | null;

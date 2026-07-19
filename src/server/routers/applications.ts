@@ -3,7 +3,10 @@ import type { Prisma, PrismaClient } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { STATUS_VALUES, type StatusValue } from "@/lib/status";
 import { router, protectedProcedure } from "../trpc";
-import { AddApplicationSchema } from "@/lib/validations/AddApplicationSchema";
+import {
+  AddApplicationSchema,
+  UpdateApplicationDataSchema,
+} from "@/lib/validations/AddApplicationSchema";
 import { normalizeLinkedIn } from "@/lib/utils/normalizeLinkedIn";
 
 const applicationInclude = {
@@ -173,6 +176,12 @@ export const applicationRouter = router({
         location: input.location,
         source: input.source,
         jobUrl: input.jobUrl || null,
+        jobDescription: input.jobDescription?.trim() || null,
+        roleFamily: input.roleFamily ?? null,
+        mobileSpecialization:
+          input.roleFamily === "MOBILE_DEVELOPMENT"
+            ? (input.mobileSpecialization ?? "NOT_SPECIFIED")
+            : null,
         deadline: input.deadline ? new Date(input.deadline) : undefined,
         favorite: input.favorite ?? false,
         userId,
@@ -192,7 +201,7 @@ export const applicationRouter = router({
     .input(
       z.object({
         id: z.string(),
-        data: AddApplicationSchema.partial(),
+        data: UpdateApplicationDataSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -275,6 +284,21 @@ export const applicationRouter = router({
       if (rest.jobUrl !== undefined) {
         applicationData.jobUrl = rest.jobUrl || null;
       }
+      if (rest.jobDescription !== undefined) {
+        applicationData.jobDescription = rest.jobDescription?.trim() || null;
+      }
+      if (rest.roleFamily !== undefined) {
+        applicationData.roleFamily = rest.roleFamily ?? null;
+        if (rest.roleFamily !== "MOBILE_DEVELOPMENT") {
+          applicationData.mobileSpecialization = null;
+        }
+      }
+      if (rest.mobileSpecialization !== undefined) {
+        applicationData.mobileSpecialization =
+          (rest.roleFamily ?? existing.roleFamily) === "MOBILE_DEVELOPMENT"
+            ? (rest.mobileSpecialization ?? "NOT_SPECIFIED")
+            : null;
+      }
       if (deadline !== undefined) {
         applicationData.deadline = formattedDeadline ?? null;
       }
@@ -288,13 +312,29 @@ export const applicationRouter = router({
       });
     }),
 
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const application = await ctx.prisma.application.findFirst({
+        where: { id: input.id, userId: ctx.session.user.id },
+        include: applicationInclude,
+      });
+      if (!application) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Application not found",
+        });
+      }
+      return application;
+    }),
+
   // 🔄 Update only status (used by the Kanban drag-and-drop board)
   updateStatus: protectedProcedure
     .input(z.object({ id: z.string(), status: z.enum(STATUS_VALUES) }))
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.prisma.application.findFirst({
         where: { id: input.id, userId: ctx.session.user.id },
-        select: { id: true },
+        select: { id: true, status: true },
       });
 
       if (!existing) {

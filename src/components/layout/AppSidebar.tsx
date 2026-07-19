@@ -88,8 +88,8 @@ const supportLinks = [
     icon: <FontAwesomeIcon icon={faBolt} size="lg" />,
   },
   {
-    label: "Prampt Interview Practice",
-    url: "https://www.pramp.com/#/",
+    label: "Interview Prep",
+    href: "/interview-prep",
     icon: <FontAwesomeIcon icon={faSuitcase} size="lg" />,
   },
   {
@@ -203,26 +203,44 @@ export function AppSidebar() {
             Tools
           </SidebarGroupLabel>
           <div className="space-y-1 list-none group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
-            {supportLinks.map((supportLinks) => (
-              <SidebarMenuItem key={supportLinks.label} className="list-none">
-                <SidebarMenuButton
-                  asChild
-                  tooltip={supportLinks.label}
-                  className="h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5"
-                >
-                  <a
-                    href={supportLinks.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+            {supportLinks.map((item) => {
+              const isInternal = "href" in item && !!item.href;
+              const active = isInternal ? isActiveLink(item.href!) : false;
+              return (
+                <SidebarMenuItem key={item.label} className="list-none">
+                  <SidebarMenuButton
+                    asChild
+                    isActive={active}
+                    tooltip={item.label}
+                    className={cn(
+                      "h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5",
+                      active &&
+                        "data-[active=true]:bg-[var(--nav-active)]/40 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
+                    )}
                   >
-                    {supportLinks.icon}
-                    <span className="text-base font-medium">
-                      {supportLinks.label}
-                    </span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+                    {isInternal ? (
+                      <Link href={item.href!}>
+                        {item.icon}
+                        <span className="text-base font-medium">
+                          {item.label}
+                        </span>
+                      </Link>
+                    ) : (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {item.icon}
+                        <span className="text-base font-medium">
+                          {item.label}
+                        </span>
+                      </a>
+                    )}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </div>
         </div>
 

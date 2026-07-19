@@ -29,6 +29,58 @@ enum ContactType {
   OTHER
 }
 
+enum RoleFamily {
+  SOFTWARE_ENGINEERING
+  FRONTEND_ENGINEERING
+  MOBILE_DEVELOPMENT
+  UX_UI_PRODUCT_DESIGN
+  PRODUCT_MANAGEMENT
+  OTHER
+}
+
+enum MobileSpecialization {
+  IOS
+  ANDROID
+  CROSS_PLATFORM
+  NOT_SPECIFIED
+}
+
+enum ResearchLevel {
+  NONE
+  SNAPSHOT
+  INTERVIEW_BRIEF
+}
+
+enum ResearchRunMode {
+  SNAPSHOT
+  INTERVIEW_BRIEF
+}
+
+enum ResearchRunStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  PARTIAL
+  FAILED
+}
+
+enum ResearchRunStage {
+  REVIEWING_POSITION
+  IDENTIFYING_COMPANY
+  RESEARCHING_OFFICIAL_SOURCES
+  FINDING_RECENT_DEVELOPMENTS
+  BUILDING_ROLE_INSIGHTS
+  CONNECTING_CANDIDATE_CONTEXT
+  VALIDATING_CITATIONS
+  SAVING_BRIEF
+}
+
+enum EvidenceTier {
+  PRIMARY
+  CREDIBLE_SECONDARY
+  ANECDOTAL
+}
+
 model User {
   id           String        @id @default(cuid())
   email        String        @unique
@@ -38,6 +90,8 @@ model User {
   Company      Company[]
   contacts     Contact[]
   goals        Goal[]
+  research     ApplicationResearch[]
+  researchRuns ApplicationResearchRun[]
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -160,6 +214,9 @@ model Application {
   status    Status          @default(SAVED)
   source    String?
   jobUrl    String?
+  jobDescription String?
+  roleFamily RoleFamily?
+  mobileSpecialization MobileSpecialization?
   notes     String?
   appliedAt DateTime        @default(now())
   deadline  DateTime?
@@ -169,9 +226,102 @@ model Application {
   contactId String?
 
   noteRecords Note[]
+  research    ApplicationResearch?
+  researchRuns ApplicationResearchRun[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ApplicationResearch {
+  id            String @id @default(cuid())
+  applicationId String @unique
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  highestLevel ResearchLevel @default(NONE)
+
+  snapshotContent       Json?
+  snapshotGeneratedAt   DateTime?
+  snapshotSchemaVersion String?
+  snapshotExcerpt       String?
+  snapshotSourceCount   Int @default(0)
+  snapshotStaleReason   String?
+
+  briefContent       Json?
+  briefGeneratedAt   DateTime?
+  briefSchemaVersion String?
+  promptVersion      String?
+  briefExcerpt       String?
+  briefSourceCount   Int @default(0)
+  briefStaleReason   String?
+
+  jobDescriptionHash String?
+  candidateContext   String?
+  companyDomain      String?
+  companyResolvedName String?
+  resolutionConfidence Float?
+
+  sources ApplicationResearchSource[]
+  runs    ApplicationResearchRun[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ApplicationResearchSource {
+  id         String @id @default(cuid())
+  researchId String
+  research   ApplicationResearch @relation(fields: [researchId], references: [id], onDelete: Cascade)
+
+  externalId       String
+  url              String
+  normalizedUrl    String
+  title            String?
+  publisher        String?
+  sourceType       String
+  evidenceTier     EvidenceTier
+  publishedAt      DateTime?
+  accessedAt       DateTime @default(now())
+  excerpt          String?
+  relevanceScore   Float?
+  freshnessScore   Float?
+  collectedAtLevel ResearchRunMode
+
+  @@unique([researchId, normalizedUrl])
+  @@index([researchId])
+}
+
+model ApplicationResearchRun {
+  id            String @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  researchId    String
+  research      ApplicationResearch @relation(fields: [researchId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mode           ResearchRunMode
+  status         ResearchRunStatus @default(PENDING)
+  stage          ResearchRunStage?
+  idempotencyKey String @unique
+  errorCode      String?
+  errorMessage   String?
+  providerMeta   Json?
+  usage          Json?
+  attempt        Int @default(1)
+  startedAt      DateTime?
+  finishedAt     DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicationId, createdAt])
+  @@index([userId, createdAt])
+  @@index([researchId, createdAt])
 }
 
 model Note {

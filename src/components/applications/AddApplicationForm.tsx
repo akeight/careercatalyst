@@ -38,6 +38,13 @@ import { Status } from "@prisma/client";
 import { TestCombobox } from "@/components/applications/TestCombobox";
 import { ContactCombobox } from "@/components/contacts/ContactCombobox";
 import { toast } from "sonner";
+import {
+  ROLE_FAMILY_LABELS,
+  ROLE_FAMILY_VALUES,
+  MOBILE_SPECIALIZATION_LABELS,
+  MOBILE_SPECIALIZATION_VALUES,
+  type RoleFamilyValue,
+} from "@/lib/roleFamily";
 
 type AddApplicationValues = z.infer<typeof AddApplicationSchema>;
 
@@ -48,6 +55,9 @@ const defaultValues: Partial<AddApplicationValues> = {
   status: "SAVED",
   source: "",
   jobUrl: "",
+  jobDescription: "",
+  roleFamily: undefined,
+  mobileSpecialization: undefined,
   notes: "",
   favorite: false,
   companyId: "",
@@ -275,6 +285,92 @@ export function AddApplicationForm({
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="jobDescription"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Job Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Paste the full job description..."
+                  className="min-h-28"
+                  {...field}
+                  value={field.value ?? ""}
+                />
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Listings are often removed. Catalyst can preserve the
+                description for Interview Prep.
+              </p>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="roleFamily"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role Family</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value as RoleFamilyValue);
+                  if (value !== "MOBILE_DEVELOPMENT") {
+                    form.setValue("mobileSpecialization", null);
+                  }
+                }}
+                value={field.value ?? undefined}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role family (optional)" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {ROLE_FAMILY_VALUES.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {ROLE_FAMILY_LABELS[value]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {form.watch("roleFamily") === "MOBILE_DEVELOPMENT" && (
+          <FormField
+            control={form.control}
+            name="mobileSpecialization"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mobile Specialization</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value ?? "NOT_SPECIFIED"}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select platform" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {MOBILE_SPECIALIZATION_VALUES.map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {MOBILE_SPECIALIZATION_LABELS[value]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
