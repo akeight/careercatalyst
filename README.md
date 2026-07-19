@@ -14,6 +14,7 @@
 
 - **User profile** - create goals, mananage weekly streak goals, upload resume
 - **Add, edit, and delete applications** — track status, recruiter contacts, and markdown notes
+- **AI generated company research** - interview prep with company overview, role analysis, recent developments, and questions tailor to role and company
 - **Kanban-style board** — visually manage applications through different stages
 - **Saved applications** — never lose track of the ones you don't finish
 - **Favorite applications** — mark top opportunities for easy reference
