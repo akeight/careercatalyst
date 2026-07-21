@@ -6,7 +6,18 @@ import React, { useState } from "react";
 import { trpc } from "./client";
 
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            // Keep SSR-hydrated data from being immediately refetched on mount.
+            // Mutations still force refetches via invalidateQueries.
+            staleTime: 60 * 1000,
+          },
+        },
+      }),
+  );
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
