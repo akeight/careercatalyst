@@ -255,6 +255,66 @@
   --color-sidebar-border: var(--sidebar-border);
 }
 
+/* Landing entrance: hide targets in the stylesheet so the first paint is already
+   at opacity 0. JS (useLandingAnimations) fades them in. Without this, SSR/HTML
+   paints fully visible, then JS snaps to 0 — the “flash” / glitch. Reduced
+   motion keeps default visibility. */
+@media (prefers-reduced-motion: no-preference) {
+  .landing-root[data-anim="pending"] .hero-badge,
+  .landing-root[data-anim="pending"] .hero-title,
+  .landing-root[data-anim="pending"] .hero-copy,
+  .landing-root[data-anim="pending"] .hero-cta,
+  .landing-root[data-anim="pending"] .hero-visual,
+  .landing-root[data-anim="pending"] .dashboard-card,
+  .landing-root[data-anim="on"] .hero-badge,
+  .landing-root[data-anim="on"] .hero-title,
+  .landing-root[data-anim="on"] .hero-copy,
+  .landing-root[data-anim="on"] .hero-cta,
+  .landing-root[data-anim="on"] .hero-visual,
+  .landing-root[data-anim="on"] .dashboard-card {
+    opacity: 0;
+  }
+
+  .landing-root[data-anim="pending"] .reveal-card,
+  .landing-root[data-anim="pending"] .section-reveal,
+  .landing-root[data-anim="on"] .reveal-card:not([data-revealed]),
+  .landing-root[data-anim="on"] .section-reveal:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .landing-root .reveal-word {
+    opacity: 0.12;
+  }
+}
+
+/* Auth login/signup — one soft panel entrance (no per-widget stagger). */
+@keyframes auth-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .auth-shell[data-anim="pending"] .auth-chrome,
+  .auth-shell[data-anim="pending"] .auth-panel {
+    opacity: 0;
+  }
+
+  .auth-shell[data-anim="on"] .auth-chrome {
+    animation: auth-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .auth-shell[data-anim="on"] .auth-panel {
+    animation: auth-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 80ms both;
+  }
+}
+
 /* Pinned hero (JS-enhanced, desktop + motion allowed). The tall zone gives
    scrub room; the stage sticks to the viewport while the dashboard parallaxes
    up into the headline and the palette scrubs to dark. Without .is-pinned the

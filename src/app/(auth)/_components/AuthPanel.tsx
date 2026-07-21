@@ -29,15 +29,15 @@ export function AuthPanel() {
   const copy = COPY[mode];
 
   return (
-    <div className="w-full max-w-md">
-      <div className="auth-eyebrow mx-auto inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-[13px] font-medium text-muted-foreground shadow-sm">
+    <div className="auth-panel w-full max-w-md">
+      <div className="mx-auto inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-[13px] font-medium text-muted-foreground shadow-sm">
         <span className="size-1.5 rounded-full bg-primary" />
         Internship season, organized
       </div>
-      <h1 className="auth-title mt-5 text-balance font-serif text-3xl font-light leading-[1.1] tracking-tight sm:text-4xl">
+      <h1 className="mt-5 text-balance font-serif text-3xl font-light leading-[1.1] tracking-tight sm:text-4xl">
         {copy.title}
       </h1>
-      <p className="auth-subtitle mx-auto mt-4 max-w-sm text-pretty text-base leading-7 text-muted-foreground">
+      <p className="mx-auto mt-4 max-w-sm text-pretty text-base leading-7 text-muted-foreground">
         {copy.subtitle}
       </p>
       <button
@@ -47,7 +47,7 @@ export function AuthPanel() {
       >
         {copy.toggle}
       </button>
-      <div className="auth-form mt-8">
+      <div className="mt-8">
         <LoginForm mode={mode} />
       </div>
     </div>
