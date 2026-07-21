@@ -111,14 +111,9 @@ export function DashboardMockup() {
           <aside className="hidden w-[188px] shrink-0 flex-col justify-between border-r border-border bg-sidebar p-3 md:flex">
             <div className="space-y-4">
               <div>
-                <Image
-                  src="/wordmark.svg"
-                  alt="Catalyst"
-                  width={100}
-                  height={25}
-                  priority
-                  className="h-5.5 w-auto"
-                />
+                <p className="px-2.5 font-serif text-lg font-semibold text-sidebar-foreground">
+                  Catalyst
+                </p>
                 <p className="px-2.5 text-[11px] text-muted-foreground">
                   Turn opportunities into offers.
                 </p>

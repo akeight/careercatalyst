@@ -5,7 +5,7 @@ export function CatalystWordmark({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center", className)}>
       <Image
-        src="/wordmark3.png"
+        src="/wordmark-accent.png"
         alt="Catalyst"
         width={512}
         height={128}
