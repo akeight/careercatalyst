@@ -12,6 +12,46 @@ import { authSessionCookie } from "@/server/demo/demoSession";
 
 const providers: Provider[] = [];
 
+/** Demo columns exist on User; keep access resilient if the IDE's Prisma types lag generate. */
+type UserAuthRow = {
+  id: string;
+  email: string | null;
+  name: string | null;
+  image: string | null;
+  onboardedAt: Date | null;
+  isDemo: boolean;
+};
+
+async function getUserAuthRow(userId: string): Promise<UserAuthRow | null> {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) return null;
+  const row = user as typeof user & { isDemo?: boolean | null };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    onboardedAt: user.onboardedAt,
+    isDemo: Boolean(row.isDemo),
+  };
+}
+
+async function getUserAuthRowByEmail(
+  email: string,
+): Promise<UserAuthRow | null> {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) return null;
+  const row = user as typeof user & { isDemo?: boolean | null };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    onboardedAt: user.onboardedAt,
+    isDemo: Boolean(row.isDemo),
+  };
+}
+
 if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   providers.push(
     GitHub({
@@ -51,19 +91,8 @@ providers.push(
       const userId = verifyDemoLoginToken(token);
       if (!userId) return null;
 
-      const user = await prisma.user.findFirst({
-        where: { id: userId, isDemo: true },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          image: true,
-          isDemo: true,
-          onboardedAt: true,
-        },
-      });
-
-      if (!user) return null;
+      const user = await getUserAuthRow(userId);
+      if (!user?.isDemo) return null;
 
       return {
         id: user.id,
@@ -144,28 +173,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
+      // Manual demo JWTs set `sub` + `id`; keep them aligned for session.user.id.
+      if (!token.id && token.sub) {
+        token.id = token.sub;
+      }
+
       if (trigger === "update" && typeof session?.onboarded === "boolean") {
         token.onboarded = session.onboarded;
       }
 
-      if (user) {
+      if (user?.id) {
         token.id = user.id;
         token.isDemo = Boolean(user.isDemo);
 
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { onboardedAt: true, isDemo: true },
-        });
-
+        const dbUser = await getUserAuthRow(user.id);
         token.onboarded = Boolean(dbUser?.onboardedAt);
         token.isDemo = Boolean(dbUser?.isDemo);
       }
       if (!token.id && token.email) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: token.email },
-          select: { id: true, onboardedAt: true, isDemo: true },
-        });
-
+        const dbUser = await getUserAuthRowByEmail(token.email);
         if (dbUser) {
           token.id = dbUser.id;
           token.onboarded = Boolean(dbUser.onboardedAt);
@@ -174,28 +200,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       if (token.id && typeof token.onboarded !== "boolean") {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { onboardedAt: true, isDemo: true },
-        });
-
+        const dbUser = await getUserAuthRow(token.id as string);
         token.onboarded = Boolean(dbUser?.onboardedAt);
-        token.isDemo = Boolean(dbUser?.isDemo);
+        if (typeof token.isDemo !== "boolean") {
+          token.isDemo = Boolean(dbUser?.isDemo);
+        }
       }
 
       if (token.id && typeof token.isDemo !== "boolean") {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { isDemo: true },
-        });
+        const dbUser = await getUserAuthRow(token.id as string);
         token.isDemo = Boolean(dbUser?.isDemo);
       }
 
       return token;
     },
     async session({ session, token }) {
-      if (token?.id) {
-        session.user.id = token.id as string;
+      const id = (token?.id ?? token?.sub) as string | undefined;
+      if (id) {
+        session.user.id = id;
       }
       session.user.onboarded = Boolean(token?.onboarded);
       session.user.isDemo = Boolean(token?.isDemo);
