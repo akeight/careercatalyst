@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/server/auth";
-import { clearSessionCookies } from "@/server/demo/demoSession";
+import { clearSessionCookies, publicOrigin } from "@/server/demo/demoSession";
 import { deleteDemoUser } from "@/server/demo/seedDemoUser";
 
 export const dynamic = "force-dynamic";
 
-function originFrom(req: Request) {
-  return new URL(req.url).origin;
-}
-
 export async function GET(req: Request) {
-  const origin = originFrom(req);
+  const origin = publicOrigin(req);
   const url = new URL(req.url);
   const next = url.searchParams.get("next") === "login" ? "/login" : "/";
 
