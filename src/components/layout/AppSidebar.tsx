@@ -37,6 +37,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils/utils";
 import React from "react";
+import { CatalystWordmark } from "@/app/(site)/_components/CatalystWordmark";
 
 const navLinks = [
   {
@@ -163,9 +164,7 @@ export function AppSidebar() {
         {/* Logo Section */}
         <div className="flex flex-col">
           <div className="flex items-center justify-between gap-2 px-3 py-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
-            <h2 className="truncate font-serif text-2xl font-semibold text-sidebar-foreground group-data-[collapsible=icon]:hidden">
-              Catalyst
-            </h2>
+            <CatalystWordmark />
             <SidebarTrigger
               className="shrink-0 group-data-[collapsible=icon]:mx-auto"
               title={sidebarToggleTooltip}

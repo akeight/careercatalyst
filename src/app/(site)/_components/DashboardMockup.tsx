@@ -12,6 +12,7 @@ import {
   User,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 
 const NAV_ITEMS = [
   { icon: Home, label: "Dashboard", active: true },
@@ -44,8 +45,8 @@ const INSIGHTS = [
 
 const SAVED_APPS = [
   { role: "Software Engineer Intern", meta: "Pinterest · Seattle" },
-  { role: "Software Engineer Intern", meta: "Figma · New York" },
-  { role: "Software Engineer Intern", meta: "Vercel · San Francisco" },
+  { role: "Product Manager Intern", meta: "Figma · New York" },
+  { role: "Frontend Developer Intern", meta: "Vercel · San Francisco" },
 ];
 
 function SidebarLink({
@@ -202,7 +203,7 @@ export function DashboardMockup() {
                       Applications Submitted
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      9 submitted in July 2026.
+                      19 submitted in July 2026.
                     </p>
                   </div>
                   <span className="rounded-md border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
@@ -227,7 +228,7 @@ export function DashboardMockup() {
                     />
                   ))}
                   <polyline
-                    points="40,60 110,60 180,84 250,84 308,84"
+                    points="40,60 110,37 180,44 250,13 308,84"
                     stroke="var(--primary)"
                     strokeWidth="2.5"
                     strokeLinecap="round"
@@ -235,9 +236,9 @@ export function DashboardMockup() {
                   />
                   {[
                     [40, 60],
-                    [110, 60],
-                    [180, 84],
-                    [250, 84],
+                    [110, 37],
+                    [180, 44],
+                    [250, 13],
                     [308, 84],
                   ].map(([x, y]) => (
                     <circle
@@ -337,16 +338,16 @@ export function DashboardMockup() {
                         strokeWidth="8"
                         strokeLinecap="round"
                         strokeDasharray={2 * Math.PI * 32}
-                        strokeDashoffset={2 * Math.PI * 32 * (1 - 2 / 6)}
+                        strokeDashoffset={2 * Math.PI * 32 * (1 - 2 / 4)}
                         transform="rotate(-90 40 40)"
                       />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <span className="text-lg font-semibold text-foreground">
-                        2
+                        4
                       </span>
                       <span className="text-[9px] text-muted-foreground">
-                        of 6
+                        of 8
                       </span>
                     </div>
                   </div>
