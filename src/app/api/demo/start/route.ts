@@ -22,14 +22,14 @@ export async function GET(req: Request) {
   try {
     await cleanupExpiredDemoUsers();
 
+    // Capture any existing demo user so we can clean it up AFTER the new
+    // sandbox is seeded and its session is minted. Deleting it up-front
+    // cascade-wipes the current user's rows, and if the new cookie doesn't
+    // replace the old one the browser is left with an orphaned demo session
+    // (valid token, zero data → empty sandbox).
     const session = await auth();
-    if (session?.user?.isDemo && session.user.id) {
-      try {
-        await deleteDemoUser(session.user.id);
-      } catch {
-        // User may already be gone.
-      }
-    }
+    const previousDemoUserId =
+      session?.user?.isDemo && session.user.id ? session.user.id : null;
 
     const demoExpiresAt = new Date(Date.now() + DEMO_TTL_MS);
 
@@ -50,6 +50,15 @@ export async function GET(req: Request) {
     createdUserId = user.id;
 
     await seedDemoUser(user.id);
+
+    // Now that the new sandbox is fully seeded, retire the previous demo user.
+    if (previousDemoUserId && previousDemoUserId !== user.id) {
+      try {
+        await deleteDemoUser(previousDemoUserId);
+      } catch {
+        // Already gone; expiry cleanup will catch stragglers.
+      }
+    }
 
     // Use Auth.js credentials sign-in so the session cookie is written the same
     // way as GitHub OAuth. Hand-minted Set-Cookie on NextResponse.redirect was
