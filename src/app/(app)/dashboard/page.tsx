@@ -23,7 +23,10 @@ export default async function DashboardPage() {
       <DashboardHeader name={session.user.name} />
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div
+        data-tour="demo-stats"
+        className="grid grid-cols-2 gap-4 lg:grid-cols-4"
+      >
         <StatCardInfo />
       </div>
 

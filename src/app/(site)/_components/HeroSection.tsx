@@ -63,7 +63,7 @@ export function HeroSection() {
               <ArrowRight className="size-4" />
             </Link>
             <a
-              href="#demo"
+              href="/api/demo/start"
               className="inline-flex h-11 w-full items-center justify-center rounded-xl border px-6 text-sm font-medium transition-colors sm:w-auto"
               style={{
                 color: "var(--hero-ink)",

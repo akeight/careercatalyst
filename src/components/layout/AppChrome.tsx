@@ -8,6 +8,8 @@ import Footer from "@/components/layout/Footer";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { DemoBanner } from "@/components/demo/DemoBanner";
+import { DemoTour } from "@/components/demo/DemoTour";
 
 function SidebarAutoCollapse({ active }: { active: boolean }) {
   const { setOpen, isMobile } = useSidebar();
@@ -44,6 +46,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-dvh w-full">
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
+          <DemoBanner />
           <div className="flex min-h-dvh w-full flex-col overflow-x-hidden">
             <ClientHeader authed />
             <main className={mainClassName}>
@@ -61,6 +64,7 @@ export function AppChrome({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </div>
+      <DemoTour />
     </SidebarProvider>
   );
 }

@@ -109,7 +109,12 @@ const supportLinks = [
   // },
 ];
 
-const userId = "demo@example.com";
+const TOUR_ATTR: Record<string, string> = {
+  "/tracker": "demo-nav-tracker",
+  "/contacts": "demo-nav-contacts",
+  "/calendar": "demo-nav-calendar",
+  "/interview-prep": "demo-nav-interview-prep",
+};
 
 export function AppSidebar() {
   const { data: session } = useSession();
@@ -129,15 +134,25 @@ export function AppSidebar() {
   const themeTooltip =
     mounted && resolvedTheme === "dark" ? "Light mode" : "Dark mode";
   const user = session?.user;
-  const displayName = user?.name ?? "Guest";
-  const displayEmail = user?.email ?? "";
+  const isDemo = Boolean(user?.isDemo);
+  const userId = user?.id ?? "";
+  const displayName = isDemo ? "Demo Explorer" : (user?.name ?? "Guest");
+  const displayEmail = isDemo ? "Sandbox session" : (user?.email ?? "");
   const initials =
-    (user?.name ?? user?.email ?? "?")
+    (displayName || "?")
       .split(" ")
       .map((part) => part.charAt(0))
       .join("")
       .slice(0, 2)
       .toUpperCase() || "?";
+  const exitHref = "/api/demo/exit";
+  const signOutAction = () => {
+    if (isDemo) {
+      window.location.href = exitHref;
+      return;
+    }
+    void signOut({ callbackUrl: "/" });
+  };
 
   return (
     <Sidebar
@@ -172,6 +187,7 @@ export function AppSidebar() {
           <div className="space-y-1 list-none group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:items-center">
             {navLinks.map((navLink) => {
               const active = isActiveLink(navLink.href);
+              const tourAttr = TOUR_ATTR[navLink.href];
               return (
                 <SidebarMenuItem key={navLink.label} className="list-none">
                   <SidebarMenuButton
@@ -184,7 +200,10 @@ export function AppSidebar() {
                         "data-[active=true]:bg-[var(--nav-active)]/40 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
                     )}
                   >
-                    <Link href={navLink.href}>
+                    <Link
+                      href={navLink.href}
+                      {...(tourAttr ? { "data-tour": tourAttr } : undefined)}
+                    >
                       {navLink.icon}
                       <span className="text-base font-medium">
                         {navLink.label}
@@ -206,6 +225,7 @@ export function AppSidebar() {
             {supportLinks.map((item) => {
               const isInternal = "href" in item && !!item.href;
               const active = isInternal ? isActiveLink(item.href!) : false;
+              const tourAttr = isInternal ? TOUR_ATTR[item.href!] : undefined;
               return (
                 <SidebarMenuItem key={item.label} className="list-none">
                   <SidebarMenuButton
@@ -219,7 +239,10 @@ export function AppSidebar() {
                     )}
                   >
                     {isInternal ? (
-                      <Link href={item.href!}>
+                      <Link
+                        href={item.href!}
+                        {...(tourAttr ? { "data-tour": tourAttr } : undefined)}
+                      >
                         {item.icon}
                         <span className="text-base font-medium">
                           {item.label}
@@ -250,15 +273,17 @@ export function AppSidebar() {
             Quick Actions
           </SidebarGroupLabel>
           <div className="px-3">
-            <AddApplicationModal userId={userId} />
+            {userId ? <AddApplicationModal userId={userId} /> : null}
           </div>
         </div>
         <div className="hidden w-full justify-center group-data-[collapsible=icon]:flex">
-          <AddApplicationModal
-            userId={userId}
-            iconOnly
-            triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-10"
-          />
+          {userId ? (
+            <AddApplicationModal
+              userId={userId}
+              iconOnly
+              triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-10"
+            />
+          ) : null}
         </div>
       </SidebarContent>
 
@@ -298,19 +323,21 @@ export function AppSidebar() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={signOutAction}
                   className="size-11"
-                  aria-label="Sign out"
+                  aria-label={isDemo ? "Exit demo" : "Sign out"}
                 >
                   <FontAwesomeIcon
                     icon={faArrowRightFromBracket}
                     className="!size-5"
                   />
-                  <span className="sr-only">Sign out</span>
+                  <span className="sr-only">
+                    {isDemo ? "Exit demo" : "Sign out"}
+                  </span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" hidden={!showCollapsedTooltip}>
-                Sign out
+                {isDemo ? "Exit demo" : "Sign out"}
               </TooltipContent>
             </Tooltip>
           </div>

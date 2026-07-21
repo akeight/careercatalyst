@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -87,11 +88,19 @@ function resolveAction(item: HubItem): {
   return { label: "Open", start: false };
 }
 
+function demoSafeLabel(item: HubItem, actionLabel: string) {
+  if (item.highestLevel === "INTERVIEW_BRIEF") return "Open Interview Brief";
+  if (item.highestLevel === "SNAPSHOT") return "View Snapshot";
+  return actionLabel === "Complete setup" ? actionLabel : "Open";
+}
+
 function ItemList({
   title,
   items,
   onStart,
   starting,
+  isDemo,
+  tourFirstRow,
 }: {
   title: string;
   items: HubItem[];
@@ -100,6 +109,8 @@ function ItemList({
     mode: "SNAPSHOT" | "INTERVIEW_BRIEF",
   ) => void;
   starting: boolean;
+  isDemo: boolean;
+  tourFirstRow?: boolean;
 }) {
   return (
     <section className="space-y-3">
@@ -110,11 +121,18 @@ function ItemList({
         <p className="text-sm text-muted-foreground">Nothing here yet.</p>
       ) : (
         <ul className="space-y-3">
-          {items.map((item) => {
+          {items.map((item, index) => {
             const href = `/applications/${item.applicationId}/interview-prep`;
             const action = resolveAction(item);
+            const canStart = Boolean(action.start && action.mode && !isDemo);
             return (
-              <li key={item.applicationId} className="rounded-lg border p-4">
+              <li
+                key={item.applicationId}
+                className="rounded-lg border p-4"
+                {...(tourFirstRow && index === 0
+                  ? { "data-tour": "demo-prep-row" }
+                  : undefined)}
+              >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -145,7 +163,7 @@ function ItemList({
                     )}
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
-                    {action.start && action.mode ? (
+                    {canStart ? (
                       <Button
                         size="sm"
                         disabled={starting}
@@ -157,7 +175,11 @@ function ItemList({
                       </Button>
                     ) : (
                       <Button asChild size="sm">
-                        <Link href={href}>{action.label}</Link>
+                        <Link href={href}>
+                          {isDemo && action.start
+                            ? demoSafeLabel(item, action.label)
+                            : action.label}
+                        </Link>
                       </Button>
                     )}
                     <Button asChild size="sm" variant="outline">
@@ -175,6 +197,8 @@ function ItemList({
 }
 
 export function InterviewPrepHub() {
+  const { data: session } = useSession();
+  const isDemo = Boolean(session?.user?.isDemo);
   const enabledQuery = trpc.interviewPrep.isEnabled.useQuery();
   const listQuery = trpc.interviewPrep.listHub.useQuery(undefined, {
     enabled: enabledQuery.data?.enabled === true,
@@ -237,30 +261,41 @@ export function InterviewPrepHub() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" data-tour="demo-prep-hub">
       <div>
         <h1 className="font-serif text-3xl font-semibold">Interview Prep</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Research existing applications — Company Snapshots while you wait,
           full Interview Briefs when you interview.
         </p>
+        {isDemo ? (
+          <p className="mt-2 max-w-2xl text-sm text-amber-800 dark:text-amber-200">
+            Demo mode: sample snapshots and briefs are included. Generating new
+            research is turned off.
+          </p>
+        ) : null}
       </div>
       <ItemList
         title="Needs attention"
         items={needsAttention}
         starting={start.isPending}
+        isDemo={isDemo}
+        tourFirstRow={ready.length === 0 && generating.length === 0}
         onStart={(applicationId, mode) => start.mutate({ applicationId, mode })}
       />
       <ItemList
         title="Generating"
         items={generating}
         starting={start.isPending}
+        isDemo={isDemo}
         onStart={(applicationId, mode) => start.mutate({ applicationId, mode })}
       />
       <ItemList
         title="Ready"
         items={ready}
         starting={start.isPending}
+        isDemo={isDemo}
+        tourFirstRow={ready.length > 0}
         onStart={(applicationId, mode) => start.mutate({ applicationId, mode })}
       />
     </div>
