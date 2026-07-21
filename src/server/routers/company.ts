@@ -7,6 +7,7 @@ export const companyRouter = router({
   // 🔍 Get all companies for the current user, alphabetized
   getAll: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.company.findMany({
+      where: { userId: ctx.session.user.id },
       orderBy: { name: "asc" },
     });
   }),
