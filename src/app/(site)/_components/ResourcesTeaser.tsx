@@ -53,9 +53,14 @@ export function ResourcesTeaser() {
               className="reveal-card group flex items-start justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-xs transition-shadow hover:shadow-md"
             >
               <div>
-                <span className="inline-flex rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
-                  {resource.tag}
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                    {resource.tag}
+                  </span>
+                  <span className="inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                    Coming soon
+                  </span>
+                </div>
                 <p className="mt-3 text-[15px] font-semibold text-foreground">
                   {resource.title}
                 </p>
