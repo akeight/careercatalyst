@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -104,12 +104,38 @@ function waitForSelector(selector: string, timeoutMs = 8000) {
   });
 }
 
+function waitForPathname(route: string, timeoutMs = 8000) {
+  return new Promise<void>((resolve) => {
+    if (window.location.pathname === route) {
+      resolve();
+      return;
+    }
+
+    const started = Date.now();
+    const id = window.setInterval(() => {
+      if (
+        window.location.pathname === route ||
+        Date.now() - started > timeoutMs
+      ) {
+        window.clearInterval(id);
+        resolve();
+      }
+    }, 50);
+  });
+}
+
 export function DemoTour() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const driverRef = useRef<ReturnType<typeof driver> | null>(null);
   const advancingRef = useRef(false);
   const activeRef = useRef(false);
+  const pathnameRef = useRef(pathname);
+
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
 
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.isDemo) return;
@@ -135,7 +161,6 @@ export function DemoTour() {
 
     const showStep = async (index: number) => {
       if (cancelled) return;
-      // Allow re-entry only after previous advance finishes.
       if (advancingRef.current) return;
       advancingRef.current = true;
       activeRef.current = true;
@@ -150,7 +175,14 @@ export function DemoTour() {
           return;
         }
 
-        router.push(step.route);
+        // Avoid a redundant soft-nav (it re-runs the auth proxy and can drop
+        // the demo session). Only navigate when the route actually changes.
+        if (pathnameRef.current !== step.route) {
+          router.push(step.route);
+          await waitForPathname(step.route);
+        }
+
+        if (cancelled) return;
 
         const primary = await waitForSelector(step.element, 8000);
         let elementSelector = step.element;
@@ -161,6 +193,14 @@ export function DemoTour() {
 
         await new Promise((r) => window.setTimeout(r, 300));
         if (cancelled) return;
+
+        // If soft-nav was bounced to login, stop the tour instead of painting
+        // a popover over the auth page.
+        if (window.location.pathname === "/login") {
+          destroyDriver();
+          activeRef.current = false;
+          return;
+        }
 
         const isFirst = index === 0;
         const isLast = index === TOUR_STEPS.length - 1;
@@ -192,7 +232,6 @@ export function DemoTour() {
                     activeRef.current = false;
                     return;
                   }
-                  // Release lock before chaining so the next showStep can run.
                   advancingRef.current = false;
                   void showStep(index + 1);
                 },
@@ -247,6 +286,8 @@ export function DemoTour() {
       cancelled = true;
       window.clearTimeout(timer);
       window.removeEventListener(DEMO_TOUR_RESTART_EVENT, onRestart);
+      destroyDriver();
+      activeRef.current = false;
     };
   }, [status, session?.user?.isDemo, router]);
 
