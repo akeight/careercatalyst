@@ -3,9 +3,9 @@ import { createHmac, timingSafeEqual } from "crypto";
 const TOKEN_TTL_MS = 60_000;
 
 function getSecret() {
-  const secret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
+  const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    throw new Error("NEXTAUTH_SECRET is required for demo auth");
+    throw new Error("AUTH_SECRET or NEXTAUTH_SECRET is required for demo auth");
   }
   return secret;
 }

@@ -22,34 +22,63 @@ type UserAuthRow = {
   isDemo: boolean;
 };
 
+const userAuthSelect = {
+  id: true,
+  email: true,
+  name: true,
+  image: true,
+  onboardedAt: true,
+} as const;
+
+async function readIsDemo(userId: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { isDemo: true },
+    });
+    return Boolean(user?.isDemo);
+  } catch (error) {
+    // Demo columns may not exist until migrate deploy finishes.
+    console.error("[auth] isDemo lookup failed", error);
+    return false;
+  }
+}
+
 async function getUserAuthRow(userId: string): Promise<UserAuthRow | null> {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return null;
-  const row = user as typeof user & { isDemo?: boolean | null };
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    image: user.image,
-    onboardedAt: user.onboardedAt,
-    isDemo: Boolean(row.isDemo),
-  };
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: userAuthSelect,
+    });
+    if (!user) return null;
+    return {
+      ...user,
+      isDemo: await readIsDemo(user.id),
+    };
+  } catch (error) {
+    // Don't fail OAuth/login if the user row can't be enriched.
+    console.error("[auth] getUserAuthRow failed", error);
+    return null;
+  }
 }
 
 async function getUserAuthRowByEmail(
   email: string,
 ): Promise<UserAuthRow | null> {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) return null;
-  const row = user as typeof user & { isDemo?: boolean | null };
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    image: user.image,
-    onboardedAt: user.onboardedAt,
-    isDemo: Boolean(row.isDemo),
-  };
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: userAuthSelect,
+    });
+    if (!user) return null;
+    return {
+      ...user,
+      isDemo: await readIsDemo(user.id),
+    };
+  } catch (error) {
+    console.error("[auth] getUserAuthRowByEmail failed", error);
+    return null;
+  }
 }
 
 if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {

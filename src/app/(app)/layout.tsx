@@ -18,7 +18,7 @@ export default async function AppLayout({
   }
 
   return (
-    <AppProviders>
+    <AppProviders session={session}>
       <AppChrome>{children}</AppChrome>
     </AppProviders>
   );

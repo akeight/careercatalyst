@@ -1,11 +1,9 @@
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { NextResponse } from "next/server";
 
-import { auth } from "@/server/auth";
-import {
-  applySessionCookie,
-  mintDemoSessionCookie,
-  publicOrigin,
-} from "@/server/demo/demoSession";
+import { auth, signIn } from "@/server/auth";
+import { publicOrigin } from "@/server/demo/demoSession";
+import { mintDemoLoginToken } from "@/server/demo/demoToken";
 import {
   cleanupExpiredDemoUsers,
   deleteDemoUser,
@@ -53,20 +51,21 @@ export async function GET(req: Request) {
 
     await seedDemoUser(user.id);
 
-    // Mint both plain + __Secure- cookies (different JWT salts). Auth.js picks
-    // which name to read from AUTH_URL protocol; a localhost AUTH_URL on Vercel
-    // otherwise decrypts with the wrong salt and dumps you on /login.
-    const cookies = await mintDemoSessionCookie({
-      userId: user.id,
-      email: user.email,
-      name: user.name,
-      origin,
+    // Use Auth.js credentials sign-in so the session cookie is written the same
+    // way as GitHub OAuth. Hand-minted Set-Cookie on NextResponse.redirect was
+    // accepted for the first RSC pass but not kept for client/tRPC requests,
+    // which left the sandbox empty (UNAUTHORIZED) after hydrate.
+    const token = mintDemoLoginToken(user.id);
+    await signIn("demo", {
+      token,
+      redirectTo: `${origin}/dashboard`,
     });
 
-    const res = NextResponse.redirect(new URL("/dashboard", origin));
-    applySessionCookie(res, cookies);
-    return res;
+    // signIn redirects on success; this is unreachable.
+    return NextResponse.redirect(new URL("/dashboard", origin));
   } catch (error) {
+    if (isRedirectError(error)) throw error;
+
     console.error("[demo/start]", error);
     if (createdUserId) {
       try {
