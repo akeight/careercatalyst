@@ -10,13 +10,14 @@ import { FeatureShowcase } from "./_components/FeatureShowcase";
 import { HowItWorks } from "./_components/HowItWorks";
 import { ResourcesTeaser } from "./_components/ResourcesTeaser";
 import { FinalCTA } from "./_components/FinalCTA";
-import { LandingAnimations } from "./_components/LandingAnimations";
+import { useLandingAnimations } from "./_components/LandingAnimations";
 
 export default function LandingPage() {
   const rootRef = useRef<HTMLDivElement>(null);
+  useLandingAnimations(rootRef);
 
   return (
-    <div ref={rootRef} className="w-full">
+    <div ref={rootRef} className="landing-root w-full" data-anim="pending">
       <MarketingNav />
       <main>
         <HeroSection />
@@ -29,7 +30,6 @@ export default function LandingPage() {
           <FinalCTA />
         </div>
       </main>
-      <LandingAnimations rootRef={rootRef} />
     </div>
   );
 }

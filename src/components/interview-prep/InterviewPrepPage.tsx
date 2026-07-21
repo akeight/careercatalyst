@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
@@ -160,6 +161,8 @@ export function InterviewPrepPage({
 }: {
   applicationId: string;
 }) {
+  const { data: session } = useSession();
+  const isDemo = Boolean(session?.user?.isDemo);
   const enabledQuery = trpc.interviewPrep.isEnabled.useQuery();
   const detail = trpc.interviewPrep.getByApplication.useQuery(
     { applicationId },
@@ -283,7 +286,7 @@ export function InterviewPrepPage({
               {activeRun.stage?.replaceAll("_", " ").toLowerCase()}
             </Badge>
           ) : null}
-          {!needsSetup && !activeRun && (
+          {!needsSetup && !activeRun && !isDemo && (
             <Button
               disabled={start.isPending}
               onClick={() =>
@@ -295,21 +298,28 @@ export function InterviewPrepPage({
                 : "Build Interview Brief"}
             </Button>
           )}
-          {research?.highestLevel === "INTERVIEW_BRIEF" && !activeRun && (
-            <Button
-              variant="outline"
-              disabled={start.isPending}
-              onClick={() =>
-                start.mutate({ applicationId, mode: "INTERVIEW_BRIEF" })
-              }
-            >
-              Refresh Brief
-            </Button>
-          )}
+          {research?.highestLevel === "INTERVIEW_BRIEF" &&
+            !activeRun &&
+            !isDemo && (
+              <Button
+                variant="outline"
+                disabled={start.isPending}
+                onClick={() =>
+                  start.mutate({ applicationId, mode: "INTERVIEW_BRIEF" })
+                }
+              >
+                Refresh Brief
+              </Button>
+            )}
+          {isDemo ? (
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              Demo sample data — generation disabled.
+            </p>
+          ) : null}
         </div>
       </div>
 
-      {needsSetup && setup.data ? (
+      {needsSetup && setup.data && !isDemo ? (
         <InterviewPrepSetupForm
           key={`${applicationId}-setup`}
           applicationId={applicationId}

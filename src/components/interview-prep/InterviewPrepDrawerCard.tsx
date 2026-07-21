@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +15,8 @@ export function InterviewPrepDrawerCard({
   applicationId: string;
   applicationStatus: string;
 }) {
+  const { data: session } = useSession();
+  const isDemo = Boolean(session?.user?.isDemo);
   const enabledQuery = trpc.interviewPrep.isEnabled.useQuery();
   const summary = trpc.interviewPrep.getSummary.useQuery(
     { applicationId },
@@ -121,6 +124,18 @@ export function InterviewPrepDrawerCard({
     actionLabel = "Retry";
     actionMode =
       applicationStatus === "APPLIED" ? "SNAPSHOT" : "INTERVIEW_BRIEF";
+  }
+
+  if (isDemo && actionMode) {
+    linkOnly = true;
+    actionMode = null;
+    actionLabel =
+      data.highestLevel === "INTERVIEW_BRIEF"
+        ? "Open Full Brief"
+        : data.highestLevel === "SNAPSHOT"
+          ? "View Snapshot"
+          : "Open sample prep";
+    description = `${description} (Demo: generation disabled.)`;
   }
 
   return (

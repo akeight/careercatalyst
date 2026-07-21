@@ -3,7 +3,7 @@
 // Adapted from React Bits (ScrollReveal, TS + Tailwind). Uses GSAP ScrollTrigger
 // to reveal text word-by-word (opacity + optional blur) as it scrolls into view.
 // Under prefers-reduced-motion it renders the text fully visible with no scrub.
-import { useEffect, useMemo, useRef, type ElementType } from "react";
+import { useLayoutEffect, useMemo, useRef, type ElementType } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -43,7 +43,7 @@ export default function ScrollReveal({
     });
   }, [children]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
@@ -53,12 +53,18 @@ export default function ScrollReveal({
     const wordEls = el.querySelectorAll<HTMLElement>(".reveal-word");
     if (prefersReduced || !wordEls.length) return;
 
+    // Starting opacity comes from CSS (.reveal-word); sync GSAP to that.
+    gsap.set(wordEls, {
+      opacity: baseOpacity,
+      ...(enableBlur ? { filter: `blur(${blurStrength}px)` } : {}),
+    });
+
     const tweens: gsap.core.Tween[] = [];
 
     tweens.push(
       gsap.fromTo(
         wordEls,
-        { opacity: baseOpacity, willChange: "opacity, filter" },
+        { opacity: baseOpacity },
         {
           ease: "none",
           opacity: 1,
@@ -68,6 +74,7 @@ export default function ScrollReveal({
             start: "top bottom-=15%",
             end: wordAnimationEnd,
             scrub: true,
+            immediateRender: false,
           },
         },
       ),
@@ -87,6 +94,7 @@ export default function ScrollReveal({
               start: "top bottom-=15%",
               end: wordAnimationEnd,
               scrub: true,
+              immediateRender: false,
             },
           },
         ),

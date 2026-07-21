@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { fadeInUp, hoverTap, staggerContainer } from "@/lib/motion";
 import { Loader2 } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
 import { signIn } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 
@@ -52,7 +50,6 @@ export function LoginForm({
   mode = "signin",
   ...props
 }: React.ComponentProps<"div"> & { mode?: AuthMode }) {
-  const reduceMotion = useReducedMotion();
   const [pendingProvider, setPendingProvider] = useState<ProviderId | null>(
     null,
   );
@@ -123,21 +120,13 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <motion.div
-        className="flex flex-col gap-6"
-        variants={reduceMotion ? undefined : staggerContainer}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={reduceMotion ? undefined : fadeInUp}>
+      <div className="flex flex-col gap-6">
+        <div>
           <Card className="overflow-hidden border-border/70 text-left shadow-xl shadow-primary/5">
             <CardContent className="pt-6">
               <div className="grid gap-4">
                 {providers.map((provider) => (
-                  <motion.div
-                    key={provider.id}
-                    {...(reduceMotion ? {} : hoverTap)}
-                  >
+                  <div key={provider.id}>
                     <Button
                       onClick={() => handleProviderSignIn(provider.id)}
                       variant={provider.variant}
@@ -145,7 +134,8 @@ export function LoginForm({
                       disabled={
                         Boolean(pendingProvider) ||
                         devPending ||
-                        configuredProviders?.has(provider.id) === false
+                        (configuredProviders !== null &&
+                          configuredProviders.has(provider.id) === false)
                       }
                       className="h-auto w-full justify-start gap-3 px-4 py-3 text-left"
                     >
@@ -167,7 +157,8 @@ export function LoginForm({
                               : "text-muted-foreground",
                           )}
                         >
-                          {configuredProviders?.has(provider.id) === false
+                          {configuredProviders !== null &&
+                          configuredProviders.has(provider.id) === false
                             ? "This provider is not configured yet."
                             : provider.description}
                         </span>
@@ -176,7 +167,7 @@ export function LoginForm({
                         <Loader2 className="ml-auto size-4 animate-spin" />
                       )}
                     </Button>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
@@ -245,12 +236,12 @@ export function LoginForm({
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
         <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
           By clicking continue, you agree to our{" "}
           <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

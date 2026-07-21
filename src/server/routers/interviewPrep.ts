@@ -28,11 +28,22 @@ const modeSchema = z.enum(["SNAPSHOT", "INTERVIEW_BRIEF"]);
 
 type Ctx = Awaited<ReturnType<typeof createTRPCContext>>;
 
-function assertFeatureEnabled() {
+function assertFeatureEnabled(isDemo = false) {
+  if (isDemo) return;
   if (!isInterviewPrepEnabled()) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Interview Prep is not enabled.",
+    });
+  }
+}
+
+function assertDemoCannotMutate(isDemo: boolean) {
+  if (isDemo) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message:
+        "Generating and editing interview prep is disabled in the demo sandbox. Sample snapshots and briefs are already available to explore.",
     });
   }
 }
@@ -83,7 +94,9 @@ async function enqueueGeneration(
   applicationId: string,
   mode: z.infer<typeof modeSchema>,
 ) {
-  assertFeatureEnabled();
+  const isDemo = Boolean(ctx.session?.user?.isDemo);
+  assertDemoCannotMutate(isDemo);
+  assertFeatureEnabled(isDemo);
   if (!ctx.session?.user?.id) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
@@ -206,7 +219,7 @@ async function enqueueGeneration(
 
 export const interviewPrepRouter = router({
   listHub: protectedProcedure.query(async ({ ctx }) => {
-    assertFeatureEnabled();
+    assertFeatureEnabled(Boolean(ctx.session.user.isDemo));
     const userId = ctx.session.user.id;
     const applications = await ctx.prisma.application.findMany({
       where: { userId },
@@ -285,7 +298,7 @@ export const interviewPrepRouter = router({
   getSummary: protectedProcedure
     .input(z.object({ applicationId: z.string() }))
     .query(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      assertFeatureEnabled(Boolean(ctx.session.user.isDemo));
       const app = await ctx.prisma.application.findFirst({
         where: { id: input.applicationId, userId: ctx.session.user.id },
         include: {
@@ -365,7 +378,7 @@ export const interviewPrepRouter = router({
   getByApplication: protectedProcedure
     .input(z.object({ applicationId: z.string() }))
     .query(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      assertFeatureEnabled(Boolean(ctx.session.user.isDemo));
       const app = await ctx.prisma.application.findFirst({
         where: { id: input.applicationId, userId: ctx.session.user.id },
         include: {
@@ -390,7 +403,7 @@ export const interviewPrepRouter = router({
   getRun: protectedProcedure
     .input(z.object({ runId: z.string() }))
     .query(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      assertFeatureEnabled(Boolean(ctx.session.user.isDemo));
       const run = await ctx.prisma.applicationResearchRun.findFirst({
         where: { id: input.runId, userId: ctx.session.user.id },
       });
@@ -421,7 +434,7 @@ export const interviewPrepRouter = router({
   getSetupState: protectedProcedure
     .input(z.object({ applicationId: z.string(), mode: modeSchema.optional() }))
     .query(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      assertFeatureEnabled(Boolean(ctx.session.user.isDemo));
       const app = await ctx.prisma.application.findFirst({
         where: { id: input.applicationId, userId: ctx.session.user.id },
         include: { company: true, research: true },
@@ -468,7 +481,9 @@ export const interviewPrepRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      const isDemo = Boolean(ctx.session.user.isDemo);
+      assertDemoCannotMutate(isDemo);
+      assertFeatureEnabled(isDemo);
       const userId = ctx.session.user.id;
       const app = await ctx.prisma.application.findFirst({
         where: { id: input.applicationId, userId },
@@ -546,7 +561,9 @@ export const interviewPrepRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      assertFeatureEnabled();
+      const isDemo = Boolean(ctx.session.user.isDemo);
+      assertDemoCannotMutate(isDemo);
+      assertFeatureEnabled(isDemo);
       const app = await ctx.prisma.application.findFirst({
         where: { id: input.applicationId, userId: ctx.session.user.id },
         select: { id: true },
@@ -565,7 +582,9 @@ export const interviewPrepRouter = router({
       return { ok: true };
     }),
 
-  isEnabled: protectedProcedure.query(() => {
-    return { enabled: isInterviewPrepEnabled() };
+  isEnabled: protectedProcedure.query(({ ctx }) => {
+    return {
+      enabled: isInterviewPrepEnabled() || Boolean(ctx.session.user.isDemo),
+    };
   }),
 });

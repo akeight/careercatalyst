@@ -115,6 +115,12 @@ model User {
   // Goals / onboarding
   weeklyGoal   Int       @default(5)
   onboardedAt  DateTime?
+
+  // Anonymous demo sandbox
+  isDemo        Boolean   @default(false)
+  demoExpiresAt DateTime?
+
+  @@index([isDemo, demoExpiresAt])
 }
 
 model Goal {
@@ -167,14 +173,17 @@ model VerificationToken {
 
 model Company {
   id           String        @id @default(cuid())
-  name         String        @unique
+  name         String
   website      String?
   location     String?
   logoUrl      String?
   contacts     Contact[]
   applications Application[]
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
 }
 
 model Contact {
@@ -188,24 +197,26 @@ model Contact {
   title    String? // their job title, e.g. "Engineering Manager"
   notes    String?
 
-  user   User?   @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String?
 
-  company   Company? @relation(fields: [companyId], references: [id])
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
   companyId String?
 
   applications Application[] // if this contact is tied to specific applications
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Application {
   id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  company   Company @relation(fields: [companyId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId String
 
   type      ApplicationType
@@ -231,6 +242,8 @@ model Application {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model ApplicationResearch {
@@ -327,7 +340,7 @@ model ApplicationResearchRun {
 model Note {
   id            String      @id @default(cuid())
   content       String
-  user          User        @relation(fields: [userId], references: [id])
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId String

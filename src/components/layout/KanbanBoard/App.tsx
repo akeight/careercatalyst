@@ -186,7 +186,10 @@ export default function KanbanBoardApp() {
           </span>
         </div>
 
-        <div className="mx-auto flex w-fit max-w-full gap-4 overflow-x-auto pb-4">
+        <div
+          data-tour="demo-kanban"
+          className="mx-auto flex w-fit max-w-full gap-4 overflow-x-auto pb-4"
+        >
           {Object.values(columns).map((col) => (
             <SortableContext
               key={col.id}
