@@ -8,24 +8,6 @@ import { NextResponse } from "next/server";
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
 
-  // TEMPORARY diagnostics for the demo session-drop investigation.
-  // Logs cookie-name presence (no values) so Vercel logs show whether
-  // navigations carry the session cookie. Remove after debugging.
-  const cookieNames = req.cookies.getAll().map((c) => c.name);
-  console.log("[proxy-debug]", {
-    pathname,
-    host: req.headers.get("host"),
-    xForwardedHost: req.headers.get("x-forwarded-host"),
-    secFetchMode: req.headers.get("sec-fetch-mode"),
-    secFetchSite: req.headers.get("sec-fetch-site"),
-    hasSessionCookie: cookieNames.some((n) =>
-      n.includes("authjs.session-token"),
-    ),
-    cookieNames,
-    authUser: Boolean(req.auth?.user),
-    isDemo: Boolean(req.auth?.user?.isDemo),
-  });
-
   if (!req.auth?.user) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
