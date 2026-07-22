@@ -62,8 +62,8 @@ export function HeroSection() {
               Start tracking
               <ArrowRight className="size-4" />
             </Link>
-            <a
-              href="/api/demo/start"
+            <Link
+              href="/demo/loading"
               className="inline-flex h-11 w-full items-center justify-center rounded-xl border px-6 text-sm font-medium transition-colors sm:w-auto"
               style={{
                 color: "var(--hero-ink)",
@@ -72,7 +72,7 @@ export function HeroSection() {
               }}
             >
               View demo
-            </a>
+            </Link>
           </div>
         </div>
 

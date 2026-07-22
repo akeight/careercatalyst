@@ -288,6 +288,26 @@
   }
 }
 
+/* Demo sandbox loader — a thin, clean indeterminate sliding line. */
+@keyframes demo-progress {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.demo-loading-bar {
+  animation: demo-progress 1.15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-loading-bar {
+    animation-duration: 2.4s;
+  }
+}
+
 /* Auth login/signup — one soft panel entrance (no per-widget stagger). */
 @keyframes auth-enter {
   from {

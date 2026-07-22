@@ -182,9 +182,11 @@ function ItemList({
                         </Link>
                       </Button>
                     )}
-                    <Button asChild size="sm" variant="outline">
-                      <Link href={href}>Open</Link>
-                    </Button>
+                    {canStart && (
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={href}>Open</Link>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </li>
