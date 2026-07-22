@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
@@ -38,20 +37,24 @@ export function DemoBanner() {
             variant="outline"
             size="sm"
             className="border-amber-600/40 bg-transparent"
-            asChild
+            onClick={() => {
+              // Navigate on real click only. A prefetchable <Link> to this
+              // destructive GET endpoint would silently wipe the demo session.
+              window.location.href = "/api/demo/exit";
+            }}
           >
-            <Link href="/api/demo/exit">Exit demo</Link>
+            Exit demo
           </Button>
           <Button
             type="button"
             size="sm"
             data-tour="demo-signup"
             className="bg-amber-700 text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500"
-            asChild
+            onClick={() => {
+              window.location.href = "/api/demo/exit?next=login";
+            }}
           >
-            <Link href="/api/demo/exit?next=login">
-              Sign up to save progress
-            </Link>
+            Sign up to save progress
           </Button>
         </div>
       </div>

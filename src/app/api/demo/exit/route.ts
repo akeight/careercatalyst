@@ -11,6 +11,17 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const next = url.searchParams.get("next") === "login" ? "/login" : "/";
 
+  // Never tear down the demo session on a prefetch. Next.js prefetches
+  // in-viewport links, which would otherwise silently delete the demo user and
+  // clear the session cookie before the user ever clicks anything.
+  const isPrefetch =
+    req.headers.get("next-router-prefetch") === "1" ||
+    (req.headers.get("sec-purpose") ?? "").includes("prefetch") ||
+    (req.headers.get("purpose") ?? "") === "prefetch";
+  if (isPrefetch) {
+    return NextResponse.redirect(new URL(next, origin));
+  }
+
   try {
     const session = await auth();
     if (session?.user?.isDemo && session.user.id) {
