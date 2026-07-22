@@ -224,7 +224,21 @@ export function DemoTour() {
           if (fallback) elementSelector = step.fallbackElement;
         }
 
-        await new Promise((r) => window.setTimeout(r, 300));
+        // Scroll the target into view before positioning the popover. Sidebar
+        // items low in the list (e.g. Interview Prep, which lives in the support
+        // section) sit below the fold in the mobile sheet; driver.js does not
+        // reliably scroll nested containers, so the popover would anchor to the
+        // wrong spot. Centering the element first fixes the alignment.
+        const targetEl = document.querySelector(elementSelector);
+        if (targetEl) {
+          try {
+            targetEl.scrollIntoView({ block: "center", inline: "nearest" });
+          } catch {
+            // ignore
+          }
+        }
+
+        await new Promise((r) => window.setTimeout(r, 350));
         if (cancelled) return;
 
         // If soft-nav was bounced to login, stop the tour instead of painting
