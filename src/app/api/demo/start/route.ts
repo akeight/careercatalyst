@@ -60,18 +60,25 @@ export async function GET(req: Request) {
       }
     }
 
-    // Use Auth.js credentials sign-in so the session cookie is written the same
-    // way as GitHub OAuth. Hand-minted Set-Cookie on NextResponse.redirect was
-    // accepted for the first RSC pass but not kept for client/tRPC requests,
-    // which left the sandbox empty (UNAUTHORIZED) after hydrate.
+    // Sign in with redirect:false so Auth.js writes the session cookie via
+    // next/headers WITHOUT issuing a 307 redirect. Browsers apply a cookie set
+    // on a redirect response to the in-flight followed request but do not
+    // reliably PERSIST it to the cookie jar, so the demo session survived only
+    // the first render and every later refresh/navigation bounced to /login.
+    // Returning a normal 200 document with the Set-Cookie fixes persistence.
     const token = mintDemoLoginToken(user.id);
-    await signIn("demo", {
-      token,
-      redirectTo: `${origin}/dashboard`,
-    });
+    await signIn("demo", { token, redirect: false });
 
-    // signIn redirects on success; this is unreachable.
-    return NextResponse.redirect(new URL("/dashboard", origin));
+    const dashboardUrl = `${origin}/dashboard`;
+    const html = `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=${dashboardUrl}"><title>Starting demo…</title></head><body><script>window.location.replace(${JSON.stringify(dashboardUrl)});</script><noscript><a href="${dashboardUrl}">Continue to the demo</a></noscript></body></html>`;
+
+    return new NextResponse(html, {
+      status: 200,
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store",
+      },
+    });
   } catch (error) {
     if (isRedirectError(error)) throw error;
 

@@ -1,19 +1,8 @@
-import { encode } from "next-auth/jwt";
 import type { NextResponse } from "next/server";
 import type { NextAuthConfig } from "next-auth";
 
-const SESSION_MAX_AGE = 24 * 60 * 60; // 24h
-
 const COOKIE_PLAIN = "authjs.session-token";
 const COOKIE_SECURE = "__Secure-authjs.session-token";
-
-function authSecret() {
-  const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
-  if (!secret) {
-    throw new Error("AUTH_SECRET or NEXTAUTH_SECRET is required");
-  }
-  return secret;
-}
 
 function envAuthUrl(): URL | null {
   const raw = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL;
@@ -65,79 +54,6 @@ export function expectedSessionCookie() {
     name: secure ? COOKIE_SECURE : COOKIE_PLAIN,
     secure,
   };
-}
-
-type MintedCookie = {
-  cookieName: string;
-  token: string;
-  maxAge: number;
-  secure: boolean;
-};
-
-async function encodeSessionToken(
-  args: {
-    userId: string;
-    email: string;
-    name: string | null;
-  },
-  cookieName: string,
-) {
-  return encode({
-    token: {
-      sub: args.userId,
-      id: args.userId,
-      email: args.email,
-      name: args.name,
-      onboarded: true,
-      isDemo: true,
-    },
-    secret: authSecret(),
-    // Salt MUST equal the cookie name Auth.js will decode with.
-    salt: cookieName,
-    maxAge: SESSION_MAX_AGE,
-  });
-}
-
-/**
- * Mint session cookies for both plain and __Secure- names.
- * Prod AUTH_URL misconfig (localhost vs https) otherwise encrypts with one salt
- * while auth() decrypts with another → empty session → redirect to /login.
- */
-export async function mintDemoSessionCookie(args: {
-  userId: string;
-  email: string;
-  name: string | null;
-  origin?: string;
-}): Promise<MintedCookie[]> {
-  const variants = [
-    { cookieName: COOKIE_PLAIN, secure: false },
-    { cookieName: COOKIE_SECURE, secure: true },
-  ] as const;
-
-  return Promise.all(
-    variants.map(async ({ cookieName, secure }) => ({
-      cookieName,
-      secure,
-      maxAge: SESSION_MAX_AGE,
-      token: await encodeSessionToken(args, cookieName),
-    })),
-  );
-}
-
-export function applySessionCookie(
-  res: NextResponse,
-  cookies: MintedCookie[] | MintedCookie,
-) {
-  const list = Array.isArray(cookies) ? cookies : [cookies];
-  for (const cookie of list) {
-    res.cookies.set(cookie.cookieName, cookie.token, {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-      secure: cookie.secure,
-      maxAge: cookie.maxAge,
-    });
-  }
 }
 
 export function clearSessionCookies(res: NextResponse) {

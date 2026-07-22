@@ -10,9 +10,12 @@ import {
   DEMO_TOUR_RESTART_EVENT,
   DEMO_TOUR_STORAGE_KEY,
 } from "@/components/demo/demoTourEvents";
+import { useSidebar } from "@/components/ui/sidebar";
 
 type TourStep = {
-  route: string;
+  // Omit to keep the step on whatever page the user is currently on (avoids an
+  // unnecessary navigation that can interrupt the tour).
+  route?: string;
   element: string;
   fallbackElement?: string;
   title: string;
@@ -69,8 +72,10 @@ const TOUR_STEPS: TourStep[] = [
     align: "start",
   },
   {
-    route: "/dashboard",
+    // No route: the signup CTA lives in the demo banner, present on every page,
+    // so finish the tour in place instead of forcing a navigation.
     element: '[data-tour="demo-signup"]',
+    fallbackElement: '[data-tour="demo-banner"]',
     title: "Ready to track for real?",
     description:
       "Create an account to keep your own pipeline. Demo changes are wiped when you leave.",
@@ -128,14 +133,21 @@ export function DemoTour() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const { isMobile, setOpen, setOpenMobile } = useSidebar();
   const driverRef = useRef<ReturnType<typeof driver> | null>(null);
   const advancingRef = useRef(false);
   const activeRef = useRef(false);
   const pathnameRef = useRef(pathname);
+  // Keep the latest sidebar controls without re-running the tour effect.
+  const sidebarRef = useRef({ isMobile, setOpen, setOpenMobile });
 
   useEffect(() => {
     pathnameRef.current = pathname;
   }, [pathname]);
+
+  useEffect(() => {
+    sidebarRef.current = { isMobile, setOpen, setOpenMobile };
+  }, [isMobile, setOpen, setOpenMobile]);
 
   useEffect(() => {
     if (status !== "authenticated" || !session?.user?.isDemo) return;
@@ -145,6 +157,12 @@ export function DemoTour() {
     const markComplete = () => {
       try {
         localStorage.setItem(DEMO_TOUR_STORAGE_KEY, "1");
+      } catch {
+        // ignore
+      }
+      // Leave the mobile sidebar closed when the tour ends.
+      try {
+        sidebarRef.current.setOpenMobile(false);
       } catch {
         // ignore
       }
@@ -177,9 +195,24 @@ export function DemoTour() {
 
         // Avoid a redundant soft-nav (it re-runs the auth proxy and can drop
         // the demo session). Only navigate when the route actually changes.
-        if (pathnameRef.current !== step.route) {
+        if (step.route && pathnameRef.current !== step.route) {
           router.push(step.route);
           await waitForPathname(step.route);
+        }
+
+        if (cancelled) return;
+
+        // Sidebar-nav steps target items that only mount when the sidebar is
+        // open. On mobile the sidebar is an off-canvas Sheet, so open it (and
+        // expand on desktop) before highlighting; close it again otherwise.
+        const isSidebarStep = step.element.includes("demo-nav-");
+        const sidebar = sidebarRef.current;
+        if (isSidebarStep) {
+          if (sidebar.isMobile) sidebar.setOpenMobile(true);
+          else sidebar.setOpen(true);
+          await new Promise((r) => window.setTimeout(r, 350));
+        } else if (sidebar.isMobile) {
+          sidebar.setOpenMobile(false);
         }
 
         if (cancelled) return;

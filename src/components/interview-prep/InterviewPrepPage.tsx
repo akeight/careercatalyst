@@ -163,17 +163,22 @@ export function InterviewPrepPage({
 }) {
   const { data: session } = useSession();
   const isDemo = Boolean(session?.user?.isDemo);
-  const enabledQuery = trpc.interviewPrep.isEnabled.useQuery();
+  // A hydrated demo session is always feature-enabled; skip the network check
+  // so a flaky client request can never surface "not enabled" in the sandbox.
+  const enabledQuery = trpc.interviewPrep.isEnabled.useQuery(undefined, {
+    enabled: !isDemo,
+  });
+  const enabled = isDemo || enabledQuery.data?.enabled === true;
   const detail = trpc.interviewPrep.getByApplication.useQuery(
     { applicationId },
     {
-      enabled: enabledQuery.data?.enabled === true,
+      enabled,
       refetchInterval: 2000,
     },
   );
   const setup = trpc.interviewPrep.getSetupState.useQuery(
     { applicationId },
-    { enabled: enabledQuery.data?.enabled === true },
+    { enabled },
   );
 
   const start = trpc.interviewPrep.startGeneration.useMutation({
@@ -212,7 +217,7 @@ export function InterviewPrepPage({
     return runs.find((r) => r.status === "PENDING" || r.status === "RUNNING");
   }, [researchBundle?.runs]);
 
-  if (enabledQuery.isLoading || detail.isLoading) {
+  if ((!isDemo && enabledQuery.isLoading) || detail.isLoading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-80" />
@@ -221,7 +226,7 @@ export function InterviewPrepPage({
     );
   }
 
-  if (!enabledQuery.data?.enabled) {
+  if (!enabled) {
     return (
       <div className="rounded-lg border p-6">
         <p className="text-sm text-muted-foreground">

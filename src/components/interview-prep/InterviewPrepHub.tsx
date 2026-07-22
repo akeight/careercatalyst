@@ -199,9 +199,14 @@ function ItemList({
 export function InterviewPrepHub() {
   const { data: session } = useSession();
   const isDemo = Boolean(session?.user?.isDemo);
-  const enabledQuery = trpc.interviewPrep.isEnabled.useQuery();
+  // A hydrated demo session is always feature-enabled; skip the network check
+  // so a flaky client request can never surface "not enabled" in the sandbox.
+  const enabledQuery = trpc.interviewPrep.isEnabled.useQuery(undefined, {
+    enabled: !isDemo,
+  });
+  const enabled = isDemo || enabledQuery.data?.enabled === true;
   const listQuery = trpc.interviewPrep.listHub.useQuery(undefined, {
-    enabled: enabledQuery.data?.enabled === true,
+    enabled,
     refetchInterval: (query) => {
       const data = query.state.data;
       if (!data) return false;
@@ -221,11 +226,11 @@ export function InterviewPrepHub() {
     onError: (err) => toast.error(err.message),
   });
 
-  if (enabledQuery.isLoading) {
+  if (!isDemo && enabledQuery.isLoading) {
     return <Skeleton className="h-40 w-full" />;
   }
 
-  if (!enabledQuery.data?.enabled) {
+  if (!enabled) {
     return (
       <div className="rounded-lg border p-6">
         <h1 className="font-serif text-2xl font-semibold">Interview Prep</h1>
