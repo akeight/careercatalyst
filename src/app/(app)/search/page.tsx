@@ -74,8 +74,8 @@ export default function InternshipSearchPage() {
         <div className="flex">
           {/* Sidebar */}
 
-          <div className="size-svw mx-auto pt-8">
-            <div className="container mx-full px-4 py-8">
+          <div className="w-full pt-8">
+            <div className="container mx-auto px-4 py-8">
               <div className="text-center mb-12">
                 <h1 className="text-4xl font-bold tracking-tight">
                   Find Your Next Opportunity
