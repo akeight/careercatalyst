@@ -151,7 +151,7 @@ export function DashboardMockup() {
               </span>
               <div className="min-w-0">
                 <p className="truncate text-[11px] font-medium text-sidebar-foreground">
-                  Ally
+                  Aiden
                 </p>
                 <p className="truncate text-[10px] text-muted-foreground">
                   user@gmail.com
@@ -168,7 +168,7 @@ export function DashboardMockup() {
                 Sunday, July 5
               </p>
               <p className="font-serif text-xl text-foreground sm:text-2xl">
-                Good evening, Ally.
+                Good evening, Aiden.
               </p>
               <p className="text-[11px] text-muted-foreground">
                 Here&apos;s where your job search stands today.
