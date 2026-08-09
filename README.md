@@ -107,8 +107,4 @@ npm run dev
 - AI-powered suggestions (e.g., resume tips, matching internships)
 - Calendar integrated with push notifications
 
-## Contributions
-
-I welcome feedback, suggestions, and collaborators as I continue building this out!
-
 ---
