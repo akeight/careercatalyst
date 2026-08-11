@@ -43,8 +43,6 @@ const profileFields = {
   linkedInUrl: true,
   githubUrl: true,
   portfolioUrl: true,
-  resumeUrl: true,
-  resumeName: true,
   weeklyGoal: true,
   onboardedAt: true,
   name: true,

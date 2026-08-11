@@ -102,6 +102,7 @@ export function Notifications({ className, ...props }: CardProps) {
                             companyName: app.contact.company?.name,
                           }
                         : null,
+                      resume: app.resume ?? null,
                     }}
                     trigger={
                       <button className="text-xs font-medium text-primary hover:underline">

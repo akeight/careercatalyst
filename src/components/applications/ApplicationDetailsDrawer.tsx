@@ -75,6 +75,11 @@ export type ApplicationDetails = {
     notes?: string | null;
     companyName?: string | null;
   } | null;
+  resume?: {
+    id: string;
+    label?: string | null;
+    fileName: string;
+  } | null;
 };
 
 const typeLabels: Record<ApplicationDetails["type"], string> = {
@@ -146,6 +151,19 @@ export function ApplicationDetailsDrawer({
     favorite: application.favorite ?? false,
     companyId: application.companyId ?? "",
     contactId: application.contact?.id ?? "",
+    resumeId: application.resume?.id ?? null,
+  };
+
+  const openResume = async () => {
+    if (!application.resume) return;
+    try {
+      const { url } = await utils.resume.getViewUrl.fetch({
+        id: application.resume.id,
+      });
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch {
+      toast.error("Couldn't open resume.");
+    }
   };
 
   return (
@@ -235,6 +253,34 @@ export function ApplicationDetailsDrawer({
                   </Button>
                 ) : (
                   <span className="text-sm text-muted-foreground">No link</span>
+                )}
+              </div>
+            </section>
+
+            <section className="rounded-lg border p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="text-sm font-semibold">Resume</h3>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {application.resume
+                      ? application.resume.label || application.resume.fileName
+                      : "The resume you used for this application."}
+                  </p>
+                </div>
+                {application.resume ? (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={openResume}
+                  >
+                    View resume
+                    <ExternalLink className="size-3.5" />
+                  </Button>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    None attached
+                  </span>
                 )}
               </div>
             </section>

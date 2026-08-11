@@ -95,6 +95,7 @@ export default function SavedInternshipsTable() {
               companyName: app.contact.company?.name,
             }
           : null,
+        resume: app.resume ?? null,
       })),
     [data],
   );

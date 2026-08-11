@@ -37,6 +37,12 @@ export type Application = {
     notes?: string | null;
     company?: { id?: string; name: string } | null;
   } | null;
+  resumeId?: string | null;
+  resume?: {
+    id: string;
+    label?: string | null;
+    fileName: string;
+  } | null;
 };
 
 export type ColumnType = {

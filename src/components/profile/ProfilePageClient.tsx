@@ -13,7 +13,7 @@ import { WeeklyGoalSettings } from "./WeeklyGoalSettings";
 import { StreakCard } from "./StreakCard";
 import { GoalsList } from "./GoalsList";
 import { LinksSection } from "./LinksSection";
-import { ResumeUpload } from "./ResumeUpload";
+import { ResumeLibrary } from "./ResumeLibrary";
 
 function initialsFrom(name?: string | null, email?: string | null) {
   return (
@@ -107,10 +107,7 @@ export function ProfilePageClient() {
           <LinksSection user={user} />
         </motion.div>
         <motion.div variants={item}>
-          <ResumeUpload
-            resumeUrl={user?.resumeUrl}
-            resumeName={user?.resumeName}
-          />
+          <ResumeLibrary />
         </motion.div>
       </motion.div>
     </div>

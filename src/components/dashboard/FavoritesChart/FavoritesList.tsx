@@ -110,6 +110,7 @@ export default function FavoritesList() {
           contact: mapApplicationContact(
             app.contact as ApplicationContactSummary | null,
           ),
+          resume: app.resume ?? null,
         };
       }),
     [favorites],

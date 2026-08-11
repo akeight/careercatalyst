@@ -90,6 +90,7 @@ model User {
   Company      Company[]
   contacts     Contact[]
   goals        Goal[]
+  resumes      Resume[]
   research     ApplicationResearch[]
   researchRuns ApplicationResearchRun[]
   emailVerified DateTime?
@@ -107,10 +108,6 @@ model User {
   linkedInUrl  String?
   githubUrl    String?
   portfolioUrl String?
-
-  // Resume (Vercel Blob)
-  resumeUrl    String?
-  resumeName   String?
 
   // Goals / onboarding
   weeklyGoal   Int       @default(5)
@@ -236,9 +233,32 @@ model Application {
   contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
   contactId String?
 
+  resume    Resume? @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+  resumeId  String?
+
   noteRecords Note[]
   research    ApplicationResearch?
   researchRuns ApplicationResearchRun[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([resumeId])
+}
+
+model Resume {
+  id       String @id @default(cuid())
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+
+  label    String? // "type" nickname, e.g. "SWE", "Design"
+  fileName String // original filename
+  url      String // blob URL (private store: not directly fetchable; legacy rows: public URL)
+  pathname String? // private-store pathname for signed-URL generation + deletion (null for legacy public rows)
+  size     Int?
+
+  applications Application[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -83,6 +83,7 @@ export default function SavedInternships() {
                     companyName: app.contact.company?.name,
                   }
                 : null,
+              resume: app.resume ?? null,
             }}
             trigger={
               <button className="group flex w-full items-center justify-between gap-3 rounded-lg border p-3 text-left transition-colors hover:bg-accent/50">

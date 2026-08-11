@@ -39,6 +39,11 @@ export type SavedRow = {
     notes?: string | null;
     companyName?: string | null;
   } | null;
+  resume: {
+    id: string;
+    label?: string | null;
+    fileName: string;
+  } | null;
 };
 
 const typeLabels: Record<SavedRow["type"], string> = {
