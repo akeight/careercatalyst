@@ -68,6 +68,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
     favorite: app.favorite ?? false,
     companyId: app.companyId ?? app.company?.id ?? "",
     contactId: app.contactId ?? app.contact?.id ?? "",
+    resumeId: app.resumeId ?? app.resume?.id ?? null,
   };
 
   const deadlineLabel = app.deadline
@@ -132,6 +133,7 @@ export default function ApplicationCard({ app }: ApplicationCardProps) {
                       companyName: app.contact.company?.name,
                     }
                   : null,
+                resume: app.resume ?? null,
               }}
               trigger={
                 <button

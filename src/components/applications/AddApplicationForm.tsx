@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils/utils";
 import { Status } from "@prisma/client";
 import { TestCombobox } from "@/components/applications/TestCombobox";
 import { ContactCombobox } from "@/components/contacts/ContactCombobox";
+import { ResumePicker } from "@/components/applications/ResumePicker";
 import { toast } from "sonner";
 import {
   ROLE_FAMILY_LABELS,
@@ -62,6 +63,7 @@ const defaultValues: Partial<AddApplicationValues> = {
   favorite: false,
   companyId: "",
   contactId: "",
+  resumeId: null,
 };
 
 export function AddApplicationForm({
@@ -452,6 +454,26 @@ export function AddApplicationForm({
                   value={field.value ?? ""}
                   onChange={field.onChange}
                   companyId={form.watch("companyId")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="resumeId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Resume</FormLabel>
+              <p className="text-sm text-muted-foreground">
+                Attach the resume version you used for this application.
+              </p>
+              <FormControl>
+                <ResumePicker
+                  value={field.value ?? null}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

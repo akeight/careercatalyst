@@ -16,7 +16,33 @@ const applicationInclude = {
       company: true,
     },
   },
+  resume: {
+    select: { id: true, label: true, fileName: true },
+  },
 };
+
+async function getOwnedResumeId({
+  resumeId,
+  userId,
+  prisma,
+}: {
+  resumeId?: string | null;
+  userId: string;
+  prisma: PrismaClient;
+}) {
+  if (!resumeId) return null;
+
+  const owned = await prisma.resume.findFirst({
+    where: { id: resumeId, userId },
+    select: { id: true },
+  });
+
+  if (!owned) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Resume not found" });
+  }
+
+  return owned.id;
+}
 
 async function getOwnedContactId({
   contactId,
@@ -169,6 +195,12 @@ export const applicationRouter = router({
         contactId = newContact.id;
       }
 
+      const resumeId = await getOwnedResumeId({
+        resumeId: input.resumeId,
+        userId,
+        prisma: ctx.prisma,
+      });
+
       const applicationData = {
         title: input.title,
         status: input.status,
@@ -187,6 +219,7 @@ export const applicationRouter = router({
         userId,
         companyId: companyId!,
         contactId,
+        resumeId,
       };
 
       Object.assign(applicationData, { notes: input.notes || null });
@@ -207,8 +240,14 @@ export const applicationRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { id, data } = input;
 
-      const { referredByRecruiter, recruiter, contactId, deadline, ...rest } =
-        data;
+      const {
+        referredByRecruiter,
+        recruiter,
+        contactId,
+        deadline,
+        resumeId,
+        ...rest
+      } = data;
 
       const formattedDeadline =
         typeof deadline === "string"
@@ -269,8 +308,21 @@ export const applicationRouter = router({
         contactUpdate = { contact: { connect: { id: newContact.id } } };
       }
 
+      let resumeUpdate = {};
+      if (resumeId !== undefined) {
+        const ownedResumeId = await getOwnedResumeId({
+          resumeId,
+          userId: ctx.session.user.id,
+          prisma: ctx.prisma,
+        });
+        resumeUpdate = ownedResumeId
+          ? { resume: { connect: { id: ownedResumeId } } }
+          : { resume: { disconnect: true } };
+      }
+
       const applicationData: Record<string, unknown> = {
         ...contactUpdate,
+        ...resumeUpdate,
       };
 
       if (rest.title !== undefined) applicationData.title = rest.title;

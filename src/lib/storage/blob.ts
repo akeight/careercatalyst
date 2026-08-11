@@ -1,0 +1,59 @@
+import { del, issueSignedToken, presignUrl } from "@vercel/blob";
+
+export {
+  RESUME_MAX_BYTES,
+  RESUME_ALLOWED_CONTENT_TYPES,
+  RESUME_PATH_PREFIX,
+  resumePathPrefix,
+  isOwnedResumePathname,
+} from "./resumeConstants";
+
+/**
+ * Server-only storage abstraction around Vercel Blob so the provider stays
+ * swappable (e.g. Cloudflare R2 later) behind this one module.
+ *
+ * Resumes contain PII, so they live in a PRIVATE Blob store: files are never
+ * publicly readable and are served via short-lived signed URLs minted after an
+ * auth + ownership check.
+ */
+
+/** Signed view URLs are valid for 5 minutes. */
+const SIGNED_URL_TTL_MS = 5 * 60 * 1000;
+
+export function isBlobConfigured(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+}
+
+/**
+ * Mint a short-lived signed GET URL for a private resume blob. Callers MUST
+ * verify ownership before calling this.
+ */
+export async function getSignedResumeUrl(pathname: string): Promise<string> {
+  const validUntil = Date.now() + SIGNED_URL_TTL_MS;
+
+  const token = await issueSignedToken({
+    pathname,
+    operations: ["get"],
+    validUntil,
+  });
+
+  const { presignedUrl } = await presignUrl(token, {
+    operation: "get",
+    pathname,
+    access: "private",
+    validUntil,
+  });
+
+  return presignedUrl;
+}
+
+/**
+ * Delete a resume blob from storage. Accepts either a pathname or a full URL.
+ * No-ops when nothing is provided so it's safe to call during cleanup.
+ */
+export async function deleteResumeBlob(
+  pathnameOrUrl: string | null | undefined,
+): Promise<void> {
+  if (!pathnameOrUrl) return;
+  await del(pathnameOrUrl);
+}

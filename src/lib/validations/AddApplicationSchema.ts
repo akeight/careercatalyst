@@ -40,6 +40,8 @@ const addApplicationFields = {
   contactId: z.string().optional(),
   referredByRecruiter: z.boolean().optional(),
   recruiter: RecruiterSchema.optional(),
+
+  resumeId: z.string().optional().nullable(),
 };
 
 function refineMobileSpecialization(

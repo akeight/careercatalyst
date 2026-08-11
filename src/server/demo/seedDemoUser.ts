@@ -5,6 +5,7 @@ import {
   DEMO_CONTACTS,
   DEMO_GOALS,
   DEMO_PROFILE,
+  DEMO_RESUMES,
 } from "./demoContent";
 import {
   DEMO_JD,
@@ -49,6 +50,23 @@ export async function seedDemoUser(userId: string) {
     companyNames.set(company.key, company.name);
   }
 
+  const resumeIds = new Map<string, string>();
+
+  for (const resume of DEMO_RESUMES) {
+    const created = await prisma.resume.create({
+      data: {
+        userId,
+        label: resume.label,
+        fileName: resume.fileName,
+        url: resume.url,
+        // Demo resumes use a bundled public asset, so there is no private-store
+        // pathname; viewing falls back to the stored url.
+        pathname: null,
+      },
+    });
+    resumeIds.set(resume.key, created.id);
+  }
+
   const contactIds = new Map<string, string>();
 
   for (const contact of DEMO_CONTACTS) {
@@ -81,6 +99,7 @@ export async function seedDemoUser(userId: string) {
         userId,
         companyId,
         contactId: app.contactKey ? contactIds.get(app.contactKey) : undefined,
+        resumeId: app.resumeKey ? resumeIds.get(app.resumeKey) : undefined,
         type: app.type,
         title: app.title,
         location: app.location,

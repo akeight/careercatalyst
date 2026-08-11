@@ -106,6 +106,7 @@ export default function AppCalendar() {
                           companyName: app.contact.company?.name,
                         }
                       : null,
+                    resume: app.resume ?? null,
                   }}
                   trigger={
                     <button className="w-fit text-xs font-medium text-primary hover:underline">

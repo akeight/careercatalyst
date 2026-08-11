@@ -22,9 +22,17 @@ export type DemoContactSeed = {
   companyKey: string;
 };
 
+export type DemoResumeSeed = {
+  key: string;
+  label: string;
+  fileName: string;
+  url: string;
+};
+
 export type DemoApplicationSeed = {
   companyKey: string;
   contactKey?: string;
+  resumeKey?: string;
   type: ApplicationType;
   title: string;
   location: string;
@@ -163,6 +171,22 @@ export const DEMO_CONTACTS: DemoContactSeed[] = [
   },
 ];
 
+// Demo resumes point at a bundled public sample PDF (no private-store write).
+export const DEMO_RESUMES: DemoResumeSeed[] = [
+  {
+    key: "swe",
+    label: "SWE Resume",
+    fileName: "jordan-demo-swe.pdf",
+    url: "/demo/sample-resume.pdf",
+  },
+  {
+    key: "product",
+    label: "Product Resume",
+    fileName: "jordan-demo-product.pdf",
+    url: "/demo/sample-resume.pdf",
+  },
+];
+
 export const DEMO_APPLICATIONS: DemoApplicationSeed[] = [
   {
     companyKey: "pinterest",
@@ -181,6 +205,7 @@ export const DEMO_APPLICATIONS: DemoApplicationSeed[] = [
   {
     companyKey: "figma",
     contactKey: "jordan-lee",
+    resumeKey: "product",
     type: "INTERNSHIP",
     title: "Product Manager Intern",
     location: "New York, NY",
@@ -204,6 +229,7 @@ export const DEMO_APPLICATIONS: DemoApplicationSeed[] = [
   },
   {
     companyKey: "notion",
+    resumeKey: "swe",
     type: "INTERNSHIP",
     title: "Software Engineer Intern",
     location: "San Francisco, CA",
@@ -244,6 +270,7 @@ export const DEMO_APPLICATIONS: DemoApplicationSeed[] = [
   {
     companyKey: "google",
     contactKey: "sam-patel",
+    resumeKey: "swe",
     type: "INTERNSHIP",
     title: "Software Engineering Intern",
     location: "Mountain View, CA",

@@ -1,55 +1,75 @@
 import { NextResponse } from "next/server";
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+
 import { auth } from "@/server/auth";
-import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rateLimit";
+import {
+  RESUME_ALLOWED_CONTENT_TYPES,
+  RESUME_MAX_BYTES,
+  isBlobConfigured,
+  isOwnedResumePathname,
+} from "@/lib/storage/blob";
 
-const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+// Allow up to 10 upload-token requests per user per minute.
+const UPLOAD_RATE_LIMIT = 10;
+const UPLOAD_RATE_WINDOW_MS = 60 * 1000;
 
-export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+export async function POST(request: Request): Promise<NextResponse> {
+  if (!isBlobConfigured()) {
     return NextResponse.json(
       { error: "Resume storage is not configured." },
       { status: 500 },
     );
   }
 
-  const formData = await request.formData();
-  const file = formData.get("file");
+  const body = (await request.json()) as HandleUploadBody;
 
-  if (!(file instanceof File)) {
-    return NextResponse.json({ error: "No file provided." }, { status: 400 });
-  }
+  try {
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname) => {
+        const session = await auth();
 
-  if (file.type !== "application/pdf") {
+        if (!session?.user?.id) {
+          throw new Error("Unauthorized");
+        }
+
+        if (session.user.isDemo) {
+          throw new Error("Resume upload is not available in demo mode.");
+        }
+
+        const { success } = rateLimit(
+          `resume-upload:${session.user.id}`,
+          UPLOAD_RATE_LIMIT,
+          UPLOAD_RATE_WINDOW_MS,
+        );
+        if (!success) {
+          throw new Error("Too many uploads. Please try again in a minute.");
+        }
+
+        // Enforce that the client can only write into its own resume folder.
+        if (!isOwnedResumePathname(pathname, session.user.id)) {
+          throw new Error("Invalid upload path.");
+        }
+
+        return {
+          allowedContentTypes: [...RESUME_ALLOWED_CONTENT_TYPES],
+          maximumSizeInBytes: RESUME_MAX_BYTES,
+          addRandomSuffix: true,
+          tokenPayload: JSON.stringify({ userId: session.user.id }),
+        };
+      },
+      // Doesn't fire on localhost; metadata is persisted client-side via the
+      // resume.create tRPC mutation after upload() resolves.
+      onUploadCompleted: async () => {},
+    });
+
+    return NextResponse.json(jsonResponse);
+  } catch (error) {
     return NextResponse.json(
-      { error: "Only PDF files are allowed." },
+      { error: error instanceof Error ? error.message : "Upload failed." },
       { status: 400 },
     );
   }
-
-  if (file.size > MAX_BYTES) {
-    return NextResponse.json(
-      { error: "File is too large (max 5 MB)." },
-      { status: 400 },
-    );
-  }
-
-  const blob = await put(`resumes/${session.user.id}/${file.name}`, file, {
-    access: "public",
-    addRandomSuffix: true,
-    contentType: "application/pdf",
-  });
-
-  const user = await prisma.user.update({
-    where: { id: session.user.id },
-    data: { resumeUrl: blob.url, resumeName: file.name },
-    select: { resumeUrl: true, resumeName: true },
-  });
-
-  return NextResponse.json(user);
 }
