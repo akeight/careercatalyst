@@ -331,8 +331,13 @@ export const applicationRouter = router({
       if (rest.location !== undefined) applicationData.location = rest.location;
       if (rest.source !== undefined) applicationData.source = rest.source;
       if (rest.favorite !== undefined) applicationData.favorite = rest.favorite;
-      if (rest.companyId !== undefined)
-        applicationData.companyId = rest.companyId;
+      if (rest.companyId !== undefined) {
+        // Use the relation form rather than the scalar FK. When the payload
+        // also includes a relation write (e.g. connecting a resume or contact),
+        // Prisma selects its "checked" update input, which rejects the scalar
+        // `companyId` and requires `company: { connect }` instead.
+        applicationData.company = { connect: { id: rest.companyId } };
+      }
       if (rest.jobUrl !== undefined) {
         applicationData.jobUrl = rest.jobUrl || null;
       }

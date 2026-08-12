@@ -77,18 +77,24 @@ Install dependencies:
 npm install
 ```
 
-Configure authentication environment variables:
+Configure authentication environment variables (see `.env.example` for the full list
+and per-environment notes):
 
 ```bash
-AUTH_SECRET=
+# Either AUTH_SECRET or NEXTAUTH_SECRET works (the app reads AUTH_SECRET first,
+# then falls back to NEXTAUTH_SECRET). Generate with: openssl rand -base64 32
+NEXTAUTH_SECRET=
 AUTH_URL=http://localhost:3000
+NEXTAUTH_URL=http://localhost:3000
 
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-LINKEDIN_CLIENT_ID=
-LINKEDIN_CLIENT_SECRET=
+# OAuth is optional for local development — sign in with the dev-credentials
+# provider below. Configure these only if you register a localhost OAuth app.
+# GITHUB_CLIENT_ID=
+# GITHUB_CLIENT_SECRET=
+# GOOGLE_CLIENT_ID=
+# GOOGLE_CLIENT_SECRET=
+# LINKEDIN_CLIENT_ID=
+# LINKEDIN_CLIENT_SECRET=
 
 # Local development only. Defaults are dev@example.com / password.
 DEV_AUTH_EMAIL=dev@example.com
