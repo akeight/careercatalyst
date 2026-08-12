@@ -31,10 +31,18 @@ export function isBlobConfigured(): boolean {
 export async function getSignedResumeUrl(pathname: string): Promise<string> {
   const validUntil = Date.now() + SIGNED_URL_TTL_MS;
 
+  // Sign with the read-write token explicitly. Without it, the SDK falls back
+  // to Vercel OIDC, which is only injected in deployed environments — so local
+  // `next dev` throws "OIDC is enabled for this project, but not for the
+  // development environment". The token stays server-side; only the resulting
+  // short-lived signed GET URL is handed to the client.
+  const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
+
   const token = await issueSignedToken({
     pathname,
     operations: ["get"],
     validUntil,
+    token: blobToken,
   });
 
   const { presignedUrl } = await presignUrl(token, {
@@ -42,6 +50,7 @@ export async function getSignedResumeUrl(pathname: string): Promise<string> {
     pathname,
     access: "private",
     validUntil,
+    token: blobToken,
   });
 
   return presignedUrl;
