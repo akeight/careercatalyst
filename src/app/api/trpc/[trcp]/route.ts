@@ -12,6 +12,12 @@ const handler = (req: Request) =>
     req,
     router: appRouter,
     createContext: createTRPCContext,
+    onError({ error, path }) {
+      // Surface server-side failures in logs. Without this, tRPC only returns
+      // the error in the HTTP response body, so 500s are invisible in the
+      // terminal.
+      console.error(`[trpc] ${path ?? "<no-path>"} failed:`, error);
+    },
   });
 
 export { handler as GET, handler as POST };
