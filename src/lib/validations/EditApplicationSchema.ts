@@ -11,7 +11,7 @@ export const EditApplicationSchema = z.object({
   location: z.string().optional(),
   link: z.string().url("Must be a valid URL").optional(),
   notes: z.string().max(1000).optional(),
-  deadline: z.date().optional(),
+  deadline: z.coerce.date().optional(),
   contactId: z.string().optional(),
   favorite: z.boolean().optional(),
   source: z.string().optional(),

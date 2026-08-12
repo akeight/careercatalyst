@@ -29,7 +29,10 @@ const addApplicationFields = {
     .string()
     .max(4000, "Notes must be 4000 characters or fewer")
     .optional(),
-  deadline: z.date().optional(),
+  // Accept a Date (client form value) or an ISO string (what a Date becomes
+  // once JSON-serialized over the tRPC wire, since no superjson transformer is
+  // configured) and coerce to a Date.
+  deadline: z.coerce.date().optional(),
   favorite: z.boolean().optional(),
   source: z.string().optional(),
   userId: z.string().optional(),
