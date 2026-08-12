@@ -45,12 +45,13 @@ export async function getSignedResumeUrl(pathname: string): Promise<string> {
     token: blobToken,
   });
 
+  // presignUrl only builds the URL from the already-issued token material; it
+  // takes no read-write token (auth happened in issueSignedToken above).
   const { presignedUrl } = await presignUrl(token, {
     operation: "get",
     pathname,
     access: "private",
     validUntil,
-    token: blobToken,
   });
 
   return presignedUrl;
