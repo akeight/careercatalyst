@@ -92,6 +92,7 @@ export function AddApplicationForm({
       await utils.application.getSaved.invalidate();
       await utils.application.getStats.invalidate();
       await utils.application.getUpcomingDeadlines.invalidate();
+      await utils.profile.get.invalidate();
       onSuccess?.();
       toast.success("Internship added successfully!");
     },

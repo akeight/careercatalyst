@@ -33,6 +33,7 @@ export function SavedRowActions({ row }: { row: SavedRow }) {
       utils.application.getFavorites.invalidate();
       utils.application.getStats.invalidate();
       utils.application.getUpcomingDeadlines.invalidate();
+      utils.profile.get.invalidate();
       toast.success("Application deleted.");
       setConfirmOpen(false);
     },
