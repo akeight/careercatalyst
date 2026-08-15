@@ -16,9 +16,13 @@ const UPLOAD_RATE_WINDOW_MS = 60 * 1000;
 
 export async function POST(request: Request): Promise<NextResponse> {
   if (!isBlobConfigured()) {
+    // Surfaces in Vercel Runtime Logs so a missing Production env var is obvious.
+    console.error(
+      "[resume/upload] BLOB_READ_WRITE_TOKEN is missing from this runtime.",
+    );
     return NextResponse.json(
       { error: "Resume storage is not configured." },
-      { status: 500 },
+      { status: 503 },
     );
   }
 
@@ -67,6 +71,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
+    console.error("[resume/upload] token generation failed:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Upload failed." },
       { status: 400 },
