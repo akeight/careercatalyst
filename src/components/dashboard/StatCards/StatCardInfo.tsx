@@ -11,7 +11,7 @@ export function StatCardInfo() {
     <>
       <StatCard title="Saved" value={counts?.SAVED ?? 0} status="SAVED" />
 
-      <StatCard title="Applied" value={data?.total ?? 0} status="APPLIED" />
+      <StatCard title="Applied" value={counts?.APPLIED ?? 0} status="APPLIED" />
       <StatCard
         title="Interviews"
         value={counts?.INTERVIEW ?? 0}
