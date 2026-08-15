@@ -33,6 +33,7 @@ export function FavoriteRowActions({ row }: { row: FavoriteRow }) {
       utils.application.getSaved.invalidate();
       utils.application.getStats.invalidate();
       utils.application.getUpcomingDeadlines.invalidate();
+      utils.profile.get.invalidate();
       toast.success("Application deleted.");
       setConfirmOpen(false);
     },

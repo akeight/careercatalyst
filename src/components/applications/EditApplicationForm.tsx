@@ -105,6 +105,7 @@ export function EditApplicationForm({
       utils.application.getSaved.invalidate();
       utils.application.getStats.invalidate();
       utils.application.getUpcomingDeadlines.invalidate();
+      utils.profile.get.invalidate();
       toast.success("Application updated!");
       onClose();
     },

@@ -10,6 +10,11 @@ export const STATUS_VALUES = [
 
 export type StatusValue = (typeof STATUS_VALUES)[number];
 
+// Statuses that represent a submitted application (everything except SAVED).
+export const SUBMITTED_STATUSES: Status[] = STATUS_VALUES.filter(
+  (s) => s !== "SAVED",
+);
+
 // Ordered list of statuses used to render the Kanban columns.
 export const KANBAN_STATUSES: Status[] = [
   "SAVED",

@@ -75,6 +75,7 @@ export default function KanbanBoardApp() {
     onSuccess: (_data, variables) => {
       utils.application.getAll.invalidate();
       utils.application.getStats.invalidate();
+      utils.profile.get.invalidate();
       if (variables.status === "APPLIED") {
         toast("Create a Company Snapshot while you wait?", {
           action: {
