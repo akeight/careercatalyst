@@ -11,10 +11,12 @@ const orNull = (value?: string | null) =>
   value === undefined ? undefined : value === "" ? null : value;
 
 // Counts trailing consecutive weeks (ending this week) that met the weekly
-// application goal. The current, still-in-progress week never breaks a streak.
-function computeStreak(createdDates: Date[], weeklyGoal: number) {
+// application goal. Weeks are bucketed by when the application was submitted
+// (appliedAt), not when the row was added. The current, still-in-progress week
+// never breaks a streak.
+function computeStreak(appliedDates: Date[], weeklyGoal: number) {
   const counts = new Map<number, number>();
-  for (const date of createdDates) {
+  for (const date of appliedDates) {
     const key = startOfWeek(date, { weekStartsOn: WEEK_STARTS_ON }).getTime();
     counts.set(key, (counts.get(key) ?? 0) + 1);
   }
@@ -66,13 +68,13 @@ export const profileRouter = router({
       }),
       ctx.prisma.application.findMany({
         where: { userId, status: { not: "SAVED" } },
-        select: { createdAt: true },
+        select: { appliedAt: true },
       }),
     ]);
 
     const weeklyGoal = user?.weeklyGoal ?? 5;
     const { streak, thisWeekCount } = computeStreak(
-      applications.map((a) => a.createdAt),
+      applications.map((a) => a.appliedAt),
       weeklyGoal,
     );
 
