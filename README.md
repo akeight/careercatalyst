@@ -30,7 +30,7 @@
 - **tRPC** API layer
 - **ShadCN/UI** Tailwind CSS components
 - **React Hook Form + Zod** for validation
-- **Auth.js** + **GitHub, Google, and LinkedIn OAuth** for authentication
+- **Auth.js** + **GitHub and Google OAuth** for authentication
 
 ## Screenshots
 
@@ -93,8 +93,6 @@ NEXTAUTH_URL=http://localhost:3000
 # GITHUB_CLIENT_SECRET=
 # GOOGLE_CLIENT_ID=
 # GOOGLE_CLIENT_SECRET=
-# LINKEDIN_CLIENT_ID=
-# LINKEDIN_CLIENT_SECRET=
 
 # Local development only. Defaults are dev@example.com / password.
 DEV_AUTH_EMAIL=dev@example.com
