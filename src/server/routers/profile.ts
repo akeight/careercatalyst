@@ -65,7 +65,7 @@ export const profileRouter = router({
         orderBy: [{ completed: "asc" }, { createdAt: "desc" }],
       }),
       ctx.prisma.application.findMany({
-        where: { userId },
+        where: { userId, status: { not: "SAVED" } },
         select: { createdAt: true },
       }),
     ]);

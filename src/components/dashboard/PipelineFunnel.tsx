@@ -56,7 +56,10 @@ export default function PipelineFunnel() {
   const [anchor, setAnchor] = React.useState<Date>(() => new Date());
 
   const submittedDates = React.useMemo(
-    () => (apps ?? []).map((a) => new Date(a.appliedAt as string | Date)),
+    () =>
+      (apps ?? [])
+        .filter((a) => a.status !== "SAVED")
+        .map((a) => new Date(a.appliedAt as string | Date)),
     [apps],
   );
 
