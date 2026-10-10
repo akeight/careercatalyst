@@ -12,6 +12,7 @@ import {
 import { AddApplicationForm } from "./AddApplicationForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@awesome.me/kit-3cb9aa7d8b/icons/chisel/regular";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "@/lib/utils/utils";
 
@@ -28,19 +29,16 @@ export default function AddApplicationModal({
 }: AddApplicationModalProps) {
   const [open, setOpen] = useState(false);
   const trigger = (
-    <button
+    <Button
       type="button"
-      className={cn(
-        "flex w-full items-center gap-2 px-4 py-2 hover:bg-muted",
-        iconOnly && "size-10 justify-center rounded-md p-0",
-        triggerClassName,
-      )}
-      aria-label={iconOnly ? "Add Internship" : undefined}
-      title={iconOnly ? "Add Internship" : undefined}
+      variant="default"
+      size={iconOnly ? "icon" : "default"}
+      className={cn(iconOnly ? "size-10" : "w-full", triggerClassName)}
+      aria-label={iconOnly ? "Add Application" : undefined}
     >
       <FontAwesomeIcon icon={faPlus} size={iconOnly ? "xl" : "lg"} />
       {!iconOnly && <span>Add Application</span>}
-    </button>
+    </Button>
   );
 
   return (
