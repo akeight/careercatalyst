@@ -194,9 +194,9 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={navLink.label}
                     className={cn(
-                      "h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5",
+                      "h-9 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-9! [&>svg]:size-4",
                       active &&
-                        "data-[active=true]:bg-[var(--nav-active)]/40 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
+                        "data-[active=true]:bg-[var(--nav-active)]/50 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
                     )}
                   >
                     <Link
@@ -204,7 +204,7 @@ export function AppSidebar() {
                       {...(tourAttr ? { "data-tour": tourAttr } : undefined)}
                     >
                       {navLink.icon}
-                      <span className="text-base font-medium">
+                      <span className="text-sm font-medium">
                         {navLink.label}
                       </span>
                     </Link>
@@ -232,7 +232,7 @@ export function AppSidebar() {
                     isActive={active}
                     tooltip={item.label}
                     className={cn(
-                      "h-10 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-base transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-10! [&>svg]:size-5",
+                      "h-9 w-full justify-start gap-3 rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-9! [&>svg]:size-4",
                       active &&
                         "data-[active=true]:bg-[var(--nav-active)]/40 data-[active=true]:text-[var(--nav-active-foreground)] hover:bg-[var(--nav-active)]/40 hover:text-[var(--nav-active-foreground)] [&>svg]:text-[var(--nav-active-foreground)]",
                     )}
@@ -243,7 +243,7 @@ export function AppSidebar() {
                         {...(tourAttr ? { "data-tour": tourAttr } : undefined)}
                       >
                         {item.icon}
-                        <span className="text-base font-medium">
+                        <span className="text-sm font-medium">
                           {item.label}
                         </span>
                       </Link>
@@ -254,7 +254,7 @@ export function AppSidebar() {
                         rel="noopener noreferrer"
                       >
                         {item.icon}
-                        <span className="text-base font-medium">
+                        <span className="text-sm font-medium">
                           {item.label}
                         </span>
                       </a>
@@ -280,7 +280,7 @@ export function AppSidebar() {
             <AddApplicationModal
               userId={userId}
               iconOnly
-              triggerClassName="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&>svg]:size-10"
+              triggerClassName="[&>svg]:size-10"
             />
           ) : null}
         </div>
